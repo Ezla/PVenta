@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %} Eliminar producto {% endblock %}
+
+{% block conte %}
+
+<div class="panel panel-danger offer">
+	<div class="panel-heading">
+			<h3 class="panel-title">Eliminar Registro</h3>
+	</div>		
+	<div class="panel-body">
+		<p class="text-danger text-center">
+			Para poder eliminar la marca <strong>"{{ object }}"</strong> antes debes confirmar la acccion. <br>
+            Tenga en cuenta que <strong>TODOS</strong> los productos previamente registrados con esta marca seran eliminados tambien.
+		</p>
+	</div>
+	<div class="panel-footer">
+		<form method="post">{% csrf_token %}
+			<p class="text-center">
+				
+				<button type="submit" class="btn btn-danger">
+					<span class="glyphicon glyphicon-floppy-remove"></span> Confirmar
+				</button>
+				<a href="{% url 'Producto:url_lista_marca' 1 %}" class="btn btn-info">
+					<span class="glyphicon glyphicon-chevron-left"></span> Cancelar
+				</a>
+			</p>		
+		</form>
+				
+	</div>
+</div>
+
+{% endblock %}

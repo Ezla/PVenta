@@ -1,0 +1,336 @@
+{% extends "base.html" %}
+
+{% block title %}Ventas{% endblock %}
+
+{% block conte %}
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" xmlns="http://www.w3.org/1999/html">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-shopping-cart"></i> Cobro de productos</h4>
+            </div>
+            <div class="modal-body">
+                <p>Monto a cobrar.</p>
+                <h2 class="total">$ {{precio}}</h2>
+                <div id="mensaje">
+                </div>
+                <p>Por favor, ingrese la cantidad con la que el cliente pagara.</p>
+
+                <form id="formPago">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-usd"></i></span>
+                        <input type="number" class="form-control" id="efectivo" name="efectivo" placeholder="Ingrese la cantidad de forma numerica" min="0" step="0.01">
+                    </div>
+                    <br/>
+                    <button type="submit" class="btn btn-primary" id="btnefectivo">
+                        <i class=" glyphicon glyphicon-hand-right"></i> Pagar ahora
+                    </button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+	<div class="panel panel-info offer">
+		<div class="panel-heading">
+			<form id="formxD">
+				<div class="form-group">
+                    <!-- Button trigger modal -->
+                    <button id="pagar_cuenta" type="button" class="btn btn-primary btn-xs"  title="Realiza el cobro al cliente" data-toggle="modal" data-target="#myModal">
+                      Pagar Cuenta
+                    </button>
+					<label for="codigo">Codigo de barras</label>
+                    <button id="cancelar" type="button" class="btn btn-danger btn-xs pull-right" title="Elimina la lista de compra">
+                        Cancelar cuenta
+                    </button>
+					<input type="text" class="form-control" id="codigo" name="codigo" placeholder="Introduce el codigo de barras del producto">
+				</div>
+			</form>
+		</div>
+		<div class="panel-body">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<td>Producto</td>
+						<td>Precio</td>
+						<td>Mayoreo</td>
+					</tr>
+				</thead>
+				<tbody id='tbusqueda'> 
+				</tbody>
+			</table>
+		</div>
+		<div class="panel-footer">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td>Codigo</td>
+                            <td>Producto</td>
+                            <td>Precio</td>
+                            <td>Mayoreo</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody id="tVentaProd">
+                        {% if data %}
+                            {% for item in data %}
+                                <tr class="info">
+                                    <td class="cod">{{item.codigo}}</td>
+                                    <td>{{item.descripcion}}</td>
+                                    {% if item.tprecio == True %}
+                                    <td>{{item.pmayoreo}}</td>
+                                    <td>
+                                        <div class="btn-group" data-toggle="buttons">
+                                            <label class="btn btx btn-xs btn-success active">
+                                                <input type="checkbox" autocomplete="off" checked>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    {% else %}
+                                    <td>{{item.punitario}}</td>
+                                    <td>
+                                        <div class="btn-group" data-toggle="buttons">
+                                            <label class="btn btx btn-xs btn-success">
+                                                <input type="checkbox" autocomplete="off">
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    {% endif %}
+
+                                    <td>
+                                        <div class="btn-group btn-group-xs">
+                                            <button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                                            <button class="btn btn-info">{{item.cantidad}}</button>
+                                            <button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                    <tfoot>
+                        <tr class="info">
+                            <td>Total:</td>
+                            <td class="total">$ {{precio}}</td>
+                            <td></td>
+                            <td>Subtotal:</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+		</div>
+	
+	</div>
+
+{% endblock %}
+
+{% block script %}
+	<script type="text/javascript">
+        var $codigo = $('#codigo');
+            $tablaVenta = $('#tVentaProd');
+            $totalVenta = $('.total');
+            $efectivo = $('#efectivo');
+            $btnefectivo = $('#btnefectivo');
+            $mensaje = $('#mensaje');
+            $tprecio = $('#btx');
+            chbT = '<div class="btn-group" data-toggle="buttons"><label class="btn btx btn-xs btn-success active"> <input type="checkbox" autocomplete="off" checked><span class="glyphicon glyphicon-ok"></span> </label></div>';
+            chbF = '<div class="btn-group" data-toggle="buttons"><label class="btn btx btn-xs btn-success"> <input type="checkbox" autocomplete="off"><span class="glyphicon glyphicon-ok"></span> </label></div>';
+        //funciones
+        function Cancelar(e){
+            $.ajax({
+                async : false,
+                url : '{% url "Venta:url_cancelar_cuenta_ajax" %}',
+                type : 'get',
+                success : function(data){
+                    $tablaVenta.html('');
+                    $totalVenta.html('$ 0');
+                }
+            });
+            $codigo.focus();
+        }
+
+        function AumentarFil(e){
+        	var parent = $(this).parent().parent().parent().html();
+            var cod = $(parent).html();
+            $.ajax({
+                async: false,
+                data : {'cod': cod},
+                url : '{% url "Venta:url_aumentar_prod_ajax" %}',
+                type : 'get',
+                success : function(data){
+                    var htmlp = '';
+                    $.each(data.cuenta, function(i, item){
+                        if(item.tprecio== false) {
+                            htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                        }else{
+                            htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                        }
+                    });
+                    $tablaVenta.html(htmlp);
+                    $totalVenta.html("$ "+ data.precio)
+                }
+            });
+            $codigo.focus();
+        }
+
+        function EliminarFil(e){
+        	var parent = $(this).parent().parent().parent().html();
+            var cod = $(parent).html();
+            $.ajax({
+                async: false,
+                data : {'cod': cod},
+                url : '{% url "Venta:url_remover_prod_ajax" %}',
+                type : 'get',
+                success : function(data){
+                    var htmlp = ''
+                    $.each(data.cuenta, function(i, item){
+                        if(item.tprecio== false) {
+                            htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                        }else{
+                            htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                        }
+                    });
+                    $tablaVenta.html(htmlp);
+                    $totalVenta.html("$ "+ data.precio)
+                }
+            });
+            $codigo.focus();
+        }
+
+        function TipoPre(e){
+        	var parent = $(this).parent().parent().parent().html();
+            var cod = $(parent).html();
+            $.ajax({
+                async: false,
+                data : {'cod': cod},
+                url : '{% url "Venta:url_tipo_precio_ajax" %}',
+                type : 'get',
+                success : function(data){
+                    var htmlp = ''
+                    $.each(data.cuenta, function(i, item){
+                        if(item.tprecio== false) {
+                            htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                        }else{
+                            htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                        }
+                    });
+                    $tablaVenta.html(htmlp);
+                    $totalVenta.html("$ "+ data.precio)
+                }
+            });
+            $codigo.focus();
+        }
+
+        function Buscarpro(e){
+            var dato = $codigo.val();
+            $.ajax({
+                async: false,
+            	data : {'cod': dato},
+            	url : '{% url "Venta:url_buscar_ajax" %}',
+            	type : 'get',
+            	success: function(data){
+                    var htmlp = '';
+                    var cont = 0;
+                    $.each(data.cuenta, function(i, item){
+                        if(cont == 0){
+                            cont = 1;
+                            if(item.tprecio== false) {
+                                htmlp = htmlp + '<tr class="success loading"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                            }else{
+                                htmlp = htmlp + '<tr class="success loading"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                            }
+
+                        }else{
+                            if(item.tprecio== false) {
+                                htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                            }else{
+                                htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                            }
+                        }
+
+
+
+
+                    });
+                    $tablaVenta.html(htmlp);
+                    $totalVenta.html("$ "+ data.precio);
+
+            	}
+            });
+            $codigo.val('').focus();
+            return false;
+        }
+
+        function Pagar(e){
+            var dato = $efectivo.val();
+            $efectivo.prop('disabled', true);
+            $btnefectivo.prop('disabled', true);
+            $.ajax({
+                async : false,
+                data : {'efectivo': dato},
+                url : {% url "Venta:url_pagar" %},
+                type : 'get',
+                success : function(data){
+                    $efectivo.val('');
+                    $efectivo.focus();
+                    if(data.tipo == true){
+                        var html = '<div class="alert alert-success alert-dismissable">' +
+                                '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">' +
+                                '×</button> <strong>¡Completado!</strong> '+ data.mensaje +'</div>'
+                        $tablaVenta.html('');
+                        $totalVenta.html('$ 0');
+                    }else{
+                        var html = '<div class="alert alert-warning alert-dismissable">' +
+                                '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">' +
+                                '×</button> <strong>¡Cuidado!</strong> '+data.mensaje+'</div>';
+                    }
+
+                    $mensaje.html(html);
+                    $mensaje.fadeIn().delay(10000).fadeOut();
+                    tiempo = setTimeout(function(){
+                        $efectivo.prop('disabled', false);
+                        $btnefectivo.prop('disabled', false);
+                        $efectivo.focus();
+                        },10000);
+
+                }
+            });
+            return false;
+        }
+        function focus(e){
+            $efectivo.focus();
+            //return false;
+        }
+        //Eventos
+
+	    $(document).ready($codigo.focus());
+
+        $('#cancelar').on('click', Cancelar);
+
+        $('#pagar_cuenta').on('click', focus);
+
+        $tablaVenta.on('click', '.aumentar', AumentarFil);
+
+        $tablaVenta.on('click', '.eliminar', EliminarFil);
+
+        $tablaVenta.on('click', '.btx', TipoPre);
+
+        $('#formxD').on('submit',Buscarpro);
+
+        $('#formPago').on('submit',Pagar);
+
+    </script>
+    
+{% endblock %}

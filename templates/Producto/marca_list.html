@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %} Marcas {% endblock %}
+
+
+{% block conte %}
+
+<div class="panel panel-default offer">
+  	<div class="panel-heading">
+		<div class="row">
+			<div class="col-xs-2 col-sm-4">
+		    	<strong class="hidden-xs">Marcas disponibles</strong> <span class="badge pull-rigth">{{total_marcas}}</span>
+		  	</div>
+		  	<div class="col-xs-10 col-sm-7 col-sm-offset-1">
+		    	<input id="buscar_prod" type="text" class="form-control" placeholder="Buscar">
+		  	</div>
+		</div>
+  	</div>
+  	<div class="panel-body">
+        <div class="table-responsive">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<td>Producto</td>
+				</tr>
+			</thead>
+			<tbody>
+			{% for prod in object_list %}
+				<tr>
+					<td><a class="btn btn-default btn-sm btn-block">{{prod.marca}}</a></td>
+
+					<td><a href=""></a>
+						<div class="btn-group pull-right">
+                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                <span class="glyphicon glyphicon-cog"></span> <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="{% url 'Producto:url_actualizar_marca' prod.id %}">
+                                        <span class="glyphicon glyphicon-floppy-open"></span> Editar
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="{% url 'Producto:url_eliminar_marca' prod.id %}">
+                                        <span class="glyphicon glyphicon-floppy-remove"></span> Eliminar
+                                    </a>
+                                </li>
+                            </ul>
+						</div>
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	</div>
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-xs-12 col-ml-6 col-ml-offset-3">
+				<ul class="pagination">
+				  <li>
+				    {% if page_obj.has_previous %}
+				      <a href="?page={{ page_obj.previous_page_number }}">
+				        Atras
+				      </a>
+				    {% else %}
+				      <span>Atras</span>
+				    {% endif %}
+				  </li>
+				
+				  {% for page_number in paginator.page_range %}
+				    {% if page_number == page_obj.number %}
+				      <li class="active">
+				        <span>{{ page_number }}</span>
+				      </li>
+				    {% else %}
+				      <li>
+				        <a href="?page={{ page_number }}">
+				          {{ page_number }}
+				        </a>
+				      </li>
+				    {% endif %}
+				  {% endfor %}
+
+				  <li>
+				    {% if page_obj.has_next %}
+				      <a href="?page={{ page_obj.next_page_number }}">
+				        Siguiente
+				      </a>
+				    {% else %}
+				      <span>Siguiente</span>
+				    {% endif %}
+				  </li>
+				</ul>
+			</div>
+			
+		</div>
+
+		
+	</div>
+
+</div>
+
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript">
+        var $codigo = $('#buscar_prod')
+        $(document).ready($codigo.focus());
+    </script>
+{% endblock %}
