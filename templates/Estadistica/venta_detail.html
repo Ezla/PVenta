@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %} Consultar Producto {% endblock %}
+
+{% block conte %}
+<div class="panel panel-info offer">
+    {% load humanize %}
+	<div class="panel-heading">
+		<h3>Detalles de la Compra</h3>
+	</div>
+	<div class="panel-body">
+		<table class="table table-hover">
+			<tr>
+				<td align="right"><strong>Ticket:</strong></td>
+				<td><strong>{{object.tiket}}</strong></td>
+				<td  align="right"><strong>Fecha:</strong></td>
+				<td><strong>{{object.creado|date:"d-m-Y"}}</strong></td>
+			</tr>
+            <tr>
+                <td align="center"><strong>#</strong></td>
+                <td><strong>Producto</strong></td>
+                <td><strong>Cantidad</strong></td>
+                <td><strong>Precio</strong></td>
+            </tr>
+            {% for x in Venta_producto %}
+            <tr>
+                <td align="center">{{ forloop.counter }}</td>
+                <td title="{{ x.nombre }}">{{ x.nombre|slice:":45" }}</td>
+                <td>{{ x.cantidad }}</td>
+                <td>{{ x.precio|intcomma }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td></td><td></td>
+                <td align="right"><Strong>Total:</Strong></td>
+                <td><strong>$ {{object.total|intcomma}}</strong></td>
+            </tr>
+            <tr>
+                <td></td><td></td>
+                <td align="right"><Strong>Efectivo:</Strong></td>
+                <td><strong>$ {{object.efectivo|intcomma}}</strong></td>
+            </tr>
+            <tr>
+                <td></td><td></td>
+                <td align="right"><Strong>Cambio:</Strong></td>
+                <td><strong>$ {{object.cambio|intcomma}}</strong></td>
+            </tr>
+		</table>
+
+
+
+	</div>
+	<div class="panel-footer">
+
+	</div>
+</div>
+{% endblock %}
