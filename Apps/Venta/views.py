@@ -37,6 +37,7 @@ class Login(FormView):
 
 class Logout(RedirectView):
     url = reverse_lazy('Venta:url_index')
+    permanent = False
 
     def get(self, request, *args, **kwargs):
         logout(request)
@@ -171,17 +172,17 @@ class Venta_Pagar_Cuenta(LoginRequiredMixin, View):
         total = calcul_p(request)
         # Validamos si encontramos productos en la compra
         if total == 0:
-            data = JsonResponse({'mensaje': 'No hay productos agrregados, la cuenta es de $%s.' % str(total), 'tipo': False})
+            data = JsonResponse({'mensaje': 'No hay productos agrregados, la cuenta es de $%s.' % str(total), 'tipo': False, 'cambio': ''})
             return HttpResponse(data, content_type='application/json')
         # Prevenir posibles problemas al trabajar con la cantidad enviada
         try:
             efectivo = Decimal(request.GET['efectivo'])
         except:
-            data = JsonResponse({'mensaje': 'Debes enviar una cantidad en forma numerica.'})
+            data = JsonResponse({'mensaje': 'Debes enviar una cantidad en forma numerica.','tipo':False, 'cambio': ''})
             return HttpResponse(data, content_type='application/json')
         # Validamos que el efectivo no sea negativo y sea mayor a lo que se paga
         if efectivo <= 0 or efectivo < total:
-            data = JsonResponse({'mensaje': 'Has ingresado $%s. Debes ingresar una cantidad que cubra el total de la cuenta. $%s' % (str(efectivo),str(total)), 'tipo': False})
+            data = JsonResponse({'mensaje': 'Has ingresado $%s. Debes ingresar una cantidad que cubra el total de la cuenta. $%s' % (str(efectivo),str(total)), 'tipo': False, 'cambio': ''})
         elif efectivo >= total:
             # Creamos la cuenta con un numero de tiket generico
             cambio = efectivo - total
@@ -210,10 +211,10 @@ class Venta_Pagar_Cuenta(LoginRequiredMixin, View):
                 descuento=False, precio=precio,cantidad=cantidad,subtotal=sub,cuenta=C)
             request.session['cuenta'] = []
             #{'codigo': prod.codigo, 'descripcion': prod.descripcion, 'punitario':str(prod.punitario), 'pmayoreo':str(prod.pmayoreo), 'cantidad':str(1)}
-            data = JsonResponse({'mensaje': 'El pago ha sido realizado correctamente.', 'tipo': True})
+            data = JsonResponse({'mensaje': 'El pago ha sido realizado correctamente.', 'tipo': True, 'total': total, 'efectivo': efectivo, 'cambio': cambio})
         # Posible error no detectado ???
         else:
-            data = JsonResponse({'mensaje': 'Ha ocurrido un error, intenta nuevamente.', 'tipo': False})
+            data = JsonResponse({'mensaje': 'Ha ocurrido un error, intenta nuevamente.', 'tipo': False, 'cambio': ''})
         return HttpResponse(data, content_type='application/json')
 
 

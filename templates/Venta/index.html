@@ -84,8 +84,8 @@
                         {% if data %}
                             {% for item in data %}
                                 <tr class="info">
-                                    <td class="cod">{{item.codigo}}</td>
-                                    <td>{{item.descripcion}}</td>
+                                    <td class="cod">{{ item.codigo }}</td>
+                                    <td title="{{ item.descripcion }}">{{ item.descripcion|slice:":35" }}</td>
                                     {% if item.tprecio == True %}
                                     <td>{{item.pmayoreo}}</td>
                                     <td>
@@ -173,9 +173,9 @@
                     var htmlp = '';
                     $.each(data.cuenta, function(i, item){
                         if(item.tprecio== false) {
-                            htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                            htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
                         }else{
-                            htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                            htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
                         }
                     });
                     $tablaVenta.html(htmlp);
@@ -197,9 +197,9 @@
                     var htmlp = ''
                     $.each(data.cuenta, function(i, item){
                         if(item.tprecio== false) {
-                            htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                            htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
                         }else{
-                            htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                            htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
                         }
                     });
                     $tablaVenta.html(htmlp);
@@ -221,9 +221,9 @@
                     var htmlp = ''
                     $.each(data.cuenta, function(i, item){
                         if(item.tprecio== false) {
-                            htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                            htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
                         }else{
-                            htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                            htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
                         }
                     });
                     $tablaVenta.html(htmlp);
@@ -247,16 +247,16 @@
                         if(cont == 0){
                             cont = 1;
                             if(item.tprecio== false) {
-                                htmlp = htmlp + '<tr class="success loading"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                                htmlp = htmlp + '<tr class="success loading"><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
                             }else{
-                                htmlp = htmlp + '<tr class="success loading"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                                htmlp = htmlp + '<tr class="success loading"><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
                             }
 
                         }else{
                             if(item.tprecio== false) {
-                                htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                                htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
                             }else{
-                                htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td>' + item.descripcion + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><span class="label label-info">' + item.cantidad + '</span></td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                                htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
                             }
                         }
 
@@ -288,7 +288,9 @@
                     if(data.tipo == true){
                         var html = '<div class="alert alert-success alert-dismissable">' +
                                 '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">' +
-                                '×</button> <strong>¡Completado!</strong> '+ data.mensaje +'</div>'
+                                '×</button>'+
+                                '<table class="table table-hover"><tr><td><strong>Total: $ ' + data.total + '</strong></td><td><strong>Efectivo: $ ' + data.efectivo + '</strong></td><td><strong>Cambio: $ ' + data.cambio + '</strong></td></tr></table>' +
+                                '<strong>¡Completado!</strong> '+ data.mensaje +'</div>'
                         $tablaVenta.html('');
                         $totalVenta.html('$ 0');
                     }else{
@@ -298,7 +300,7 @@
                     }
 
                     $mensaje.html(html);
-                    $mensaje.fadeIn().delay(10000).fadeOut();
+                    $mensaje.fadeIn().delay(20000).fadeOut();
                     tiempo = setTimeout(function(){
                         $efectivo.prop('disabled', false);
                         $btnefectivo.prop('disabled', false);
@@ -310,7 +312,7 @@
             return false;
         }
         function focus(e){
-            $efectivo.focus();
+            $efectivo.delay(2000).focus();
             //return false;
         }
         //Eventos

@@ -17,12 +17,12 @@ class Producto_Nuevo(LoginRequiredMixin, CreateView):
 
 	def form_valid(self, form):
 		x = form.save()
-		cod = str(x.id)
-		while len(cod) < 10:
-			cod = '0' + cod
-		print cod
-		x.codigo = cod
-		x.save()
+		if x.code39 == True:
+			cod = str(x.id)
+			while len(cod) < 10:
+				cod = '0' + cod
+			x.codigo = cod
+			x.save()
 		return super(Producto_Nuevo, self).form_valid(form)
 
 
@@ -40,6 +40,16 @@ class Producto_Actualizar(LoginRequiredMixin, UpdateView):
 	model = Producto
 	form_class = CrearProductoForm
 	success_url = '/Producto/Lista/1/'
+
+	def form_valid(self, form):
+		x = form.save()
+		if x.code39 == True:
+			cod = str(x.id)
+			while len(cod) < 10:
+				cod = '0' + cod
+			x.codigo = cod
+			x.save()
+		return super(Producto_Actualizar, self).form_valid(form)
 
 
 class Producto_Eliminar(LoginRequiredMixin, DeleteView):
