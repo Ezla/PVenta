@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Cuenta(models.Model):
     tiket = models.CharField(max_length=30, null=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, null=True)

@@ -9,10 +9,13 @@
   	<div class="panel-heading">
 		<div class="row">
 			<div class="col-xs-2 col-sm-4">
-		    	<strong class="hidden-xs">Productos Disponibles</strong> <span class="badge pull-rigth">{{total_productos}}</span>
+		    	<strong class="hidden-xs">Productos Disponibles</strong>
+                <span class="badge pull-rigth"> {{encontrado_productos}} / {{total_productos}}</span>
 		  	</div>
 		  	<div class="col-xs-10 col-sm-7 col-sm-offset-1">
-		    	<input id="buscar_prod" type="text" class="form-control" placeholder="Buscar">
+                <form action="{% url 'Producto:url_lista' 1 %}" method="get">
+		    	    <input id="buscar_prod" name="buscar_prod" type="text" class="form-control" placeholder="Buscar">
+                </form>
 		  	</div>
 		</div>
   	</div>
@@ -21,12 +24,20 @@
 		<table class="table table-hover">
 			<thead>
 				<tr>
-					<td>Producto</td>
-					<td class="hidden-xs">Precio unitario</td>
-					<td class="hidden-xs">Precio a mayoreo</td>
+					<td><strong>Producto</strong></td>
+					<td class="hidden-xs"><strong>Precio unitario</strong></td>
+					<td class="hidden-xs"><strong>Precio a mayoreo</strong></td>
 				</tr>
 			</thead>
 			<tbody>
+            {% if not object_list %}
+                <tr>
+                    <td>---------</td>
+                    <td>---------</td>
+                    <td>---------</td>
+                    <td>---------</td>
+                </tr>
+            {% endif %}
 			{% for prod in object_list %}
 				<tr>
 					<td><a href="{% url 'Producto:url_consultar' prod.id %}" class="btn btn-default btn-sm btn-block">{{prod.descripcion}}</a></td>
@@ -51,8 +62,6 @@
 						    		<span class="glyphicon glyphicon-floppy-remove"></span> Eliminar
 						    	</a>
 						    </li>
-						    
-						    
 						  </ul>
 						</div>
 					</td>
@@ -65,41 +74,43 @@
 	<div class="panel-footer">
 		<div class="row">
 			<div class="col-xs-12 col-ml-6 col-ml-offset-3">
-				<ul class="pagination">
-				  <li>
-				    {% if page_obj.has_previous %}
-				      <a href="?page={{ page_obj.previous_page_number }}">
-				        Atras
-				      </a>
-				    {% else %}
-				      <span>Atras</span>
-				    {% endif %}
-				  </li>
-				
-				  {% for page_number in paginator.page_range %}
-				    {% if page_number = page_obj.number %}
-				      <li class="active">
-				        <span>{{ page_number }}</span>
-				      </li>
-				    {% else %}
-				      <li>
-				        <a href="?page={{ page_number }}">
-				          {{ page_number }}
-				        </a>
-				      </li>
-				    {% endif %}
-				  {% endfor %}
+                <div class="text-center">
+                    <ul class="pagination">
+                      <li>
+                        {% if page_obj.has_previous %}
+                          <a href="?page={{ page_obj.previous_page_number }}">
+                            Anterior
+                          </a>
+                        {% else %}
+                          <span>Anterior</span>
+                        {% endif %}
+                      </li>
 
-				  <li>
-				    {% if page_obj.has_next %}
-				      <a href="?page={{ page_obj.next_page_number }}">
-				        Siguiente
-				      </a>
-				    {% else %}
-				      <span>Siguiente</span>
-				    {% endif %}
-				  </li>
-				</ul>
+                      {% for page_number in paginator.page_range %}
+                        {% if page_number == page_obj.number %}
+                          <li class="active">
+                            <span>{{ page_number }}</span>
+                          </li>
+                        {% else %}
+                          <li>
+                            <a href="?page={{ page_number }}">
+                              {{ page_number }}
+                            </a>
+                          </li>
+                        {% endif %}
+                      {% endfor %}
+
+                      <li>
+                        {% if page_obj.has_next %}
+                          <a href="?page={{ page_obj.next_page_number }}">
+                            Siguiente
+                          </a>
+                        {% else %}
+                          <span>Siguiente</span>
+                        {% endif %}
+                      </li>
+                    </ul>
+                </div>
 			</div>
 			
 		</div>

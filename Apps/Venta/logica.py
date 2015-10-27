@@ -6,17 +6,17 @@ def calcul_p(request):
     precio = 0
     if request.session['cuenta']:
         for x in request.session['cuenta']:
-            if x['tprecio'] == False:
+            if not x['tprecio']:
                 precio = precio + (Decimal(x['punitario']) * Decimal(x['cantidad']))
             else:
                 precio = precio + (Decimal(x['pmayoreo']) * Decimal(x['cantidad']))
     return precio
 
 
-def calcul_sql(Venta):
+def calcul_sql(venta):
     precio = 0
-    if Venta:
-        for x in Venta:
+    if venta:
+        for x in venta:
             precio += x.subtotal
     return precio
 
@@ -27,6 +27,7 @@ def crear_ean13(valor, archivo):
     print ean.to_ascii()
     # generamos el archivo
     filename = ean.save(archivo)
+    return filename
 
 
 def crear_isbn13(valor, archivo):
@@ -36,6 +37,7 @@ def crear_isbn13(valor, archivo):
     print isbn.to_ascii()
     # generamos el archivo
     filename = isbn.save(archivo)
+    return filename
 
 
 def crear_code39(valor, archivo):
@@ -46,9 +48,8 @@ def crear_code39(valor, archivo):
     filename = code39.save(archivo)
     return filename
 
+    # crear_ean13("123456789012", "ean13")
 
-#crear_ean13("123456789012", "ean13")
+    # crear_isbn13("978123456", "isbn13")
 
-#crear_isbn13("978123456", "isbn13")
-
-#crear_code39("123456789012", "code39")
+    # crear_code39("123456789012", "code39")
