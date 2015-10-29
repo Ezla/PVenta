@@ -40,12 +40,12 @@
             {% endif %}
 			{% for prod in object_list %}
 				<tr>
-					<td><a href="{% url 'Producto:url_consultar' prod.id %}" class="btn btn-default btn-sm btn-block">{{prod.descripcion}}</a></td>
+					<td><a href="{% url 'Producto:url_consultar' prod.id %}" title="Ver detalles del producto." class="btn btn-default btn-sm btn-block">{{prod.descripcion}}</a></td>
 					<td class="hidden-xs">$ {{prod.punitario}}</td>
 					<td class="hidden-xs">$ {{prod.pmayoreo}}</td>
 					<td><a href=""></a>
 						<div class="btn-group pull-right">
-						  <button type="button" class="btn btn-default btn-sm dropdown-toggle"
+						  <button type="button" title="Opciones." class="btn btn-default btn-sm dropdown-toggle"
 						          data-toggle="dropdown">
 						    <span class="glyphicon glyphicon-cog"></span> <span class="caret"></span>
 						  </button>

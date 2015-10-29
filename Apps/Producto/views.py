@@ -36,16 +36,22 @@ class ProductoLista(LoginRequiredMixin, ListView):
         total = Producto.objects.count()
         context['total_productos'] = total
         buscar = self.request.GET.get('buscar_prod')
+        marca = self.request.GET.get('marca_prod')
         if buscar:
             context['encontrado_productos'] = Producto.objects.filter(descripcion__icontains=buscar).count()
+        elif marca:
+            context['encontrado_productos'] = Producto.objects.filter(marca__marca=marca).count()
         else:
             context['encontrado_productos'] = total
         return context
 
     def get_queryset(self):
         buscar = self.request.GET.get('buscar_prod')
+        marca = self.request.GET.get('marca_prod')
         if buscar:
             return Producto.objects.filter(descripcion__icontains=buscar)
+        elif marca:
+            return Producto.objects.filter(marca__marca=marca)
         else:
             return Producto.objects.all()
 

@@ -35,11 +35,11 @@
             {% endif %}
 			{% for prod in object_list %}
 				<tr>
-					<td><a class="btn btn-default btn-sm btn-block">{{prod.marca}}</a></td>
+					<td><a href="{% url 'Producto:url_lista' 1 %}?marca_prod={{ prod.marca }}" title="Ver productos de esta marca." class="btn btn-default btn-sm btn-block">{{prod.marca}}</a></td>
 
 					<td><a href=""></a>
 						<div class="btn-group pull-right">
-                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                            <button type="button" title="Opciones." class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
                                 <span class="glyphicon glyphicon-cog"></span> <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu">

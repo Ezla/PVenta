@@ -28,10 +28,20 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
-                            <li><a href="{% url 'Producto:url_lista' 1 %}"><span class="glyphicon glyphicon-home"></span>Productos</a></li>
-                            <li><a href="{% url 'Producto:url_lista_marca' 1 %}"><span class="glyphicon glyphicon-calendar"></span>Marcas</a></li>
                             <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
-                                class="glyphicon glyphicon-list-alt"></span>Varios <b class="caret"></b></a>
+                                class="glyphicon glyphicon-list-alt"></span>Inventario <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li role="presentation" class="dropdown-header"><span class="glyphicon glyphicon-barcode"></span>Productos</li>
+                                    <li><a href="{% url 'Producto:url_lista' 1 %}"> Lista de productos </a></li>
+                                    <li><a href="{% url 'Producto:url_nuevo' %}"> Nuevo producto </a></li>
+                                    <li role="presentation" class="divider"></li>
+                                    <li role="presentation" class="dropdown-header"><span class="glyphicon glyphicon-tags"></span>Marcas</li>
+                                    <li><a href="{% url 'Producto:url_lista_marca' 1 %}"> Lista de marcas </a></li>
+                                    <li><a href="{% url 'Producto:url_nueva_marca' %}"> Nueva marca </a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
+                                class="glyphicon glyphicon-eye-open"></span>Varios <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="#">Biografias</a></li>
                                     <li><a href="#">Mapas</a></li>
