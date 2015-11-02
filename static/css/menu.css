@@ -473,3 +473,42 @@ background-image: linear-gradient(45deg, rgba(235, 235, 235, 0.15) 25%, rgba(0, 
 .btx.active span.glyphicon {
 	opacity: 1;
 }
+
+/* Menu (seccion de usuario con imagen) */
+
+.navbar-login
+{
+    width: 305px;
+    padding: 10px;
+    padding-bottom: 0px;
+}
+
+.navbar-login-session
+{
+    padding: 10px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+.icon-size
+{
+    font-size: 87px;
+}
+
+/* Forms (Lista de errores de color rojo */
+
+.errorlist {
+            color: rgb(165, 58, 58);
+}
+
+/* Acoplamiento de la imagen el template de inicio de sesión */
+
+.profile-img {
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 10px;
+    display: block;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+}

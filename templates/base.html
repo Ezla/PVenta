@@ -1,262 +1,310 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-	<meta charset="UTF-8">
-	<title>{% block title %}{% endblock %}</title>
-	{% load staticfiles %}
-	<link rel="shortcut icon" type="image/png" href="{% static "img/icon2.png" %}">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-	
-	
-	<link rel="stylesheet" href="{% static "css/menu.css" %}">
-	<!--<link rel="stylesheet" type="text/css" href="{% static "css/font-awesome.min.css" %}">-->
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    {% load staticfiles %}
+    <link rel="shortcut icon" type="image/png" href="{% static "img/icon2.png" %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static "css/menu.css" %}">
+    <!--<link rel="stylesheet" type="text/css" href="{% static "css/font-awesome.min.css" %}">-->
     {% block style %}{% endblock %}
 </head>
+
 <body>
-    {% block menuall %}
-        <section class="header-venta">
-            <div class="container">
-                <nav class="navbar navbar-default" role="navigation">
-                    <!-- Brand and toggle get grouped for better mobile display -->
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                            <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span><span
-                                class="icon-bar"></span><span class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand" href="{% url 'Venta:url_index' %}">Safe of Point</a>
-                    </div>
-                    <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                        <ul class="nav navbar-nav">
-                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
+{% block menuall %}
+    <section class="header-venta">
+        <div class="container">
+            <nav class="navbar navbar-default" role="navigation">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span><span
+                            class="icon-bar"></span><span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{% url 'Venta:url_index' %}">Safe of Point</a>
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
                                 class="glyphicon glyphicon-list-alt"></span>Inventario <b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    <li role="presentation" class="dropdown-header"><span class="glyphicon glyphicon-barcode"></span>Productos</li>
-                                    <li><a href="{% url 'Producto:url_lista' 1 %}"> Lista de productos </a></li>
-                                    <li><a href="{% url 'Producto:url_nuevo' %}"> Nuevo producto </a></li>
-                                    <li role="presentation" class="divider"></li>
-                                    <li role="presentation" class="dropdown-header"><span class="glyphicon glyphicon-tags"></span>Marcas</li>
-                                    <li><a href="{% url 'Producto:url_lista_marca' 1 %}"> Lista de marcas </a></li>
-                                    <li><a href="{% url 'Producto:url_nueva_marca' %}"> Nueva marca </a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
+                            <ul class="dropdown-menu">
+                                <li role="presentation" class="dropdown-header"><span
+                                        class="glyphicon glyphicon-barcode"></span>Productos
+                                </li>
+                                <li><a href="{% url 'Producto:url_lista' 1 %}"> Lista de productos </a></li>
+                                <li><a href="{% url 'Producto:url_nuevo' %}"> Nuevo producto </a></li>
+                                <li role="presentation" class="divider"></li>
+                                <li role="presentation" class="dropdown-header"><span
+                                        class="glyphicon glyphicon-tags"></span>Marcas
+                                </li>
+                                <li><a href="{% url 'Producto:url_lista_marca' 1 %}"> Lista de marcas </a></li>
+                                <li><a href="{% url 'Producto:url_nueva_marca' %}"> Nueva marca </a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
                                 class="glyphicon glyphicon-eye-open"></span>Varios <b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Biografias</a></li>
-                                    <li><a href="#">Mapas</a></li>
-                                    <li><a href="#">Monografias</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="#">Separated link</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="#">One more separated link</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Biografias</a></li>
+                                <li><a href="#">Mapas</a></li>
+                                <li><a href="#">Monografias</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">Separated link</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">One more separated link</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
                                 class="glyphicon glyphicon-search"></span>Search <b class="caret"></b></a>
-                                <ul class="dropdown-menu" style="min-width: 300px;">
-                                    <li>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <form class="navbar-form navbar-left" role="search">
+                            <ul class="dropdown-menu" style="min-width: 300px;">
+                                <li>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <form class="navbar-form navbar-left" role="search">
                                                 <div class="input-group">
-                                                    <input type="text" class="form-control" placeholder="Search" />
+                                                    <input type="text" class="form-control" placeholder="Search"/>
                                                     <span class="input-group-btn">
                                                         <button class="btn btn-primary" type="button">
-                                                            Go!</button>
+                                                            Go!
+                                                        </button>
                                                     </span>
                                                 </div>
-                                                </form>
-                                            </div>
+                                            </form>
                                         </div>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
-                                class="glyphicon glyphicon-comment"></span>Chats <span class="label label-primary">42</span>
-                            </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#"><span class="label label-warning">7:00 AM</span>Hi :)</a></li>
-                                    <li><a href="#"><span class="label label-warning">8:00 AM</span>How are you?</a></li>
-                                    <li><a href="#"><span class="label label-warning">9:00 AM</span>What are you doing?</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="#" class="text-center">View All</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
-                                class="glyphicon glyphicon-envelope"></span>Inbox <span class="label label-info">32</span>
-                            </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#"><span class="label label-warning">4:00 AM</span>Favourites Snippet</a></li>
-                                    <li><a href="#"><span class="label label-warning">4:30 AM</span>Email marketing</a></li>
-                                    <li><a href="#"><span class="label label-warning">5:00 AM</span>Subscriber focused email
-                                        design</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="#" class="text-center">View All</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
-                                class="glyphicon glyphicon-user"></span>Admin <b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#"><span class="glyphicon glyphicon-user"></span>Profile</a></li>
-                                    <li><a href="#"><span class="glyphicon glyphicon-cog"></span>Settings</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="{% url 'Venta:url_logout' %}"><span class="glyphicon glyphicon-off"></span>Logout</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- /.navbar-collapse -->
-                </nav>
-            </div>               
-        </section>
-		<div id="wrapper">
-            <div class="overlay"></div>
-        
-            <!-- Sidebar -->
-            <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
-                <ul class="nav sidebar-nav">
-                    <li class="sidebar-brand">
-                        <a href="#">
-                           Punto de Venta
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
+                                class="glyphicon glyphicon-comment"></span>Chats <span
+                                class="label label-primary">42</span>
                         </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'Venta:url_venta' %}">Ventas</a>
-                    </li>
-                    <li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Productos <span class="caret"></span></a>
-                      <ul class="dropdown-menu" role="menu">
+                            <ul class="dropdown-menu">
+                                <li><a href="#"><span class="label label-warning">7:00 AM</span>Hi :)</a></li>
+                                <li><a href="#"><span class="label label-warning">8:00 AM</span>How are you?</a></li>
+                                <li><a href="#"><span class="label label-warning">9:00 AM</span>What are you doing?</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li><a href="#" class="text-center">View All</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
+                                class="glyphicon glyphicon-envelope"></span>Inbox <span
+                                class="label label-info">32</span>
+                        </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#"><span class="label label-warning">4:00 AM</span>Favourites Snippet</a></li>
+                                <li><a href="#"><span class="label label-warning">4:30 AM</span>Email marketing</a></li>
+                                <li><a href="#"><span class="label label-warning">5:00 AM</span>Subscriber focused email
+                                    design</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#" class="text-center">View All</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-user"></span>
+                        <strong>{{ user.username }} </strong>
+                        <span class="glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <div class="navbar-login">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <p class="text-center">
+                                            <span class="glyphicon glyphicon-user icon-size"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <p class="text-center">
+                                            <strong>
+                                            {% if user.first_name and user.last_name %}
+                                                {{ user.first_name }} {{ user.last_name }}
+                                            {% else %}
+                                                Actualiza tus datos.
+                                            {% endif %}
+                                            </strong>
+                                        </p>
+                                        <p class="text-center small">
+                                            {% if user.email %}
+                                                {{ user.email }}
+                                            {% else %}
+                                                Actualiza tus datos.
+                                            {% endif %}
+                                        </p>
+                                        <p class="text-left">
+                                            <a href="#" class="btn btn-primary btn-block btn-sm"><span class="glyphicon glyphicon-refresh"></span>Actualizar Datos</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <div class="navbar-login navbar-login-session">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <p>
+                                            <a href="{% url 'Venta:url_logout' %}" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-off"></span>Cerrar Sesion</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+
+
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </nav>
+        </div>
+    </section>
+    <div id="wrapper">
+        <div class="overlay"></div>
+
+        <!-- Sidebar -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
+            <ul class="nav sidebar-nav">
+                <li class="sidebar-brand">
+                    <a href="#">
+                        Punto de Venta
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'Venta:url_venta' %}">Ventas</a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Productos <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
                         <li class="dropdown-header">Dropdown heading</li>
                         <li><a href="{% url 'Producto:url_nuevo' %}">Agregar nuevo producto</a></li>
                         <li><a href="{% url 'Producto:url_lista' 1 %}">Todos los productos</a></li>
-                      </ul>
-                    </li>
-                    <li>
-                        <a href="#">Inventario</a>
-                    </li>
-                    <li>
-                        <a href="#">Reportes</a>
-                    </li>
-                    <li>
-                        <a href="#">Team</a>
-                    </li>
-                    <li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Varios <span class="caret"></span></a>
-                      <ul class="dropdown-menu" role="menu">
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">Inventario</a>
+                </li>
+                <li>
+                    <a href="#">Reportes</a>
+                </li>
+                <li>
+                    <a href="#">Team</a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Varios <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
                         <li class="dropdown-header">Dropdown heading</li>
                         <li><a href="#">Mapas</a></li>
                         <li><a href="#">Biografias</a></li>
                         <li><a href="#">Monografias</a></li>
 
-                      </ul>
-                    </li>
-                    <li>
-                        <a href="#">Services</a>
-                    </li>
-                    <li>
-                        <a href="#">Contact</a>
-                    </li>
-            
-                </ul>
-            </nav>
-            <!-- /#sidebar-wrapper -->
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">Services</a>
+                </li>
+                <li>
+                    <a href="#">Contact</a>
+                </li>
 
-            <!-- Page Content -->
-            <div id="page-content-wrapper">
-                <button type="button" class="hamburger is-closed" data-toggle="offcanvas">
-                    <span class="hamb-top"></span>
-        			<span class="hamb-middle"></span>
-    				<span class="hamb-bottom"></span>
-                </button>
-                <div class="container marg">
-                    <div class="row">
-                        <div class="col-lg-8 col-lg-offset-2">
-                        	{% block conte %}
+            </ul>
+        </nav>
+        <!-- /#sidebar-wrapper -->
 
-                        	{% endblock %}
-                                                   
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <button type="button" class="hamburger is-closed" data-toggle="offcanvas">
+                <span class="hamb-top"></span>
+                <span class="hamb-middle"></span>
+                <span class="hamb-bottom"></span>
+            </button>
+            <div class="container marg">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        {% block conte %}
+
+                        {% endblock %}
+
+                    </div>
+                </div>
+            </div>
+            <footer>
+                <div class="footer" id="footer">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-2 col-lg-offset-2  col-md-2 col-md-offset-2 col-sm-4 col-xs-6">
+                                <h3> Ventas </h3>
+                                <ul>
+                                    <li><a href="{% url 'Venta:url_venta' %}"> Hacer venta </a></li>
+                                    <li><a href="#"> Consultar precio </a></li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-2  col-md-2 col-sm-4 col-xs-6">
+                                <h3> Productos </h3>
+                                <ul>
+                                    <li><a href="{% url 'Producto:url_lista' 1 %}"> Lista de Productos</a></li>
+                                    <li><a href="{% url 'Producto:url_nuevo' %}"> Nuevo Producto </a></li>
+                                    <li><a href="{% url 'Producto:url_lista_marca' 1 %}"> Lista de Marcas</a></li>
+                                    <li><a href="{% url 'Producto:url_nueva_marca' %}"> Nueva Marca </a></li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-2  col-md-2 col-sm-4 col-xs-6">
+                                <h3> Varios </h3>
+                                <ul>
+                                    <li><a href="#"> Biografias </a></li>
+                                    <li><a href="#"> Mapas </a></li>
+                                    <li><a href="#"> Monografias </a></li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-2  col-md-2 col-sm-4 col-xs-6">
+                                <h3> Reportes </h3>
+                                <ul>
+                                    <li><a href="{% url 'Estadistica:url_lista' 1 %}"> Ventas </a></li>
+                                    <li><a href="#"> Lorem Ipsum </a></li>
+                                    <li><a href="#"> Lorem Ipsum </a></li>
+                                    <li><a href="#"> Lorem Ipsum </a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!--/.row-->
+                    </div>
+                    <!--/.container-->
+                </div>
+                <!--/.footer-->
+
+                <div class="footer-bottom">
+                    <div class="container">
+                        <p class="pull-left"> Copyright © Point of Sale 2015. Developer by Ezla. </p>
+                        <div class="pull-right">
+                            <ul class="nav nav-pills payments">
+                                <li><i class="fa fa-cc-visa"></i></li>
+                                <li><i class="fa fa-cc-mastercard"></i></li>
+                                <li><i class="fa fa-cc-amex"></i></li>
+                                <li><i class="fa fa-cc-paypal"></i></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-                <footer>
-                    <div class="footer" id="footer">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-2 col-lg-offset-2  col-md-2 col-md-offset-2 col-sm-4 col-xs-6">
-                                    <h3> Ventas </h3>
-                                    <ul>
-                                        <li> <a href="{% url 'Venta:url_venta' %}"> Hacer venta </a> </li>
-                                        <li> <a href="#"> Consultar precio </a> </li>
-                                    </ul>
-                                </div>
-                                <div class="col-lg-2  col-md-2 col-sm-4 col-xs-6">
-                                    <h3> Productos </h3>
-                                    <ul>
-                                        <li> <a href="{% url 'Producto:url_lista' 1 %}"> Lista de Productos</a> </li>
-                                        <li> <a href="{% url 'Producto:url_nuevo' %}"> Nuevo Producto </a> </li>
-                                        <li> <a href="{% url 'Producto:url_lista_marca' 1 %}"> Lista de Marcas</a> </li>
-                                        <li> <a href="{% url 'Producto:url_nueva_marca' %}"> Nueva Marca </a> </li>
-                                    </ul>
-                                </div>
-                                <div class="col-lg-2  col-md-2 col-sm-4 col-xs-6">
-                                    <h3> Varios </h3>
-                                    <ul>
-                                        <li> <a href="#"> Biografias </a> </li>
-                                        <li> <a href="#"> Mapas </a> </li>
-                                        <li> <a href="#"> Monografias </a> </li>
-                                    </ul>
-                                </div>
-                                <div class="col-lg-2  col-md-2 col-sm-4 col-xs-6">
-                                    <h3> Reportes </h3>
-                                    <ul>
-                                        <li> <a href="{% url 'Estadistica:url_lista' 1 %}"> Ventas </a> </li>
-                                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                                    </ul>
-                                </div>
-                                
-                            </div>
-                            <!--/.row--> 
-                        </div>
-                        <!--/.container--> 
-                    </div>
-                    <!--/.footer-->
-                    
-                    <div class="footer-bottom">
-                        <div class="container">
-                            <p class="pull-left"> Copyright © Point of Sale 2015. Developer by Ezla. </p>
-                            <div class="pull-right">
-                                <ul class="nav nav-pills payments">
-                                    <li><i class="fa fa-cc-visa"></i></li>
-                                    <li><i class="fa fa-cc-mastercard"></i></li>
-                                    <li><i class="fa fa-cc-amex"></i></li>
-                                    <li><i class="fa fa-cc-paypal"></i></li>
-                                </ul> 
-                            </div>
-                        </div>
-                    </div>
-                    <!--/.footer-bottom--> 
-                </footer>  
-            </div>
-            <!-- /#page-content-wrapper -->
-
+                <!--/.footer-bottom-->
+            </footer>
         </div>
+        <!-- /#page-content-wrapper -->
+
+    </div>
     <!-- /#wrapper -->
-        {% endblock %}
-    
+{% endblock %}
 
-	<!-- Scripts -->
-
-	<script src="{% static 'js/jquery.1.11.2.min.js' %}"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-    
-	<script src="{% static "js/menu.js" %}"></script>
-    {% block script %}{% endblock %}
-    
-
+<!-- Scripts -->
+<script src="{% static 'js/jquery.1.11.2.min.js' %}"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script src="{% static "js/menu.js" %}"></script>
+{% block script %}{% endblock %}
 </body>
 </html>

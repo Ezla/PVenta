@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render
 from django.views.generic import TemplateView, RedirectView, FormView, View
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseRedirect
@@ -21,7 +22,7 @@ from reportlab.lib import colors
 
 
 class Login(FormView):
-    template_name = 'index.html'
+    template_name = 'Venta/login.html'
     form_class = AuthenticationFormCustom
     success_url = reverse_lazy('Venta:url_venta')
 

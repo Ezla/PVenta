@@ -2,156 +2,167 @@
 
 {% block title %}Nuevo Producto{% endblock %}
 
-{% block style %}
-    <style type="text/css">
-        .errorlist{
-            color: rgb(165, 58, 58);
-        }
-    </style>
-{% endblock %}
-
 {% block conte %}
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" xmlns="http://www.w3.org/1999/html">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-tag"></i> Agregar marca</h4>
-            </div>
-            <div class="modal-body">
-
-                <div id="mensaje">
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+         xmlns="http://www.w3.org/1999/html">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                            class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel"><i class="glyphicon glyphicon-tag"></i> Agregar marca</h4>
                 </div>
-                <p>Por favor, ingrese la nueva marca para agregar.</p>
+                <div class="modal-body">
 
-                <form id="formMarca">
-                    <div class="form-group">
-                      <label class="control-label">Marca</label>
-                      <input class="form-control" id="id_marca_modal" maxlength="30" name="marca" type="text">
-
+                    <div id="mensaje">
                     </div>
-                    <br/>
-                    <button type="submit" class="btn btn-primary" id="btnmarca">
-                        <i class=" glyphicon glyphicon-floppy-saved"></i> Guardar
-                    </button>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
+                    <p>Por favor, ingrese la nueva marca para agregar.</p>
+
+                    <form id="formMarca">
+                        <div class="form-group">
+                            <label class="control-label">Marca</label>
+                            <input class="form-control" id="id_marca_modal" maxlength="30" name="marca" type="text">
+
+                        </div>
+                        <br/>
+                        <button type="submit" class="btn btn-primary" id="btnmarca">
+                            <i class=" glyphicon glyphicon-floppy-saved"></i> Guardar
+                        </button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="panel panel-default offer">
-    <div class="panel-heading">
-        <h3> <i class="glyphicon glyphicon-barcode"></i> Producto </h3>
-    </div>
-    <div class="panel-body">
-        <form role="form" method="POST">{% csrf_token %}
-            <hr>
+    <div class="panel panel-default offer">
+        <div class="panel-heading">
+            <h3><i class="glyphicon glyphicon-barcode"></i> Producto </h3>
+        </div>
+        <div class="panel-body">
+            <form role="form" method="POST">{% csrf_token %}
+                <hr>
+                {% if form.errors %}
+                <div class="checkbox has-success">
+                {% else %}
                 <div class="checkbox">
-                  <label>
-                    {{form.code39}} Usar un code39
-                  </label>
+                {% endif %}
+                    <label>
+                        {{ form.code39 }} Usar un code39
+                    </label>
                 </div>
-            <hr>
-          {% if form.codigo.errors %}
-            <div class="form-group has-error">
-          {% elif form.codigo.is_valid %}
-            <div class="form-group has-success">
-          {% else %}
-            <div class="form-group">
-          {% endif %}
-              <label class="control-label">Codigo</label>
-              {{form.codigo}}
-              {{form.codigo.errors}}
-            </div>
-          
-          {% if form.descripcion.errors %}
-            <div class="form-group has-error">
+                <hr>
+                {% if form.codigo.errors %}
+                    <div class="form-group has-error">
+                {% elif form.errors %}
+                    <div class="form-group has-success">
+                {% else %}
+                    <div class="form-group">
+                {% endif %}
+                <label class="control-label">Codigo</label>
+                {{ form.codigo }}
+                {{ form.codigo.errors }}
+                </div>
 
-          {% else %}
-            <div class="form-group">
-          {% endif %}
-              <label class="control-label">Descripción</label>
-              {{form.descripcion}}
-              {{form.descripcion.errors}}
-            </div>
+                {% if form.descripcion.errors %}
+                    <div class="form-group has-error">
+                {% elif form.errors %}
+                    <div class="form-group has-success">
+                {% else %}
+                    <div class="form-group">
+                {% endif %}
+                <label class="control-label">Descripción</label>
+                {{ form.descripcion }}
+                {{ form.descripcion.errors }}
+                </div>
 
-          {% if form.marca.errors %}
-            <div class="form-group has-error">
+                {% if form.marca.errors %}
+                    <div class="form-group has-error">
+                {% elif form.errors %}
+                    <div class="form-group has-success">
+                {% else %}
+                    <div class="form-group">
+                {% endif %}
+                <label class="control-label">Marca</label>
+                <button id="marca_agregar" type="button" class="btn btn-success btn-xs" title="Agregar marca"
+                        data-toggle="modal" data-target="#myModal">
+                    +
+                </button>
+                {{ form.marca }}
+                {{ form.marca.errors }}
+                </div>
 
-          {% else %}
-            <div class="form-group">
-          {% endif %}
-              <label class="control-label">Marca</label>
-              <button id="marca_agregar" type="button" class="btn btn-success btn-xs"  title="Agregar marca" data-toggle="modal" data-target="#myModal">
-                  +
-              </button>
-              {{form.marca}}
-              {{form.marca.errors}}
-            </div>
+                {% if form.punitario.errors %}
+                    <div class="form-group has-error col-xs-6">
+                {% elif form.errors %}
+                    <div class="form-group has-success col-xs-6">
+                {% else %}
+                    <div class="form-group col-xs-6">
+                {% endif %}
+                <label class="control-label">Precio unitario</label>
+                {{ form.punitario }}
+                {{ form.punitario.errors }}
+                </div>
 
-          {% if form.punitario.errors %}
-            <div class="form-group has-error col-xs-6">
+                {% if form.pmayoreo.errors %}
+                    <div class="form-group has-error col-xs-6">
+                {% elif form.errors %}
+                    <div class="form-group has-success col-xs-6">
+                {% else %}
+                    <div class="form-group col-xs-6">
+                {% endif %}
+                <label class="control-label">Precio mayoreo</label>
+                {{ form.pmayoreo }}
+                {{ form.pmayoreo.errors }}
+                </div>
+                <hr>
+                <hr>
+                {% if form.errors %}
+                <div class="checkbox has-success">
+                {% else %}
+                    <div class="checkbox">
+                {% endif %}
+                    <label>
+                        {{ form.inventario }} Inventario
+                    </label>
+                </div>
+                <hr>
+                {% if form.cantidad.errors %}
+                    <div class="form-group has-error col-xs-6">
+                {% elif form.errors %}
+                    <div class="form-group has-success">
+                {% else %}
+                    <div class="form-group col-xs-6">
+                {% endif %}
+                <label class="control-label">Cantidad</label>
+                {{ form.cantidad }}
+                {{ form.cantidad.errors }}
+                </div>
 
-          {% else %}
-             <div class="form-group col-xs-6">
-          {% endif %}
-              <label class="control-label">Precio unitario</label>
-              {{form.punitario}}
-              {{form.punitario.errors}}
-            </div>
-          
-          {% if form.pmayoreo.errors %}
-            <div class="form-group has-error col-xs-6">
+                {% if form.minimo.errors %}
+                    <div class="form-group has-error col-xs-6">
+                {% elif form.errors %}
+                    <div class="form-group has-success">
+                {% else %}
+                    <div class="form-group col-xs-6">
+                {% endif %}
+                <label class="control-label">Minimo</label>
+                {{ form.minimo }}
+                {{ form.minimo.errors }}
+                </div>
 
-          {% else %}
-            <div class="form-group col-xs-6">
-          {% endif %}
-              <label class="control-label">Precio mayoreo</label>
-              {{form.pmayoreo}}
-              {{form.pmayoreo.errors}}
-            </div>
-          <hr>
-          <hr>
-            <div class="checkbox">
-              <label>
-                {{form.inventario}} Inventario
-              </label>
-            </div>
-            <hr>
-          {% if form.cantidad.errors %}
-            <div class="form-group has-error col-xs-6">
+                <button type="submit" class="btn btn-default pull-right"><span
+                        class="glyphicon glyphicon-floppy-saved"></span> Guardar
+                </button>
+            </form>
+        </div>
+        <div class="panel-footer">
 
-          {% else %}
-            <div class="form-group col-xs-6">
-          {% endif %}
-              <label class="control-label">Cantidad</label>
-              {{form.cantidad}}
-              {{form.cantidad.errors}}
-            </div>
-
-          {% if form.minimo.errors %}
-            <div class="form-group has-error col-xs-6">
-
-          {% else %}
-            <div class="form-group col-xs-6">
-          {% endif %}
-              <label class="control-label">Minimo</label>
-              {{form.minimo}}
-              {{form.minimo.errors}}
-            </div>
-
-            <button type="submit" class="btn btn-default pull-right"><span class="glyphicon glyphicon-floppy-saved"></span> Guardar</button>
-        </form>
+        </div>
     </div>
-    <div class="panel-footer">
-      
-    </div>
-</div>
 
 
 
@@ -160,91 +171,91 @@
 {% block script %}
     <script>
         var $codigo = $('#id_codigo');
-            $marca = $('#id_marca_modal');
-            $marcaS = $('#id_marca');
-            $btnmarca = $('#btnmarca');
-            $mensaje = $('#mensaje');
-        function HabInventario(){
-          if(document.getElementById("id_inventario").checked == false){
-              document.getElementById("id_cantidad").disabled = true;
-              document.getElementById("id_minimo").disabled = true;
-          }else{
-              document.getElementById("id_cantidad").disabled = false;
-              document.getElementById("id_minimo").disabled = false;
-          }
+        $marca = $('#id_marca_modal');
+        $marcaS = $('#id_marca');
+        $btnmarca = $('#btnmarca');
+        $mensaje = $('#mensaje');
+        function HabInventario() {
+            if (document.getElementById("id_inventario").checked == false) {
+                document.getElementById("id_cantidad").disabled = true;
+                document.getElementById("id_minimo").disabled = true;
+            } else {
+                document.getElementById("id_cantidad").disabled = false;
+                document.getElementById("id_minimo").disabled = false;
+            }
         }
 
-        function HabCodigo(){
-            if(document.getElementById("id_code39").checked == false){
+        function HabCodigo() {
+            if (document.getElementById("id_code39").checked == false) {
                 document.getElementById("id_codigo").disabled = false;
-            }else{
+            } else {
                 document.getElementById("id_codigo").disabled = true;
                 $codigo.val('');
             }
         }
-        
-        window.onload = function() {
-            if(document.getElementById("id_inventario").checked == false){
+
+        window.onload = function () {
+            if (document.getElementById("id_inventario").checked == false) {
                 document.getElementById("id_cantidad").disabled = true;
                 document.getElementById("id_minimo").disabled = true;
-            }else{
+            } else {
                 document.getElementById("id_cantidad").disabled = false;
                 document.getElementById("id_minimo").disabled = false;
             }
-            if(document.getElementById("id_code39").checked == false){
+            if (document.getElementById("id_code39").checked == false) {
                 document.getElementById("id_codigo").disabled = false;
-            }else{
+            } else {
                 document.getElementById("id_codigo").disabled = true;
-               $codigo.val('');
+                $codigo.val('');
             }
         }
 
-        function Marca_ajax(e){
+        function Marca_ajax(e) {
             var dato = $marca.val();
             $marca.val('');
             $btnmarca.prop('disabled', true);
             $marca.prop('disabled', true);
-                mar = document.getElementById('id_marca');
+            mar = document.getElementById('id_marca');
             $.ajax({
                 async: false,
-            	data : {'marca': dato},
-            	url : '{% url "Producto:url_marca_ajax" %}',
-            	type : 'get',
-            	success: function(data){
+                data: {'marca': dato},
+                url: '{% url "Producto:url_marca_ajax" %}',
+                type: 'get',
+                success: function (data) {
 
 
-                    if(data.Errores == false){
-                            var html = '<div class="alert alert-success alert-dismissable">' +
+                    if (data.Errores == false) {
+                        var html = '<div class="alert alert-success alert-dismissable">' +
                                 '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">' +
-                                '×</button> <strong>¡Completado!</strong> '+ data.mensaje +'</div>'
-                            mar.innerHTML = ''
-                            $.each(data.Marcas, function(i, item){
-                                var option = document.createElement("option");
-                                    option.text = item.marca;
-                                    option.value = item.id;
-                                    mar.add(option);
-                            });
+                                '×</button> <strong>¡Completado!</strong> ' + data.mensaje + '</div>'
+                        mar.innerHTML = ''
+                        $.each(data.Marcas, function (i, item) {
+                            var option = document.createElement("option");
+                            option.text = item.marca;
+                            option.value = item.id;
+                            mar.add(option);
+                        });
 
-                        }else{
-                            var html = '<div class="alert alert-warning alert-dismissable">' +
+                    } else {
+                        var html = '<div class="alert alert-warning alert-dismissable">' +
                                 '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">' +
-                                '×</button> <strong>¡Cuidado!</strong> '+data.mensaje.marca+'</div>';
-                        }
+                                '×</button> <strong>¡Cuidado!</strong> ' + data.mensaje.marca + '</div>';
+                    }
 
                     $mensaje.html(html);
                     $mensaje.fadeIn().delay(10000).fadeOut();
-                    tiempo = setTimeout(function(){
+                    tiempo = setTimeout(function () {
                         $btnmarca.prop('disabled', false);
                         $marca.prop('disabled', false);
                         $marca.focus();
-                        },5000);
-            	}
+                    }, 5000);
+                }
             });
             //$codigo.val('').focus();
             return false;
         }
 
-        $('#formMarca').on('submit',Marca_ajax);
+        $('#formMarca').on('submit', Marca_ajax);
 
         $(document).ready($codigo.focus());
         $('#id_inventario').on('click', HabInventario);

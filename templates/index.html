@@ -43,7 +43,7 @@
 													<i class="glyphicon glyphicon-user"></i>
 												</span> 
 												{{form.username}}
-												
+												{{form.username.error}}
 											</div>
 										</div>
 										<div class="form-group">
@@ -52,7 +52,7 @@
 													<i class="glyphicon glyphicon-lock"></i>
 												</span>
 												{{form.password}}
-												
+												{{form.password.error}}
 											</div>
 										</div>
 										<div class="form-group">
@@ -62,6 +62,13 @@
 								</div>
 							</fieldset>
 						</form>
+                        {% if form.errors %}
+                            <p class="text-danger">
+                                Profavor introdusca un nombre de usuario y/o contraseña validos.
+                                Considere que ambos campos son sensibles al uso de mayúsculas.
+                            </p>
+                        {% endif %}
+                        {{form.errors}}
 					</div>
 					<div class="panel-footer ">
 						Identifiquese para poder acceder al sistema
