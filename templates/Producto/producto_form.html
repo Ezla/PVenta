@@ -114,6 +114,7 @@
                 {% else %}
                     <div class="form-group col-xs-6">
                 {% endif %}
+                <button id="c_descuento" name="c_descuento" type="button" class="btn btn-success btn-xs" title="Calcula descuento de 10%">10%</button>
                 <label class="control-label">Precio mayoreo</label>
                 {{ form.pmayoreo }}
                 {{ form.pmayoreo.errors }}
@@ -175,6 +176,15 @@
         $marcaS = $('#id_marca');
         $btnmarca = $('#btnmarca');
         $mensaje = $('#mensaje');
+        $field_unitario = $('#id_punitario');
+        $field_mayoreo = $('#id_pmayoreo');
+
+        function Calcula_descuento(){
+            var f_unitario = $field_unitario.val();
+                r = f_unitario * 0.9;
+            $field_mayoreo.val(r);
+        }
+
         function HabInventario() {
             if (document.getElementById("id_inventario").checked == false) {
                 document.getElementById("id_cantidad").disabled = true;
@@ -256,7 +266,7 @@
         }
 
         $('#formMarca').on('submit', Marca_ajax);
-
+        $('#c_descuento').on('click', Calcula_descuento);
         $(document).ready($codigo.focus());
         $('#id_inventario').on('click', HabInventario);
         $('#id_code39').on('click', HabCodigo);
