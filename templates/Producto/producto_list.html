@@ -1,7 +1,9 @@
-{% extends "base.html" %}
+{% extends "base_v2.html" %}
+{#{% extends "base.html" %}#}
 
 {% block title %} Productos {% endblock %}
 
+{% block encabezado %} Lista de productos {% endblock %}
 
 {% block conte %}
 
@@ -25,6 +27,7 @@
 			<thead>
 				<tr>
 					<td><strong>Producto</strong></td>
+					<td class="hidden-xs"><strong>Marca</strong></td>
 					<td class="hidden-xs"><strong>Precio unitario</strong></td>
 					<td class="hidden-xs"><strong>Precio a mayoreo</strong></td>
 				</tr>
@@ -36,11 +39,17 @@
                     <td>---------</td>
                     <td>---------</td>
                     <td>---------</td>
+                    <td>---------</td>
                 </tr>
             {% endif %}
 			{% for prod in object_list %}
 				<tr>
-					<td><a href="{% url 'Producto:url_consultar' prod.id %}" title="Ver detalles del producto." class="btn btn-default btn-sm btn-block">{{prod.descripcion}}</a></td>
+					<td><a href="{% url 'Producto:url_consultar' prod.id %}" title="Ver detalles del producto."
+                                            class="btn btn-default btn-sm btn-block">{{prod.descripcion}}</a>
+                    </td>
+					<td class="hidden-xs"><a href='{% url 'Producto:url_actualizar_marca' prod.marca.id %}'
+                                             class="btn btn-primary btn-xs btn-block">{{prod.marca.marca}}</a>
+                    </td>
 					<td class="hidden-xs">$ {{prod.punitario}}</td>
 					<td class="hidden-xs">$ {{prod.pmayoreo}}</td>
 					<td><a href=""></a>

@@ -1,6 +1,9 @@
-{% extends "base.html" %}
+{% extends "base_v2.html" %}
+{#{% extends "base.html" %}#}
 
-{% block title %}Nuevo Producto{% endblock %}
+{% block title %}Nuevo producto{% endblock %}
+
+{% block encabezado %} Agregar nuevo producto {% endblock %}
 
 {% block conte %}
     <!-- Modal -->
@@ -37,6 +40,7 @@
             </div>
         </div>
     </div>
+    <!-- End modal-->
 
     <div class="panel panel-default offer">
         <div class="panel-heading">
@@ -44,115 +48,168 @@
         </div>
         <div class="panel-body">
             <form role="form" method="POST">{% csrf_token %}
-                <hr>
+
                 {% if form.errors %}
                 <div class="checkbox has-success">
+                    <label class="btn btn-outline btn-success btn-block">
                 {% else %}
                 <div class="checkbox">
+                    <label class="btn btn-outline btn-default btn-block">
                 {% endif %}
-                    <label>
-                        {{ form.code39 }} Usar un code39
+                        {{ form.code39 }}
+{#            <div class="btn-group" data-toggle="buttons">#}
+{#            <div class="btn-group" data-toggle="buttons">#}
+{#                <label class="btn btx btn-xs btn-success">#}
+{#                    {{ form.code39 }}#}
+{#                    <input type="checkbox" autocomplete="off">#}
+{#                    <span class="glyphicon glyphicon-ok"></span>#}
+{#                </label>#}
+{#            </div>#}
+                        {% if form.errors %}<i class="fa fa-check-circle text-success"></i>{% endif %}
+                        <strong>Usar un code39</strong>
                     </label>
                 </div>
                 <hr>
+                <div class="row">
                 {% if form.codigo.errors %}
-                    <div class="form-group has-error">
+                    <div class="form-group has-error col-lg-6 col-md-6"><i class="fa fa-times-circle  text-danger"></i>
                 {% elif form.errors %}
-                    <div class="form-group has-success">
+                    <div class="form-group has-success col-lg-6 col-md-6"><i class="fa fa-check-circle text-success"></i>
                 {% else %}
-                    <div class="form-group">
+                    <div class="form-group col-lg-6 col-md-6">
                 {% endif %}
-                <label class="control-label">Codigo</label>
-                {{ form.codigo }}
-                {{ form.codigo.errors }}
-                </div>
-
-                {% if form.descripcion.errors %}
-                    <div class="form-group has-error">
-                {% elif form.errors %}
-                    <div class="form-group has-success">
-                {% else %}
-                    <div class="form-group">
-                {% endif %}
-                <label class="control-label">Descripción</label>
-                {{ form.descripcion }}
-                {{ form.descripcion.errors }}
-                </div>
+                        <label class="control-label">Codigo</label>
+                        {{ form.codigo }}
+                        {{ form.codigo.errors }}
+                    </div>
 
                 {% if form.marca.errors %}
-                    <div class="form-group has-error">
+                    <div class="form-group has-error col-lg-6 col-md-6">
                 {% elif form.errors %}
-                    <div class="form-group has-success">
+                    <div class="form-group has-success col-lg-6 col-md-6">
                 {% else %}
-                    <div class="form-group">
+                    <div class="form-group col-lg-6 col-md-6">
                 {% endif %}
-                <label class="control-label">Marca</label>
-                <button id="marca_agregar" type="button" class="btn btn-success btn-xs" title="Agregar marca"
-                        data-toggle="modal" data-target="#myModal">
-                    +
-                </button>
-                {{ form.marca }}
-                {{ form.marca.errors }}
+                        <button id="marca_agregar" type="button" class="btn btn-success  btn-xs" title="Agregar marca"
+                                data-toggle="modal" data-target="#myModal">
+                             <i class="fa fa-plus"></i>
+                        </button>
+                        {% if form.marca.errors %}
+                        <i class="fa fa-times-circle  text-danger"></i>
+                        {% elif form.errors %}
+                        <i class="fa fa-check-circle text-success"></i>
+                        {% endif %}
+                        <label class="control-label">Marca</label>
+                        {{ form.marca }}
+                        {{ form.marca.errors }}
+                    </div>
                 </div>
 
-                {% if form.punitario.errors %}
-                    <div class="form-group has-error col-xs-6">
+                <div class="row">
+                {% if form.descripcion.errors %}
+                    <div class="form-group has-error col-lg-12"><i class="fa fa-times-circle  text-danger"></i>
                 {% elif form.errors %}
-                    <div class="form-group has-success col-xs-6">
+                    <div class="form-group has-success col-lg-12"><i class="fa fa-check-circle text-success"></i>
                 {% else %}
-                    <div class="form-group col-xs-6">
+                    <div class="form-group col-lg-12">
                 {% endif %}
-                <label class="control-label">Precio unitario</label>
-                {{ form.punitario }}
-                {{ form.punitario.errors }}
+                        <label class="control-label">Descripción</label>
+                        {{ form.descripcion }}
+                        {{ form.descripcion.errors }}
+                    </div>
                 </div>
+
+                <div class="row">
+                {% if form.punitario.errors %}
+                    <div class="form-group has-error col-lg-6 col-md-6"><i class="fa fa-times-circle  text-danger"></i>
+                {% elif form.errors %}
+                    <div class="form-group has-success col-lg-6 col-md-6"><i class="fa fa-check-circle text-success"></i>
+                {% else %}
+                    <div class="form-group col-lg-6 col-md-6">
+                {% endif %}
+                        <label class="control-label">Precio unitario</label>
+                        {{ form.punitario }}
+                        {{ form.punitario.errors }}
+                    </div>
 
                 {% if form.pmayoreo.errors %}
-                    <div class="form-group has-error col-xs-6">
+                    <div class="form-group has-error col-lg-6 col-md-6">
                 {% elif form.errors %}
-                    <div class="form-group has-success col-xs-6">
+                    <div class="form-group has-success col-lg-6 col-md-6">
                 {% else %}
-                    <div class="form-group col-xs-6">
+                    <div class="form-group col-lg-6 col-md-6">
                 {% endif %}
-                <button id="c_descuento" name="c_descuento" type="button" class="btn btn-success btn-xs" title="Calcula descuento de 10%">10%</button>
-                <label class="control-label">Precio mayoreo</label>
-                {{ form.pmayoreo }}
-                {{ form.pmayoreo.errors }}
-                </div>
-                <hr>
-                <hr>
-                {% if form.errors %}
-                <div class="checkbox has-success">
-                {% else %}
-                    <div class="checkbox">
-                {% endif %}
-                    <label>
-                        {{ form.inventario }} Inventario
-                    </label>
-                </div>
-                <hr>
-                {% if form.cantidad.errors %}
-                    <div class="form-group has-error col-xs-6">
-                {% elif form.errors %}
-                    <div class="form-group has-success">
-                {% else %}
-                    <div class="form-group col-xs-6">
-                {% endif %}
-                <label class="control-label">Cantidad</label>
-                {{ form.cantidad }}
-                {{ form.cantidad.errors }}
+                        <button id="c_descuento" name="c_descuento" type="button" class="btn btn-success btn-xs" title="Calcula descuento de 10%">10%</button>
+                        {% if form.pmayoreo.errors %}
+                        <i class="fa fa-times-circle  text-danger"></i>
+                        {% elif form.errors %}
+                        <i class="fa fa-check-circle text-success"></i>
+                        {% endif %}
+                        <label class="control-label">Precio mayoreo</label>
+                        {{ form.pmayoreo }}
+                        {{ form.pmayoreo.errors }}
+                    </div>
                 </div>
 
-                {% if form.minimo.errors %}
-                    <div class="form-group has-error col-xs-6">
+                <hr>
+
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                        {% if form.errors %}
+                        <div class="checkbox has-success">
+                            <label class="btn btn-outline btn-success btn-block">
+                        {% else %}
+                        <div class="checkbox">
+                            <label class="btn btn-outline btn-default btn-block">
+                        {% endif %}
+                                {{ form.vunidad }}
+                                {% if form.errors %}<i class="fa fa-check-circle text-success"></i>{% endif %}
+                                <strong>Venta por unidad</strong>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        {% if form.errors %}
+                        <div class="checkbox has-success">
+                            <label class="btn btn-outline btn-success btn-block">
+                        {% else %}
+                        <div class="checkbox">
+                            <label class="btn btn-outline btn-default btn-block">
+                        {% endif %}
+                                {{ form.inventario }}
+                                {% if form.errors %}<i class="fa fa-check-circle text-success"></i>{% endif %}
+                                <strong> Usar inventario</strong>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row">
+                {% if form.cantidad.errors %}
+                    <div class="form-group has-error col-lg-6 col-md-6"><i class="fa fa-times-circle  text-danger"></i>
                 {% elif form.errors %}
-                    <div class="form-group has-success">
+                    <div class="form-group has-success col-lg-6 col-md-6"><i class="fa fa-check-circle text-success"></i>
                 {% else %}
-                    <div class="form-group col-xs-6">
+                    <div class="form-group  col-lg-6 col-md-6">
                 {% endif %}
-                <label class="control-label">Minimo</label>
-                {{ form.minimo }}
-                {{ form.minimo.errors }}
+                        <label class="control-label">Cantidad</label>
+                        {{ form.cantidad }}
+                        {{ form.cantidad.errors }}
+                    </div>
+
+                {% if form.minimo.errors %}
+                    <div class="form-group has-error col-lg-6 col-md-6"><i class="fa fa-times-circle  text-danger"></i>
+                {% elif form.errors %}
+                    <div class="form-group has-success col-lg-6 col-md-6"><i class="fa fa-check-circle text-success"></i>
+                {% else %}
+                    <div class="form-group col-lg-6 col-md-6">
+                {% endif %}
+                        <label class="control-label">Minimo</label>
+                        {{ form.minimo }}
+                        {{ form.minimo.errors }}
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-default pull-right"><span
@@ -239,6 +296,10 @@
                                 '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">' +
                                 '×</button> <strong>¡Completado!</strong> ' + data.mensaje + '</div>'
                         mar.innerHTML = ''
+                        var option = document.createElement('option');
+                            option.text = '---------';
+                            option.value = '';
+                            mar.add(option);
                         $.each(data.Marcas, function (i, item) {
                             var option = document.createElement("option");
                             option.text = item.marca;

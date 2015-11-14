@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
-from django.views.generic import TemplateView, RedirectView, FormView, View
+from django.views.generic import TemplateView, RedirectView, FormView, View, ListView
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseRedirect
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth import login, logout
@@ -34,7 +34,7 @@ class Login(FormView):
 
     def form_valid(self, form):
         login(self.request, form.get_user())
-        self.request.session['cuenta'] = []
+        # self.request.session['cuenta'] = []
         return super(Login, self).form_valid(form)
 
 
@@ -236,7 +236,7 @@ class VentaTiket(LoginRequiredMixin, View):
         sql = Ventas.objects.filter(cuenta=11)
         total = calcul_sql(sql)
         response = HttpResponse(content_type='application/pdf')
-        pdf_name = "tiket.pdf"
+        pdf_name = 'tiket.pdf'
         buff = BytesIO()
         doc = SimpleDocTemplate(buff,
                                 pagesize=A6,
@@ -248,7 +248,7 @@ class VentaTiket(LoginRequiredMixin, View):
         clientes = []
         styles = getSampleStyleSheet()
 
-        header = Paragraph("Comprobante de Ventas", styles['Heading1'])
+        header = Paragraph('Comprobante de Ventas', styles['Heading1'])
 
         clientes.append(header)
         headings = ('Nombre', 'Precio', 'Cantidad', 'Subtotal')
@@ -271,5 +271,4 @@ class VentaTiket(LoginRequiredMixin, View):
         return response
 
 
-class VentaDemo(TemplateView):
-    template_name = 'Demo.html'
+

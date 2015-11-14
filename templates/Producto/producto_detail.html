@@ -1,9 +1,12 @@
-{% extends 'base.html' %}
+{% extends "base_v2.html" %}
+{#{% extends 'base.html' %}#}
 
-{% block title %} Consultar Producto {% endblock %}
+{% block title %} Detalles del producto {% endblock %}
+
+{% block encabezado %} Detalles del producto {% endblock %}
 
 {% block conte %}
-<div class="panel panel-info offer">
+<div class="panel panel-default offer">
 	<div class="panel-heading">
 		<h3>Detalles del Producto</h3>
 	</div>
@@ -13,13 +16,13 @@
 				<td><strong>Codigo de barras</strong></td>
 				<td>{{object.codigo}}</td>
 			</tr>
-			<tr>
-				<td><strong>Producto</strong></td>
-				<td>{{object.descripcion}}</td>
-			</tr>
             <tr>
 				<td><strong>Marca</strong></td>
 				<td>{{object.marca}}</td>
+			</tr>
+			<tr>
+				<td><strong>Producto</strong></td>
+				<td>{{object.descripcion}}</td>
 			</tr>
 			<tr>
 				<td><strong>Precio unitario</strong></td>
@@ -30,6 +33,10 @@
 				<td>{{object.pmayoreo}}</td>
 			</tr>
 			<tr>
+				<td><strong>Venta por unidad</strong></td>
+				<td>{% if object.vunidad == True %}Si{% else %}No{% endif %}</td>
+			</tr>
+            <tr>
 				<td><strong>Inventario</strong></td>
 				<td>{% if object.inventario == True %}Si{% else %}No{% endif %}</td>
 			</tr>

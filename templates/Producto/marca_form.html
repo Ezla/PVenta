@@ -1,6 +1,9 @@
-{% extends "base.html" %}
+{% extends "base_v2.html" %}
+{#{% extends "base.html" %}#}
 
-{% block title %}Nueva Marca{% endblock %}
+{% block title %}Nueva marca{% endblock %}
+
+{% block encabezado %} Agregar nueva marca {% endblock %}
 
 {% block conte %}
 
@@ -11,9 +14,9 @@
         <div class="panel-body">
             <form role="form" method="POST">{% csrf_token %}
                 {% if form.marca.errors %}
-                    <div class="form-group has-error">
+                    <div class="form-group has-error"><i class="fa fa-times-circle  text-danger"></i>
                 {% elif form.errors %}
-                    <div class="form-group has-success">
+                    <div class="form-group has-success"><i class="fa fa-check-circle text-success"></i>
                 {% else %}
                     <div class="form-group">
                 {% endif %}

@@ -15,10 +15,17 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('Apps.Venta.urls', namespace='Venta')),
     url(r'^', include('Apps.Producto.urls', namespace='Producto')),
     url(r'^', include('Apps.Estadistica.urls', namespace='Estadistica')),
+    url(r'^', include('Apps.Perfil.urls', namespace='PerfilUsuario')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 
 
 class Marca(models.Model):
-    marca = models.CharField(max_length=30, unique=True, null=False)
+    marca = models.CharField(max_length=30, unique=True)
 
     def __unicode__(self):
         return self.marca
@@ -12,10 +12,11 @@ class Marca(models.Model):
 class Producto(models.Model):
     code39 = models.BooleanField(default=False)
     codigo = models.CharField(max_length=48, unique=True, null=True, blank=True)
-    descripcion = models.CharField(max_length=100, null=True)
+    descripcion = models.CharField(max_length=100)
     marca = models.ForeignKey(Marca, null=True)
-    punitario = models.DecimalField(max_digits=8, decimal_places=2, null=True)
-    pmayoreo = models.DecimalField(max_digits=8, decimal_places=2, null=True)
+    vunidad = models.BooleanField(default=True)
+    punitario = models.DecimalField(max_digits=8, decimal_places=2)
+    pmayoreo = models.DecimalField(max_digits=8, decimal_places=2)
     inventario = models.BooleanField(default=False)
     cantidad = models.IntegerField(null=True, blank=True)
     minimo = models.IntegerField(null=True, blank=True)

@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',  # Formato para numeros
     'Apps.Producto',
     'Apps.Venta',
+    'Apps.Perfil',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -51,6 +52,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'Apps.Venta.middleware.ValidarCuenta',
 )
 
 ROOT_URLCONF = 'VentaAlex.urls'
@@ -95,7 +97,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'es-mx'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'GMT-6'
 
 USE_I18N = True
 
@@ -103,9 +105,16 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+# Modelo usuario personalizado
+AUTH_PROFILE_MODULE = 'Perfil.UserProfile'
+# AUTH_USER_MODEL = 'Perfil.User'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
+
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (BASE_DIR,'static')
+STATICFILES_DIRS = (BASE_DIR, 'static',)
+
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

@@ -435,11 +435,19 @@ html { height: 100%;}
   padding-top: 6px;
 }
 .payments {
-  font-size: 1.5em; 
+  font-size: 1.5em;
 }
 /* Sombra */
 .offer{
   background:#fff; border:1px solid #ddd; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); margin: 15px 0; overflow:hidden;
+}
+
+.offer-error{
+    background:#fff; border:1px solid #dd7a6b; box-shadow: 0 10px 20px rgba(221, 15, 15, 0.2); margin: 15px 0; overflow:hidden;
+}
+
+.offer-img{
+    background:#fff; border:1px solid rgba(66, 147, 221, 0.26); box-shadow: 0 0px 20px 0 rgba(43, 172, 227, 0.22); margin: 15px 0; overflow:hidden;
 }
 
 .mar-form{

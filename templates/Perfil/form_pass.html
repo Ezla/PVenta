@@ -1,0 +1,56 @@
+{% extends "base_v2.html" %}
+{#{% extends "base.html" %}#}
+
+{% block title %}Nueva marca{% endblock %}
+
+{% block encabezado %} Agregar nueva marca {% endblock %}
+
+{% block conte %}
+
+    <div class="panel panel-default offer">
+        <div class="panel-heading">
+            <h3><i class="fa fa-key"></i> Cambiar contraseña de {{ user.username }}</h3>
+        </div>
+        <div class="panel-body">
+            <form role="form" method="POST">{% csrf_token %}
+                {% if form.password1.errors %}
+                    <div class="form-group has-error"><i class="fa fa-times-circle  text-danger"></i>
+                {% elif form.errors %}
+                    <div class="form-group has-success"><i class="fa fa-check-circle text-success"></i>
+                {% else %}
+                    <div class="form-group">
+                {% endif %}
+                <label class="control-label">Nueva contraseña.</label>
+                {{ form.password1 }}
+                {{ form.password1.errors }}
+                </div>
+                {% if form.password2.errors %}
+                    <div class="form-group has-error"><i class="fa fa-times-circle  text-danger"></i>
+                {% elif form.errors %}
+                    <div class="form-group has-success"><i class="fa fa-check-circle text-success"></i>
+                {% else %}
+                    <div class="form-group">
+                {% endif %}
+                <label class="control-label">Confirma contraseña.</label>
+                {{ form.password2 }}
+                {{ form.password2.errors }}
+                </div>
+                <button type="submit" class="btn btn-default pull-right"><span
+                        class="glyphicon glyphicon-floppy-saved"></span> Guardar
+                </button>
+            </form>
+        </div>
+        <div class="panel-footer">
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        var $actual_password = $('#id_actual_password')
+
+        $(document).ready($actual_password.focus());
+    </script>
+{% endblock %}

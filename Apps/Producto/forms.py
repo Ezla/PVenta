@@ -17,12 +17,14 @@ class CrearProductoForm(forms.ModelForm):
         model = Producto
         fields = '__all__'
         widgets = {
+            # 'code39': forms.CheckboxInput(attrs={'autocomplete': 'off', }),
             'codigo': forms.TextInput(attrs={'class': 'form-control', }),
             'descripcion': forms.TextInput(attrs={'class': 'form-control', }),
             'marca': forms.Select(attrs={'class': 'form-control', }),
             'punitario': forms.NumberInput(attrs={'class': 'form-control', }),
             'pmayoreo': forms.NumberInput(attrs={'class': 'form-control', }),
-            'inventario': forms.CheckboxInput(attrs={'class': 'form-control', }),
+            # 'vunidad': forms.CheckboxInput(attrs={'class': 'pull-right', }),
+            # 'inventario': forms.CheckboxInput(attrs={'class': 'pull-left', }),
             'cantidad': forms.NumberInput(attrs={'class': 'form-control', }),
             'minimo': forms.NumberInput(attrs={'class': 'form-control', }),
         }

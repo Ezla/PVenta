@@ -1,9 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'base_v2.html' %}
+{#{% extends 'base.html' %}#}
 
-{% block title %} Consultar Producto {% endblock %}
+{% block title %} Detalles de la venta {% endblock %}
+
+{% block encabezado %} Detalles de la venta {% endblock %}
 
 {% block conte %}
-<div class="panel panel-info offer">
+<div class="panel panel-default offer">
     {% load humanize %}
 	<div class="panel-heading">
 		<h3>Detalles de la Compra</h3>

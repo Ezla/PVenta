@@ -1,0 +1,116 @@
+{% extends "base_v2.html" %}
+{#{% extends "base.html" %}#}
+
+{% block title %} Administrar usuarios {% endblock %}
+
+{% block encabezado %} Administrar usuarios {% endblock %}
+
+{% load staticfiles %}
+
+{% block conte %}
+
+<div class="panel panel-default offer">
+  	<div class="panel-heading">
+		<div class="row">
+			<div class="col-xs-2 col-sm-4">
+		    	<strong class="hidden-xs">
+                <a href="{% url 'PerfilUsuario:url_nuevo' %}" class="btn btn-outline btn-primary"><i class="fa fa-arrow-circle-right"></i> Agregar usuario</a>
+		  	    </strong>
+            </div>
+		  	<div class="col-xs-10 col-sm-7 col-sm-offset-1">
+                <form action="{% url 'Producto:url_lista_marca' 1 %}" method="get">
+		    	    <input id="buscar_marca" name="buscar_marca" type="text" class="form-control" placeholder="Buscar">
+                </form>
+		  	</div>
+		</div>
+  	</div>
+  	<div class="panel-body">
+        {% for u in object_list %}
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+{#                            <i class="fa fa-comments fa-5x"></i>#}
+                            {% if u.profile.avatar %}
+                            <img src="{{ u.profile.avatar.url }}" alt="..." height="60em" width="60em" class="img-rounded">
+                            {% else %}
+                            <img src="{% static 'img/Login.png' %}" ll alt="..." height="60em" width="60em" class="img-rounded">
+                            {%  endif %}
+                        </div>
+                        <div class="col-xs-9 text-right">
+{#                            <div class="huge">26</div>#}
+                            <div>{{ u.first_name }}</div>
+                            <div>{{ u.last_name }}</div>
+                            <div><strong>{{ u.username }}</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <a href="{% url 'PerfilUsuario:url_actualizar' u.id %}">
+                    <div class="panel-footer">
+                        <span class="pull-left">Actualizar datos</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {%  endfor %}
+	</div>
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-xs-12 col-ml-6 col-ml-offset-3">
+                <div class="text-center">
+                    <ul class="pagination">
+                      <li>
+                        {% if page_obj.has_previous %}
+                          <a href="?page={{ page_obj.previous_page_number }}">
+                            Anterior
+                          </a>
+                        {% else %}
+                          <span>Anterior</span>
+                        {% endif %}
+                      </li>
+
+                      {% for page_number in paginator.page_range %}
+                        {% if page_number == page_obj.number %}
+                          <li class="active">
+                            <span>{{ page_number }}</span>
+                          </li>
+                        {% else %}
+                          <li>
+                            <a href="?page={{ page_number }}">
+                              {{ page_number }}
+                            </a>
+                          </li>
+                        {% endif %}
+                      {% endfor %}
+
+                      <li>
+                        {% if page_obj.has_next %}
+                          <a href="?page={{ page_obj.next_page_number }}">
+                            Siguiente
+                          </a>
+                        {% else %}
+                          <span>Siguiente</span>
+                        {% endif %}
+                      </li>
+                    </ul>
+                </div>
+			</div>
+			
+		</div>
+
+		
+	</div>
+
+</div>
+
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript">
+        var $codigo = $('#buscar_prod')
+        $(document).ready($codigo.focus());
+    </script>
+{% endblock %}
