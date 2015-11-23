@@ -1,9 +1,13 @@
-{% extends 'base_v2.html' %}
-{#{% extends 'base.html' %}#}
+{% extends 'base_v3.html' %}
 
 {% block title %} Detalles de la venta {% endblock %}
 
 {% block encabezado %} Detalles de la venta {% endblock %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'Estadistica:url_lista' 1 %}"><i class="fa fa-bar-chart"></i> Ventas</a></li>
+    <li class="active"> Detalles: {{ object.tiket }}</li>
+{% endblock %}
 
 {% block conte %}
 <div class="panel panel-default offer">

@@ -1,9 +1,13 @@
-{% extends "base_v2.html" %}
-{#{% extends "base.html" %}#}
+{% extends "base_v3.html" %}
 
-{% block title %}Nueva marca{% endblock %}
+{% block title %}Cambiar contraseña{% endblock %}
 
-{% block encabezado %} Agregar nueva marca {% endblock %}
+{% block encabezado %} Cambiar contraseña {% endblock %}
+
+{% block breadcrumb %}
+    <li><i class="fa fa-key"></i> Usuario: {{ user.username }}</li>
+    <li class="active"> Cambiar contraseña</li>
+{% endblock %}
 
 {% block conte %}
 

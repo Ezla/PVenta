@@ -1,0 +1,59 @@
+{% extends "base_v3.html" %}
+
+{% block title %}Nueva marca{% endblock %}
+
+{% block encabezado %} Agregar nueva marca {% endblock %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'Producto:url_lista_marca' 1 %}"><i class="fa fa-tags"></i> Marcas</a></li>
+    <li class="active"> Nueva marca</li>
+{% endblock %}
+
+{% block conte %}
+
+<div class="box{% block marco %} box-success{% endblock %}">
+    <div class="box-header with-border">
+        <h3 class="box-title"><i class="glyphicon glyphicon-tag"></i> Marca</h3>
+
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+            <i class="fa fa-minus"></i></button>
+        </div>
+    </div>
+    <div class="box-body">
+        <form id="form_d" role="form" method="POST" onsubmit="return(false)">{% csrf_token %}
+            {% if form.marca.errors %}
+                <div class="form-group has-error"><i class="fa fa-times-circle  text-danger"></i>
+            {% elif form.errors %}
+                <div class="form-group has-success"><i class="fa fa-check-circle text-success"></i>
+            {% else %}
+                <div class="form-group">
+            {% endif %}
+            <label class="control-label">Nombre</label>
+            {{ form.marca }}
+            {{ form.marca.errors }}
+            </div>
+        </form>
+    </div>
+<!-- /.box-body -->
+    <div class="box-footer">
+        <button id="btn_guardar" class="btn btn-default pull-right">
+            <span class="glyphicon glyphicon-floppy-saved"></span> Guardar
+        </button>
+    </div>
+<!-- /.box-footer-->
+</div>
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        var $marca = $('#id_marca')
+        function enviar(e){
+            $('#form_d').removeAttr('onsubmit');
+            $('#form_d').submit();
+        }
+        $('#btn_guardar').on('click', enviar);
+        $(document).ready($marca.focus());
+    </script>
+{% endblock %}

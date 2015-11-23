@@ -1,0 +1,12 @@
+{% extends 'Producto/producto_new.html' %}
+
+{% block title %}Editar producto{% endblock %}
+
+{% block encabezado %} Editar producto {% endblock %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'Producto:url_lista' 1 %}"><i class="fa fa-barcode"></i> Productos</a></li>
+    <li class="active"> Editar: {{ object.descripcion }}</li>
+{% endblock %}
+
+{% block marco %} box-warning{% endblock %}

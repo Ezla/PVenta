@@ -1,124 +1,254 @@
-{% extends "base_v2.html" %}
-{#{% extends "base.html" %}#}
+{% extends "base_v3.html" %}
 
 {% block title %} Marcas {% endblock %}
 
 {% block encabezado %} Lista de marcas {% endblock %}
 
+{% block breadcrumb %}
+    <li class="active"><i class="fa fa-tags"></i> Marcas</li>
+{% endblock %}
+
 {% block conte %}
 
-<div class="panel panel-default offer">
-  	<div class="panel-heading">
-		<div class="row">
-			<div class="col-xs-2 col-sm-4">
-		    	<strong class="hidden-xs">Marcas disponibles</strong> <span class="badge pull-rigth">{{encontrado_marcas}} / {{total_marcas}}</span>
-		  	</div>
-		  	<div class="col-xs-10 col-sm-7 col-sm-offset-1">
-                <form action="{% url 'Producto:url_lista_marca' 1 %}" method="get">
-		    	    <input id="buscar_marca" name="buscar_marca" type="text" class="form-control" placeholder="Buscar">
-                </form>
-		  	</div>
-		</div>
-  	</div>
-  	<div class="panel-body">
-        <div class="table-responsive">
-		<table class="table table-hover">
-			<thead>
-				<tr>
-					<td><strong>Marca</strong></td>
-				</tr>
-			</thead>
-			<tbody>
-            {% if not object_list %}
-                <tr>
-                    <td>--------------</td>
-                    <td>------</td>
-                </tr>
-            {% endif %}
-			{% for prod in object_list %}
-				<tr>
-					<td><a href="{% url 'Producto:url_lista' 1 %}?marca_prod={{ prod.marca }}" title="Ver productos de esta marca." class="btn btn-default btn-sm btn-block">{{prod.marca}}</a></td>
+{#<div class="panel panel-default offer">#}
+{#  	<div class="panel-heading">#}
+{#		<div class="row">#}
+{#			<div class="col-xs-2 col-sm-4">#}
+{#		    	<strong class="hidden-xs">Marcas disponibles</strong> <span class="badge pull-rigth">{{encontrado_marcas}} / {{total_marcas}}</span>#}
+{#		  	</div>#}
+{#		  	<div class="col-xs-10 col-sm-7 col-sm-offset-1">#}
+{#                <form action="{% url 'Producto:url_lista_marca' 1 %}" method="get">#}
+{#		    	    <input id="buscar_marca" name="buscar_marca" type="text" class="form-control" placeholder="Buscar">#}
+{#                </form>#}
+{#		  	</div>#}
+{#		</div>#}
+{#  	</div>#}
+{#  	<div class="panel-body">#}
+{#        <div class="table-responsive">#}
+{#		<table class="table table-hover">#}
+{#			<thead>#}
+{#				<tr>#}
+{#					<td><strong>Marca</strong></td>#}
+{#				</tr>#}
+{#			</thead>#}
+{#			<tbody>#}
+{#            {% if not object_list %}#}
+{#                <tr>#}
+{#                    <td>--------------</td>#}
+{#                    <td>------</td>#}
+{#                </tr>#}
+{#            {% endif %}#}
+{#			{% for prod in object_list %}#}
+{#				<tr>#}
+{#					<td><a href="{% url 'Producto:url_lista' 1 %}?marca_prod={{ prod.marca }}" title="Ver productos de esta marca." class="btn btn-default btn-sm btn-block">{{prod.marca}}</a></td>#}
+{##}
+{#					<td><a href=""></a>#}
+{#						<div class="btn-group pull-right">#}
+{#                            <button type="button" title="Opciones." class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">#}
+{#                                <span class="glyphicon glyphicon-cog"></span> <span class="caret"></span>#}
+{#                            </button>#}
+{#                            <ul class="dropdown-menu" role="menu">#}
+{#                                <li>#}
+{#                                    <a href="{% url 'Producto:url_actualizar_marca' prod.id %}">#}
+{#                                        <span class="glyphicon glyphicon-floppy-open"></span> Editar#}
+{#                                    </a>#}
+{#                                </li>#}
+{#                                <li class="divider"></li>#}
+{#                                <li>#}
+{#                                    <a href="{% url 'Producto:url_eliminar_marca' prod.id %}">#}
+{#                                        <span class="glyphicon glyphicon-floppy-remove"></span> Eliminar#}
+{#                                    </a>#}
+{#                                </li>#}
+{#                            </ul>#}
+{#						</div>#}
+{#					</td>#}
+{#				</tr>#}
+{#			{% endfor %}#}
+{#			</tbody>#}
+{#		</table>#}
+{#	</div>#}
+{#	</div>#}
+{#	<div class="panel-footer">#}
+{#		<div class="row">#}
+{#			<div class="col-xs-12 col-ml-6 col-ml-offset-3">#}
+{#                <div class="text-center">#}
+{#                    <ul class="pagination">#}
+{#                      <li>#}
+{#                        {% if page_obj.has_previous %}#}
+{#                          <a href="?page={{ page_obj.previous_page_number }}">#}
+{#                            Anterior#}
+{#                          </a>#}
+{#                        {% else %}#}
+{#                          <span>Anterior</span>#}
+{#                        {% endif %}#}
+{#                      </li>#}
+{##}
+{#                      {% for page_number in paginator.page_range %}#}
+{#                        {% if page_number == page_obj.number %}#}
+{#                          <li class="active">#}
+{#                            <span>{{ page_number }}</span>#}
+{#                          </li>#}
+{#                        {% else %}#}
+{#                          <li>#}
+{#                            <a href="?page={{ page_number }}">#}
+{#                              {{ page_number }}#}
+{#                            </a>#}
+{#                          </li>#}
+{#                        {% endif %}#}
+{#                      {% endfor %}#}
+{##}
+{#                      <li>#}
+{#                        {% if page_obj.has_next %}#}
+{#                          <a href="?page={{ page_obj.next_page_number }}">#}
+{#                            Siguiente#}
+{#                          </a>#}
+{#                        {% else %}#}
+{#                          <span>Siguiente</span>#}
+{#                        {% endif %}#}
+{#                      </li>#}
+{#                    </ul>#}
+{#                </div>#}
+{#			</div>#}
+{#			#}
+{#		</div>#}
+{##}
+{#		#}
+{#	</div>#}
+{##}
+{#</div>#}
 
-					<td><a href=""></a>
-						<div class="btn-group pull-right">
-                            <button type="button" title="Opciones." class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                                <span class="glyphicon glyphicon-cog"></span> <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li>
-                                    <a href="{% url 'Producto:url_actualizar_marca' prod.id %}">
-                                        <span class="glyphicon glyphicon-floppy-open"></span> Editar
-                                    </a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="{% url 'Producto:url_eliminar_marca' prod.id %}">
-                                        <span class="glyphicon glyphicon-floppy-remove"></span> Eliminar
-                                    </a>
-                                </li>
-                            </ul>
-						</div>
-					</td>
-				</tr>
-			{% endfor %}
-			</tbody>
-		</table>
-	</div>
-	</div>
-	<div class="panel-footer">
-		<div class="row">
-			<div class="col-xs-12 col-ml-6 col-ml-offset-3">
-                <div class="text-center">
-                    <ul class="pagination">
-                      <li>
-                        {% if page_obj.has_previous %}
-                          <a href="?page={{ page_obj.previous_page_number }}">
-                            Anterior
-                          </a>
-                        {% else %}
-                          <span>Anterior</span>
-                        {% endif %}
-                      </li>
-
-                      {% for page_number in paginator.page_range %}
-                        {% if page_number == page_obj.number %}
-                          <li class="active">
-                            <span>{{ page_number }}</span>
-                          </li>
-                        {% else %}
-                          <li>
-                            <a href="?page={{ page_number }}">
-                              {{ page_number }}
-                            </a>
-                          </li>
-                        {% endif %}
-                      {% endfor %}
-
-                      <li>
-                        {% if page_obj.has_next %}
-                          <a href="?page={{ page_obj.next_page_number }}">
-                            Siguiente
-                          </a>
-                        {% else %}
-                          <span>Siguiente</span>
-                        {% endif %}
-                      </li>
-                    </ul>
-                </div>
-			</div>
-			
-		</div>
-
-		
-	</div>
-
+<div class="box">
+    <div class="box-body">
+        <form action="{% url 'Producto:url_lista_marca' 1 %}" method="get">
+            <input id="buscar_marca" name="buscar_marca" type="text" class="form-control" placeholder="Buscar">
+        </form>
+    </div>
 </div>
+<div class="box">
+    <div class="box-header with-border">
+        <h3 class="box-title">
+            <i class="glyphicon glyphicon-tags"></i>
+            <strong class="hidden-xs"> Marcas disponibles </strong>
+            <span class="badge pull-rigth">{{encontrado_marcas}} / {{total_marcas}}</span>
+        </h3>
+        <div class="box-tools" style="right: 40px;">
+            <ul class="pagination pagination-sm no-margin pull-right">
+                <li>
+                    {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                    {% else %}
+                    <a href="#">Anterior</a>
+                    {% endif %}
+                </li>
+                {% for page_number in paginator.page_range %}
+                    {% if page_number == page_obj.number %}
+                        <li>
+                            <a href="#" class="bg-gray">{{ page_number }}</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="?page={{ page_number }}">{{ page_number }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                <li>
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+                    {% else %}
+                    <a href="#">Siguiente</a>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+            <i class="fa fa-minus"></i></button>
+        </div>
+    </div>
+    <div class="box-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <td><strong>Marca</strong></td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% if not object_list %}
+                    <tr>
+                        <td>--------------</td>
+                        <td>------</td>
+                    </tr>
+                {% endif %}
+                {% for prod in object_list %}
+                    <tr>
+                        <td><a href="{% url 'Producto:url_lista' 1 %}?marca_prod={{ prod.marca }}" title="Ver productos de esta marca." class="btn btn-default btn-sm btn-block">{{prod.marca}}</a></td>
 
+                        <td><a href=""></a>
+                            <div class="btn-group pull-right">
+                                <button type="button" title="Opciones." class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                    <span class="glyphicon glyphicon-cog"></span> <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <a href="{% url 'Producto:url_actualizar_marca' prod.id %}">
+                                            <span class="glyphicon glyphicon-floppy-open"></span> Editar
+                                        </a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a href="{% url 'Producto:url_eliminar_marca' prod.id %}">
+                                            <span class="glyphicon glyphicon-floppy-remove"></span> Eliminar
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+<!-- /.box-body -->
+    <div class="box-footer">
+        <div class="box-tools text-center">
+            <ul class="pagination pagination-sm no-margin">
+                <li>
+                    {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                    {% else %}
+                    <a href="#">Anterior</a>
+                    {% endif %}
+                </li>
+                {% for page_number in paginator.page_range %}
+                    {% if page_number == page_obj.number %}
+                        <li>
+                            <a href="#" class="bg-gray">{{ page_number }}</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="?page={{ page_number }}">{{ page_number }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                <li>
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+                    {% else %}
+                    <a href="#">Siguiente</a>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </div>
+<!-- /.box-footer-->
+</div>
 {% endblock %}
 
 {% block script %}
     <script type="text/javascript">
-        var $codigo = $('#buscar_prod')
+        var $codigo = $('#buscar_marca')
         $(document).ready($codigo.focus());
     </script>
 {% endblock %}

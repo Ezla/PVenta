@@ -1,5 +1,6 @@
 from decimal import Decimal
 import barcode
+from datetime import datetime
 
 
 def calcul_p(request):
@@ -19,6 +20,22 @@ def calcul_sql(venta):
         for x in venta:
             precio += x.subtotal
     return precio
+
+
+def add_notif(request, msg, ico):
+    formato = '%d/%m/%y %I:%M %p'
+    fecha = datetime.today()
+    datef = fecha.strftime(formato)
+    mensaje = {
+        'msj': msg,
+        'time': datef,
+        'icono': ico,
+               }
+    request.session['notificaciones'].insert(0, mensaje)
+    request.session['song'] = True
+    request.session['visto'] = True
+    request.session['cantidad'] += 1
+    request.session.save()
 
 
 def crear_ean13(valor, archivo):

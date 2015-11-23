@@ -1,35 +1,45 @@
-{% extends "base_v2.html" %}
-{#{% extends "base.html" %}#}
+{% extends "base_v3.html" %}
 
 {% block title %} Eliminar producto {% endblock %}
 
 {% block encabezado %} Eliminar producto {% endblock %}
 
+{% block breadcrumb %}
+    <li><a href="{% url 'Producto:url_lista' 1 %}"><i class="fa fa-barcode"></i> Productos</a></li>
+    <li class="active"> Eliminar: {{ object.descripcion }}</li>
+{% endblock %}
+
 {% block conte %}
 
-<div class="panel panel-danger offer">
-	<div class="panel-heading">
-			<h3 class="panel-title">Eliminar Registro</h3>
-	</div>		
-	<div class="panel-body">
-		<p class="text-danger text-center">
+<div class="box box-danger">
+    <div class="box-header with-border">
+        <h3 class="box-title"><i class="fa fa-barcode"></i> Producto</h3>
+
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+            <i class="fa fa-minus"></i></button>
+        </div>
+    </div>
+    <div class="box-body">
+        <p class="text-danger text-center">
 			Para poder eliminar el producto <strong>"{{ object }}"</strong> antes debes confirmar la acccion.
 		</p>
-	</div>
-	<div class="panel-footer">
-		<form method="post">{% csrf_token %}
+    </div>
+<!-- /.box-body -->
+    <div class="box-footer">
+        <form method="post">{% csrf_token %}
 			<p class="text-center">
-				
+
 				<button type="submit" class="btn btn-danger">
 					<span class="glyphicon glyphicon-floppy-remove"></span> Confirmar
 				</button>
 				<a href="{% url 'Producto:url_lista' 1 %}" class="btn btn-info">
 					<span class="glyphicon glyphicon-chevron-left"></span> Cancelar
 				</a>
-			</p>		
+			</p>
 		</form>
-				
-	</div>
+    </div>
+<!-- /.box-footer-->
 </div>
 
 {% endblock %}

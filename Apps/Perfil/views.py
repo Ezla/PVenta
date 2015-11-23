@@ -19,17 +19,17 @@ class EditUser(LoginRequiredMixin, UpdateView):
     form_class = FormUserUp
     success_url = reverse_lazy('PerfilUsuario:url_lista')
     model = User
+    context_object_name = 'us'
 
     def form_valid(self, form):
         user = form.save()
-        user.password = make_password(password=form.cleaned_data.get('password2'))
-        user.save()
-        try:
-            perfil = UserProfile.objects.get(user=user)
-            perfil.avatar = self.request.FILES.get('avatar')
-            perfil.save()
-        except:
-            UserProfile.objects.create(user=user, avatar=self.request.FILES.get('avatar'))
+        if self.request.FILES.get('avatar'):
+            try:
+                perfil = UserProfile.objects.get(user=user)
+                perfil.avatar = self.request.FILES.get('avatar')
+                perfil.save()
+            except:
+                UserProfile.objects.create(user=user, avatar=self.request.FILES.get('avatar'))
 
         return HttpResponseRedirect(self.get_success_url())
 

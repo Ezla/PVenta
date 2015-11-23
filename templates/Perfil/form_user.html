@@ -1,5 +1,4 @@
-{% extends "base_v2.html" %}
-{#{% extends "base.html" %}#}
+{% extends "base_v3.html" %}
 
 {% block title %}Editar datos de usuario{% endblock %}
 
@@ -14,38 +13,17 @@
         <div class="panel-body">
             <form role="form" method="POST" enctype="multipart/form-data">{% csrf_token %}
                 {% if form.username.errors %}
-                    <div class="form-group has-error col-lg-4 col-md-4"><i class="fa fa-times-circle  text-danger"></i>
+                    <div class="form-group has-error col-lg-6 col-md-6"><i class="fa fa-times-circle  text-danger"></i>
                 {% elif form.errors %}
-                    <div class="form-group has-success col-lg-4 col-md-4"><i class="fa fa-check-circle text-success"></i>
+                    <div class="form-group has-success col-lg-6 col-md-6"><i class="fa fa-check-circle text-success"></i>
                 {% else %}
-                    <div class="form-group col-lg-4 col-md-4">
+                    <div class="form-group col-lg-6 col-md-6">
                 {% endif %}
                 <label class="control-label">Nombre de usuario</label>
                 {{ form.username }}
                 {{ form.username.errors }}
                 </div>
-                {% if form.password1.errors %}
-                    <div class="form-group has-error col-lg-4 col-md-4"><i class="fa fa-times-circle  text-danger"></i>
-                {% elif form.errors %}
-                    <div class="form-group has-success col-lg-4 col-md-4"><i class="fa fa-check-circle text-success"></i>
-                {% else %}
-                    <div class="form-group col-lg-4 col-md-4">
-                {% endif %}
-                <label class="control-label">Contraseña</label>
-                {{ form.password1 }}
-                {{ form.password1.errors }}
-                </div>
-                {% if form.password2.errors %}
-                    <div class="form-group has-error col-lg-4 col-md-4"><i class="fa fa-times-circle  text-danger"></i>
-                {% elif form.errors %}
-                    <div class="form-group has-success col-lg-4 col-md-4"><i class="fa fa-check-circle text-success"></i>
-                {% else %}
-                    <div class="form-group col-lg-4 col-md-4">
-                {% endif %}
-                <label class="control-label">Confirma la contraseña</label>
-                {{ form.password2 }}
-                {{ form.password2.errors }}
-                </div>
+
                 {% if form.first_name.errors %}
                     <div class="form-group has-error col-lg-6 col-md-6"><i class="fa fa-times-circle  text-danger"></i>
                 {% elif form.errors %}

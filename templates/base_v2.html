@@ -185,7 +185,7 @@
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         <i class="fa fa-bell fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
-                    <ul class="dropdown-menu dropdown-alerts">
+                    <ul id="notifications" class="dropdown-menu dropdown-alerts">
                         <li>
                             <a href="#">
                                 <div>
@@ -428,6 +428,32 @@
     <!-- Custom Theme JavaScript -->
     <script src="{% static 'js/sb-admin-2.js' %}"></script>
 
+    {% block notification %}
+        <script type="text/javascript">
+            var $panel = $('#notifications');
+            $( document ).ready(function() {
+                $.ajax({
+                    async: false,
+                    url : '{% url "Producto:url_get_notificaciones" %}',
+                    type : 'get',
+                    success : function(data){
+                        var htmlp = '';
+                        if(jQuery.isEmptyObject(data.notificaciones)){
+                            htmlp = '<li><a href="#"><div><i class="fa fa-comment fa-fw"></i>No hay notificaciones<span class="pull-right text-muted small"></span> </div></a></li>'
+                        }
+                        else{
+                            $.each(data.notificaciones, function(i, item){
+                                htmlp = htmlp + '<li><a href="#"><div><i class="fa fa-comment fa-fw"></i>'+ item.msj +' <span class="pull-right text-muted small">'+ item.time +'</span> </div></a></li>'
+                            });
+                        }
+
+                        $panel.html(htmlp);
+                    }
+                });
+            });
+
+        </script>
+    {% endblock %}
     {% block script %}{% endblock %}
 </body>
 

@@ -9,7 +9,7 @@ def url(obj, filename):
 
 
 class UserProfile(models.Model):
-    avatar = models.ImageField(upload_to=url)
+    avatar = models.ImageField(upload_to=url, blank=True, null=True)
     user = models.OneToOneField(User, related_name="profile")
     STATUS_TEMPLATE = ((1, 'Predeterminado'), (2, 'Clasico'),)
     plantilla = models.IntegerField(choices=STATUS_TEMPLATE, default=1)

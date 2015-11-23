@@ -1,9 +1,12 @@
-{% extends "base_v2.html" %}
-{#{% extends "base.html" %}#}
+{% extends "base_v3.html" %}
 
 {% block title %} Administrar usuarios {% endblock %}
 
 {% block encabezado %} Administrar usuarios {% endblock %}
+
+{% block breadcrumb %}
+    <li class="active"><i class="fa fa-users"></i> Administrar usuarios</li>
+{% endblock %}
 
 {% load staticfiles %}
 

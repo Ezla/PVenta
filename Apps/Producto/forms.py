@@ -17,7 +17,7 @@ class CrearProductoForm(forms.ModelForm):
         model = Producto
         fields = '__all__'
         widgets = {
-            # 'code39': forms.CheckboxInput(attrs={'autocomplete': 'off', }),
+            # 'code39': forms.CheckboxInput(attrs={'class': 'xxd', }),
             'codigo': forms.TextInput(attrs={'class': 'form-control', }),
             'descripcion': forms.TextInput(attrs={'class': 'form-control', }),
             'marca': forms.Select(attrs={'class': 'form-control', }),

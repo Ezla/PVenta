@@ -68,6 +68,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'Apps.Venta.context_processors.menu',
             ],
         },
     },
@@ -97,7 +98,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'es-mx'
 
-TIME_ZONE = 'GMT-6'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
