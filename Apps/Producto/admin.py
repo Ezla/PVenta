@@ -4,8 +4,8 @@ from .models import Producto, Marca
 
 
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ('codigo', 'descripcion', 'marca', 'punitario', 'pmayoreo', 'inventario', 'cantidad', 'minimo')
-
+    list_display = ('codigo', 'descripcion', 'marca', 'punitario', 'pmayoreo', 'inventario', 'cantidad', 'minimo', 'modificado')
+    # ordering = ('-id',)
 
 admin.site.register(Producto, ProductoAdmin)
 admin.site.register(Marca)

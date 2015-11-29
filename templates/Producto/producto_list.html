@@ -66,6 +66,7 @@
                     <tr>
                         <td><strong>Producto</strong></td>
                         <td class="hidden-xs"><strong>Marca</strong></td>
+                        <td class="hidden-xs"><strong>Venta por unidad</strong></td>
                         <td class="hidden-xs"><strong>Precio unitario</strong></td>
                         <td class="hidden-xs"><strong>Precio a mayoreo</strong></td>
                     </tr>
@@ -73,6 +74,7 @@
                 <tbody>
                 {% if not object_list %}
                     <tr>
+                        <td>---------</td>
                         <td>---------</td>
                         <td>---------</td>
                         <td>---------</td>
@@ -88,6 +90,7 @@
                         <td class="hidden-xs"><a href='{% url 'Producto:url_actualizar_marca' prod.marca.id %}'
                                                  class="btn btn-primary btn-xs btn-block">{{prod.marca.marca}}</a>
                         </td>
+                        <td class="hidden-xs text-center">{{prod.vunidad|yesno:'<i class="fa f fa-thumbs-o-down text-green"></i>,<i class="fa f fa-thumbs-o-up text-red"></i>'|safe}}</td>
                         <td class="hidden-xs">$ {{prod.punitario}}</td>
                         <td class="hidden-xs">$ {{prod.pmayoreo}}</td>
                         <td><a href=""></a>

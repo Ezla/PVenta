@@ -20,6 +20,7 @@ class Producto(models.Model):
     inventario = models.BooleanField(default=False)
     cantidad = models.IntegerField(null=True, blank=True)
     minimo = models.IntegerField(null=True, blank=True)
+    modificado = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.descripcion

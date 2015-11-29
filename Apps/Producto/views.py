@@ -19,7 +19,7 @@ class ProductoNuevo(LoginRequiredMixin, CreateView):
     template_name = 'Producto/producto_new.html'
 
     def form_valid(self, form):
-        x = form.save(commit=False)
+        x = form.save()
         if x.code39:
             cod = str(x.id)
             while len(cod) < 10:
@@ -35,6 +35,7 @@ class ProductoLista(LoginRequiredMixin, ListView):
     model = Producto
     paginate_by = 50
 
+
     def get_context_data(self, **kwargs):
         context = super(ProductoLista, self).get_context_data(**kwargs)
         total = Producto.objects.count()
@@ -49,7 +50,7 @@ class ProductoLista(LoginRequiredMixin, ListView):
             context['encontrado_productos'] = total
         return context
 
-    def get_queryset(self):
+    def get_queryset_select(self):
         buscar = self.request.GET.get('buscar_prod')
         marca = self.request.GET.get('marca_prod')
         if buscar:
@@ -57,7 +58,7 @@ class ProductoLista(LoginRequiredMixin, ListView):
         elif marca:
             return Producto.objects.filter(marca__marca=marca)
         else:
-            return Producto.objects.all()
+            return Producto.objects.all().order_by('-id')
 
 
 class ProductoActualizar(LoginRequiredMixin, UpdateView):
@@ -67,7 +68,7 @@ class ProductoActualizar(LoginRequiredMixin, UpdateView):
     template_name = 'Producto/producto_edit.html'
 
     def form_valid(self, form):
-        x = form.save(commit=False)
+        x = form.save()
         if x.code39:
             cod = str(x.id)
             while len(cod) < 10:
