@@ -25,7 +25,7 @@ SECRET_KEY = '#rc20^70q7uc1$6)f#a!q_1=(h0137i1%)n+0%ci*0&liup@bk'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -98,7 +98,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'es-mx'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Mexico_City'
 
 USE_I18N = True
 

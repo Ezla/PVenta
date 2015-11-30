@@ -50,7 +50,7 @@ class ProductoLista(LoginRequiredMixin, ListView):
             context['encontrado_productos'] = total
         return context
 
-    def get_queryset_select(self):
+    def get_queryset(self):
         buscar = self.request.GET.get('buscar_prod')
         marca = self.request.GET.get('marca_prod')
         if buscar:
