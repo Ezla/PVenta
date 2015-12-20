@@ -10,7 +10,7 @@ from .forms import AuthenticationFormCustom
 from Apps.Producto.models import Producto
 from .logica import calcul_p, calcul_sql
 from .models import Cuenta, Venta as Ventas
-
+from VentaAlex.settings import BASE_DIR
 from decimal import Decimal
 from io import BytesIO
 import datetime
