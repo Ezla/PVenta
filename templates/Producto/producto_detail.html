@@ -10,12 +10,18 @@
 {% endblock %}
 
 {% block conte %}
-<div class="panel panel-default offer">
-	<div class="panel-heading">
-		<h3>Detalles del Producto</h3>
-	</div>
-	<div class="panel-body">
-		<table class="table table-hover">
+
+<div class="box{% block marco %} box-info{% endblock %}">
+    <div class="box-header with-border">
+        <h3 class="box-title"><i class="fa fa-barcode"></i> Producto</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+            <i class="fa fa-minus"></i></button>
+        </div>
+    </div>
+
+    <div class="box-body">
+        <table class="table table-hover">
 			<tr>
 				<td><strong>Codigo de barras</strong></td>
 				<td>{{object.codigo}}</td>
@@ -46,21 +52,24 @@
 			</tr>
 			<tr>
 				<td><strong>Cantidad de inventario</strong></td>
-				<td>{% if object.cantidad == None %}---{% else %}{{object.cantidad}}{% endif %}</td>
+				<td>{% if object.cantidad == None %}----{% else %}{{object.cantidad}}{% endif %}</td>
 			</tr>
 			<tr>
 				<td><strong>Minimo de unidades </strong></td>
-				<td>{% if object.minimo == None %}---{% else %}{{object.minimo}}{% endif %}</td>
+				<td>{% if object.minimo == None %}----{% else %}{{object.minimo}}{% endif %}</td>
 			</tr>
 		</table>
-	</div>
-	<div class="panel-footer">
-		<a href="{% url 'Producto:url_actualizar' object.id %}" class="btn btn-warning">
+    </div>
+<!-- /.box-body -->
+    <div class="box-footer">
+        <a href="{% url 'Producto:url_actualizar' object.id %}" class="btn btn-warning">
 			<span class="glyphicon glyphicon-floppy-open"></span> Editar
 		</a>
 		<a href="{% url 'Producto:url_eliminar' object.id %}" class="btn btn-danger pull-right">
 			<span class="glyphicon glyphicon-floppy-remove"></span> Eliminar
 		</a>
-	</div>
+    </div>
+<!-- /.box-footer-->
 </div>
+
 {% endblock %}

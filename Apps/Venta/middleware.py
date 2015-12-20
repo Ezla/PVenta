@@ -6,6 +6,8 @@ class ValidarCuenta():
         if request.user.is_authenticated():
             if request.session.get('cuenta') is None:
                 request.session['cuenta'] = list()
+            if request.session.get('status_bar') is None:
+                request.session['status_bar'] = ''
             if request.session.get('notificaciones') is None:
                 request.session['notificaciones'] = list()
             if request.session.get('song') is None:

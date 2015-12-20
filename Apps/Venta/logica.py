@@ -38,6 +38,13 @@ def add_notif(request, msg, ico):
     request.session.save()
 
 
+def status_bar(request):
+    if request.session.get('status_bar') == '':
+        request.session['status_bar'] = ' sidebar-collapse'
+    else:
+        request.session['status_bar'] = ''
+    request.session.save()
+
 def crear_ean13(valor, archivo):
     ean = barcode.get('ean13', valor, writer=barcode.writer.ImageWriter())
     # mostramos el codigo de barras en consola

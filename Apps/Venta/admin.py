@@ -5,6 +5,7 @@ from .models import Cuenta, Venta
 
 class CuentaAdmin(admin.ModelAdmin):
     list_display = ('tiket', 'total', 'efectivo', 'cambio', 'creado', 'modificado')
+    search_fields = ('tiket',)
 
 
 class VentaAdmin(admin.ModelAdmin):

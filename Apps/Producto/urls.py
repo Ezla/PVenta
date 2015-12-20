@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from .views import ProductoNuevo, ProductoLista, ProductoActualizar, ProductoEliminar, ProductoConsultar, \
     MarcaNuevo, MarcaLista, MarcaActualizar, MarcaEliminar, MarcaNuevoAjax, CodeImagen, GetNotifications, \
-    DeleteNotifications, LookNotifications
+    DeleteNotifications, LookNotifications, StatusBar
 
 urlpatterns = [
     url(r'^Producto/Nuevo/$', ProductoNuevo.as_view(), name='url_nuevo'),
@@ -19,4 +19,5 @@ urlpatterns = [
     url(r'^Notification/get/$', GetNotifications.as_view(), name='url_get_notificaciones'),
     url(r'^Notification/delete/$', DeleteNotifications.as_view(), name='url_delete_notificaciones'),
     url(r'^Notification/look/$', LookNotifications.as_view(), name='url_look_notificaciones'),
+    url(r'^Status/bar/$', StatusBar.as_view(), name='url_status_bar'),
 ]

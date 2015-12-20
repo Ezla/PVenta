@@ -9,7 +9,7 @@ from StringIO import StringIO
 from .models import Producto, Marca
 from .forms import CrearProductoForm, CrearMarcaForm
 from Apps.Venta.views import LoginRequiredMixin
-from Apps.Venta.logica import crear_code39, add_notif
+from Apps.Venta.logica import crear_code39, add_notif, status_bar
 
 
 class ProductoNuevo(LoginRequiredMixin, CreateView):
@@ -234,4 +234,12 @@ class LookNotifications(LoginRequiredMixin, View):
             'cantidad': request.session['cantidad'],
             'visto': request.session['visto'],
         })
+        return HttpResponse(data, content_type='application/json')
+
+
+class StatusBar(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        status_bar(request)
+        data = JsonResponse({'status_bar': request.session.get('status_bar')})
         return HttpResponse(data, content_type='application/json')

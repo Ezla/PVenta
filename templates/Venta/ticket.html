@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style type="text/css">
+        @page {
+            size: {{ pagesize }};
+                margin: 0.2cm;
+                padding: 0cm;
+        }
+    </style>
+</head>
+<body>
+    <div id="footerContent">
+        {% load staticfiles %}
+
+        {{ ruta }}/img/car.png
+        <table class="table-bordered">
+            <th>Ticket</th>
+                <tr style="border-bottom: 1px solid black;">
+                    <td style="text-align: center"><strong>Producto</strong></td>
+                    <td style="text-align: center"><strong>Precio</strong></td>
+                    <td style="text-align: center"><strong>Cantidad</strong></td>
+                    <td style="text-align: center"><strong>Subtotal</strong></td>
+                </tr>
+            {% for p in prod %}
+                <tr style="padding-right: 0.05cm; padding-bottom: 0.05cm;  padding-top: 0.05cm">
+                    <td style="width: 10cm;">{{ p.nombre }}</td>
+                    <td style="text-align: right">$ {{ p.precio }} </td>
+                    <td style="text-align: center">{{ p.cantidad }}</td>
+                    <td style="text-align: right">$ {{ p.subtotal }} </td>
+                </tr>
+            {% endfor %}
+                <tr style="border-top: 1px solid black; padding-right: 0.05cm; padding-bottom: 0.05cm;  padding-top: 0.05cm">
+                    <td></td>
+                    <td></td>
+                    <td><strong>Total:</strong></td>
+                    <td><strong>$ {{ total }}</strong></td>
+                </tr>
+        </table>
+    </div>
+</body>
+</html>

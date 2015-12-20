@@ -22,7 +22,7 @@
 
     {% block style %}{% endblock %}
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini{{ status_bar }}">
 <!-- Site wrapper -->
 <div class="wrapper">
     <audio id="audio_n">
@@ -40,7 +40,7 @@
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top" role="navigation">
       <!-- Sidebar toggle button-->
-      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+      <a id="bartorggle" href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -631,8 +631,19 @@
                 }
             }
 
+            function status_bar(e){
+                $.ajax({
+                    url : '{% url "Producto:url_status_bar" %}',
+                    type : 'get',
+                    success : function(data){
+
+                    }
+                });
+            }
+
             $eliminarn.on('click', elmiminar_notif);
             $paneln.on('click', look_notif);
+            $('#bartorggle').on('click', status_bar);
         </script>
     {% endblock %}
 

@@ -14,11 +14,14 @@ from .models import Cuenta, Venta as Ventas
 from decimal import Decimal
 from io import BytesIO
 import datetime
-from reportlab.platypus import SimpleDocTemplate, Paragraph, TableStyle
-from reportlab.lib.pagesizes import letter, A6
+from reportlab.platypus import SimpleDocTemplate, Paragraph, TableStyle,Spacer, Table, Image
+from reportlab.lib.pagesizes import A6
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import Table
+from reportlab.lib.units import mm
+from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.lib import colors
+from reportlab.graphics.barcode import code128
+
 
 
 class Login(FormView):
@@ -57,7 +60,7 @@ class LoginRequiredMixin(object):
 
 
 class Venta(LoginRequiredMixin, TemplateView):
-    template_name = 'Venta/index.html'
+    template_name = 'Venta/VentaTemplate/index.html'
 
     def dispatch(self, request, *args, **kwargs):
         return super(Venta, self).dispatch(request, *args, **kwargs)
@@ -73,11 +76,15 @@ class Venta(LoginRequiredMixin, TemplateView):
 class VentaBuscarProducto(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
-        codigo = request.GET['cod']
+        codigo = request.GET.get('cod')
+        nombre = request.GET.get('nombre')
         # Agregar - Listado de la compra
         cont = False
         try:
-            prod = Producto.objects.get(codigo=codigo)
+            if codigo:
+                prod = Producto.objects.get(codigo=codigo)
+            else:
+                prod = Producto.objects.get(descripcion=nombre)
             # Validamos si esta vacio
             if request.session['cuenta']:
                 for x in request.session['cuenta']:
@@ -223,7 +230,7 @@ class VentaPagarCuenta(LoginRequiredMixin, View):
             request.session['cuenta'] = []
             # {'codigo': prod.codigo, 'descripcion': prod.descripcion, 'punitario':str(prod.punitario), 'pmayoreo':str(prod.pmayoreo), 'cantidad':str(1)}
             data = JsonResponse({'mensaje': 'El pago ha sido realizado correctamente.', 'tipo': True, 'total': total,
-                                 'efectivo': efectivo, 'cambio': cambio})
+                                 'efectivo': efectivo, 'cambio': cambio, 'url': '/Tiket/%i/' % c.id})
         # Posible error no detectado ???
         else:
             data = JsonResponse({'mensaje': 'Ha ocurrido un error, intenta nuevamente.', 'tipo': False, 'cambio': ''})
@@ -233,42 +240,198 @@ class VentaPagarCuenta(LoginRequiredMixin, View):
 class VentaTiket(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
-        sql = Ventas.objects.filter(cuenta=11)
-        total = calcul_sql(sql)
+        # Datos del ticket
+        try:
+            pk = kwargs.get('pk')
+            cuenta = Cuenta.objects.get(id=pk)
+            sql = Ventas.objects.filter(cuenta=pk)
+        except:
+            raise Http404
+        # Preparamos Respuesta PDF
         response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'inline; filename="somefilename.pdf"'
         pdf_name = 'tiket.pdf'
+        # Guardaremos el PDF en un buffer
         buff = BytesIO()
+        # PDF
         doc = SimpleDocTemplate(buff,
-                                pagesize=A6,
-                                rightMargin=0,
-                                leftMargin=0,
+                                pagesize=(80*mm, 297*mm),
+                                rightMargin=3*mm,
+                                leftMargin=3*mm,
                                 topMargin=0,
                                 bottomMargin=0,
+                                # topPadding=0,
+                                # leftPadding=100*mm,
+                                # rightPadding=20*mm,
                                 )
         clientes = []
+        # Estilos
         styles = getSampleStyleSheet()
+        # Titulo
+        styleH = styles['Heading1']
+        styleH.fontName = 'Helvetica-Bold'
+        styleH.alignment = TA_CENTER
+        styleH.textColor = colors.green
+        styleH.textColor = colors.white
+        styleH.fontSize = 15
+        styleH.backColor  = colors.black
+        #lista de productos
+        styleN = styles["Normal"]
+        styleN.fontSize = 6
+        styleN.fontName = 'Helvetica-Bold'
+        styleN.alignment = TA_JUSTIFY
+        # Datos de ticket
+        styleM = styles["BodyText"]
+        styleM.fontName = 'Helvetica-Bold'
+        styleM.fontSize = 6
+        styleM.alignment = TA_CENTER
+        # Codigo del ticket
+        barcode=code128.Code128(cuenta.tiket, barWidth=1.55)
+        # Encabezado del ticket
+        header = Paragraph('Papeleria y Regalos Alex', styleH)
+        # Datos de empresa
+        direccion = Paragraph('Calle del Rosario #15, Colonia Guadalupe', styleM)
+        estado = Paragraph('JEREZ - ZACATECAS', styleM)
+        telefono = Paragraph('Comercio al por menor', styleM)
+        # Fecha de emision
+        fecha = 'FECHA: %s' % cuenta.creado.strftime('%d/%m/%Y')
+        hora = 'HORA: %s' % cuenta.creado.strftime('%I:%M:%S %p')
+        emitidotxt = '%s %s' % (fecha, hora)
+        emitido = Paragraph(emitidotxt, styleM)
+        # Imagen
+        I = Image(BASE_DIR + '/static/img/car.png', width=78, height=60)
+        # Tabla para encabezado
+        tas = Table([
+            # ['',''],
+            ['',I],
+            [direccion, ''],
+            [estado,''],
+            [telefono,''],
+            [Paragraph('RFC: FORR600502AN3', styleM),''],
 
-        header = Paragraph('Comprobante de Ventas', styles['Heading1'])
-
-        clientes.append(header)
-        headings = ('Nombre', 'Precio', 'Cantidad', 'Subtotal')
-        allclientes = [(p.nombre, p.precio, p.cantidad, p.subtotal) for p in sql]
-        allclientes.append(('', '', 'TOTAL:', total))
-        t = Table([headings] + allclientes)
-        t.setStyle(TableStyle(
+            [fecha,hora],
+        ], rowHeights=12)
+        tas.setStyle(TableStyle(
             [
-                # ('GRID', (0, 0), (3, -1), 1, colors.black),
-                ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),
-                ('LINEABOVE', (0, -1), (-1, -1), 1, colors.black),
-                # ('BACKGROUND', (0, 0), (-1, 0), colors.dodgerblue),
-                ('FONTSIZE', (0, 0), (3, len(allclientes)), 7)
+                # ('TEXTCOLOR', (0, 0), (1, 0), colors.white),
+                # ('BACKGROUND',(0,0),(1,0),colors.black),
+                # ('ALIGN',(0,0),(1,0),'CENTER'),
+                # ('FONTSIZE', (0, 0), (1, 0), 10),
+                # Fechas emitido
+                ('FONTSIZE', (0, -1), (1, -1), 6),
+                ('ALIGN',(0,-1),(0,-1),'LEFT'),
+                ('ALIGN',(1,-1),(1,-1),'RIGHT'),
+                # Fucionamos Imagen
+                ('SPAN',(1,0),(1,-2)),
+                # Fucionamos titulo
+                # ('SPAN',(0,0),(1,0)),
+                # Negritas para la tabla
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
             ]
         ))
+        # Tabla para items del ticket
+        encabezado = ('NOMBRE','  ',' ', 'PRECIO', 'CANT', 'SUBTOTAL')
+        productos = []
+        estilos_tabla = []
+        cont = 1
+        for p in sql:
+            productos.append((Paragraph(p.nombre.upper(), styleN),' ',' ', p.precio, p.cantidad, p.subtotal))
+            estilos_tabla.append(('SPAN',(0,cont),(2,cont)))
+            cont = cont + 1
+        productos.append(('','','', '', 'TOTAL:', '$ %s' % str(cuenta.total)))
+        productos.append(('','','', '', 'PAGO:', '$ %s' % str(cuenta.efectivo)))
+        productos.append(('','','', '', 'CAMBIO:', '$ %s' % str(cuenta.cambio)))
+        estilos_tabla = estilos_tabla + [
+                ('LINEBELOW', (0, 0), (-1, 0), 2, colors.black),
+                ('LINEBELOW', (0, -1), (-1, -1), 2, colors.black),
+                ('LINEABOVE', (0, 0), (-1, 0), 2, colors.black),
+                ('LINEABOVE', (0, -3), (-1, -3), 2, colors.black),
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (5, -1), 6),
+                # ('LEFTPADDING',(4,0),(4,-1),-15),
+                # ('LEFTPADDING',(4,0),(4,-1),15),
+                ('BACKGROUND',(-2,-3),(-1,-1), colors.lightgrey),
+                ('ALIGN',(3,0),(3,-1),'RIGHT'),
+                ('ALIGN',(4,0),(4,-1),'CENTER'),
+                ('ALIGN',(5,0),(5,-1),'RIGHT'),
+                # ('ALIGN',(4,-3),(-1,-1),'RIGHT'),
+                ('VALIGN', (1,1), (-1, -1), 'MIDDLE'),
+                # fucionamos 3 celdas para el nombre de prod
+                # ('SPAN',(0,-4),(2,-4)),
+                # ('LINEBELOW', (0, -1), (-1, -1), 1, colors.grey),
+            ]
+        t = Table([encabezado] + productos, colWidths=12*mm,)
+        t.setStyle(TableStyle(estilos_tabla))
+        tbar = Table([
+            [barcode],
+            [cuenta.tiket],
+        ])
+        tbar.setStyle(TableStyle(
+            [
+                # Fechas emitido,
+                ('ALIGN',(0,0),(0,0),'LEFT'),
+                ('ALIGN',(0,-1),(0,-1),'CENTER'),
+                ('FONTSIZE', (0, 0), (-1, -1), 6),
+            ]
+        ))
+        # Texto de agradecimiento
+        cajero = Paragraph('Te atiende %s %s'% (request.user.first_name, request.user.last_name), styleM)
+        agradecimiento = Paragraph('GRACIAS POR SU PREFERENCIA', styleM)
+        # Agregamos contenido al PDF
+        clientes.append(header)
+        # clientes.append(Spacer(1, 2.2 * mm))
+        clientes.append(tas)
+        # clientes.append(emitido)
         clientes.append(t)
+        clientes.append(cajero)
+        clientes.append(agradecimiento)
+        clientes.append(Spacer(1, 5.2 * mm))
+        clientes.append(tbar)
+
+
         doc.build(clientes)
         response.write(buff.getvalue())
         buff.close()
         return response
 
+from xhtml2pdf import pisa
+import cStringIO as StringIO
+from django.template.loader import get_template
+from django.template import Context
+from cgi import escape
+from VentaAlex.settings import BASE_DIR
 
+class VentaTikets(LoginRequiredMixin, View):
+    # template_name = 'Venta/ticket.html'
 
+    # def get_context_data(self, **kwargs):
+    #     sql = Ventas.objects.filter(cuenta=7)
+    #     total = calcul_sql(sql)
+    #     context = {'prod': sql, 'total': total}
+    #     return context
+
+    def render_to_pdf(template_src, context_dict):
+        template = get_template(template_src)
+        context = Context(context_dict)
+        html  = template.render(context)
+        result = StringIO.StringIO()
+
+        pdf = pisa.pisaDocument(StringIO.StringIO(html.decode("utf-8")), result)
+        if not pdf.err:
+            return HttpResponse(result.getvalue(), content_type='application/pdf')
+        return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))
+
+    def get(self, request, *args, **kwargs):
+        sql = Ventas.objects.filter(cuenta=7)
+        total = calcul_sql(sql)
+        context = {'prod': sql, 'total': total,'pagesize':'A6', 'ruta':BASE_DIR.replace('\\','/')}
+
+        template = get_template('Venta/ticket.html')
+        context = Context(context)
+        html  = template.render(context)
+        result = StringIO.StringIO()
+
+        pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("ISO-8859-1")), result)
+        if not pdf.err:
+            return HttpResponse(result.getvalue(), content_type='application/pdf')
+        return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))
