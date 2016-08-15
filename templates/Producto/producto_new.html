@@ -86,6 +86,7 @@
                 {% endif %}
                         <label class="control-label">Codigo</label>
                         {{ form.codigo }}
+                    <br>
                         {{ form.codigo.errors }}
                     </div>
 
@@ -128,6 +129,7 @@
                 {% endif %}
                         <label class="control-label">Descripción</label>
                         {{ form.descripcion }}
+                        <br>
                         {{ form.descripcion.errors }}
                     </div>
                 </div>
@@ -142,6 +144,7 @@
                 {% endif %}
                         <label class="control-label">Precio unitario</label>
                         {{ form.punitario }}
+                        <br>
                         {{ form.punitario.errors }}
                     </div>
 
@@ -216,6 +219,7 @@
                 {% endif %}
                         <label class="control-label">Cantidad</label>
                         {{ form.cantidad }}
+                        <br>
                         {{ form.cantidad.errors }}
                     </div>
 
@@ -228,6 +232,7 @@
                 {% endif %}
                         <label class="control-label">Minimo</label>
                         {{ form.minimo }}
+                        <br>
                         {{ form.minimo.errors }}
                     </div>
                 </div>
@@ -396,11 +401,12 @@
 
         $('#formMarca').on('submit', Marca_ajax);
         $('#c_descuento').on('click', Calcula_descuento);
-        $(document).ready($codigo.focus());
+
 {#        $('#id_inventario').on('click', HabInventario);#}
 
 {#        Chechbox #}
         $(document).ready(function(){
+            $codigo.focus();
             $('input').each(function(){
                 var self = $(this),
                   label = self.next(),
@@ -413,7 +419,7 @@
                   insert: '<div class="icheck_line-icon"></div>' + label_text
                 });
             });
-            $('.code39').on('DOMAttrModified', HabCodigo);
+            $('.iCheck-helper').on('click', HabCodigo);
         });
 
     </script>
