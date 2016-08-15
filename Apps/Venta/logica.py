@@ -48,7 +48,7 @@ def status_bar(request):
 def crear_ean13(valor, archivo):
     ean = barcode.get('ean13', valor, writer=barcode.writer.ImageWriter())
     # mostramos el codigo de barras en consola
-    print ean.to_ascii()
+    print(ean.to_ascii())
     # generamos el archivo
     filename = ean.save(archivo)
     return filename
@@ -58,7 +58,7 @@ def crear_isbn13(valor, archivo):
     """ El valor de isbn13 tiene que empezar por 978 or 979"""
     isbn = barcode.ISBN13(valor, writer=barcode.writer.ImageWriter())
     # mostramos el codigo de barras en consola
-    print isbn.to_ascii()
+    print(isbn.to_ascii())
     # generamos el archivo
     filename = isbn.save(archivo)
     return filename
@@ -67,7 +67,7 @@ def crear_isbn13(valor, archivo):
 def crear_code39(valor, archivo):
     code39 = barcode.Code39(valor, writer=barcode.writer.ImageWriter())
     # mostramos el codigo de barras en consola
-    print code39.to_ascii()
+    print(code39.to_ascii())
     # generamos el archivo
     filename = code39.save(archivo)
     return filename

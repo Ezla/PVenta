@@ -1,5 +1,6 @@
 from django.core.urlresolvers import reverse_lazy
 from django.http import JsonResponse, HttpResponse
+from django.db.models import Q
 from django.core import serializers
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView, View
 import datetime
@@ -43,9 +44,12 @@ class ProductoLista(LoginRequiredMixin, ListView):
         buscar = self.request.GET.get('buscar_prod')
         marca = self.request.GET.get('marca_prod')
         if buscar:
-            context['encontrado_productos'] = Producto.objects.filter(descripcion__icontains=buscar).count()
+            context['encontrado_productos'] = Producto.objects.filter(
+                Q(descripcion__icontains=buscar) | Q(codigo=buscar) |
+                Q(marca__marca=buscar)).count()
         elif marca:
-            context['encontrado_productos'] = Producto.objects.filter(marca__marca=marca).count()
+            context['encontrado_productos'] = Producto.objects.filter(
+                marca__marca=marca).count()
         else:
             context['encontrado_productos'] = total
         return context
@@ -54,7 +58,9 @@ class ProductoLista(LoginRequiredMixin, ListView):
         buscar = self.request.GET.get('buscar_prod')
         marca = self.request.GET.get('marca_prod')
         if buscar:
-            return Producto.objects.filter(descripcion__icontains=buscar)
+            return Producto.objects.filter(
+                Q(descripcion__icontains=buscar) | Q(codigo=buscar) |
+                Q(marca__marca=buscar))
         elif marca:
             return Producto.objects.filter(marca__marca=marca)
         else:
