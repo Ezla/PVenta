@@ -64,7 +64,7 @@
                                         <div class="btn-group" data-toggle="buttons">
                                             <label class="btn btx btn-xs btn-success active">
                                                 <input type="checkbox" autocomplete="off" checked>
-                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <span class="glyphicon glyphicon-thumbs-up"></span>
                                             </label>
                                         </div>
                                     </td>
@@ -72,9 +72,9 @@
                                     <td>{{item.punitario}}</td>
                                     <td>
                                         <div class="btn-group" data-toggle="buttons">
-                                            <label class="btn btx btn-xs btn-success">
+                                            <label class="btn btx btn-xs btn-danger">
                                                 <input type="checkbox" autocomplete="off">
-                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <span class="glyphicon glyphicon-thumbs-down"></span>
                                             </label>
                                         </div>
                                     </td>
@@ -114,14 +114,49 @@
 {% block script %}
 	<script type="text/javascript">
         var $codigo = $('#codigo');
-            $tablaVenta = $('#tVentaProd');
-            $efectivo = $('#efectivo');
-            $btnefectivo = $('#btnefectivo');
-            $mensaje = $('#mensaje');
-            $tprecio = $('#btx');
-            chbT = '<div class="btn-group" data-toggle="buttons"><label class="btn btx btn-xs btn-success active"> <input type="checkbox" autocomplete="off" checked><span class="glyphicon glyphicon-ok"></span> </label></div>';
-            chbF = '<div class="btn-group" data-toggle="buttons"><label class="btn btx btn-xs btn-success"> <input type="checkbox" autocomplete="off"><span class="glyphicon glyphicon-ok"></span> </label></div>';
+        var $tablaVenta = $('#tVentaProd');
+        var $efectivo = $('#efectivo');
+        var $btnefectivo = $('#btnefectivo');
+        var $mensaje = $('#mensaje');
+        var $tprecio = $('#btx');
+
         //funciones
+        function item_product(codigo, descripcion, price, cantidad, mayoreo){
+            var $price;
+            if (mayoreo){
+                $price = $('<div>', {'class': 'btn-group',
+                    'data-toggle': 'buttons'}).append($('<label>', {
+                    'class': 'btn btx btn-xs btn-success active',}).append(
+                    $('<input>', {'type': 'checkbox', 'autocomplete': 'off',
+                        'checked': true}),
+                    $('<span>', {'class': 'glyphicon glyphicon-thumbs-up'})));
+            } else {
+                $price = $('<div>', {'class': 'btn-group',
+                    'data-toggle': 'buttons'}).append($('<label>', {
+                    'class': 'btn btx btn-xs btn-danger',}).append(
+                    $('<input>', {'type': 'checkbox', 'autocomplete': 'off'}),
+                    $('<span>', {'class': 'glyphicon glyphicon-thumbs-down'})));
+            }
+            var  $item = $('<tr>').append(
+                    $('<td>', {'class': 'cod', 'text': codigo}),
+                    $('<td>', {'title': descripcion, 'text': descripcion.slice(0,35)}),
+                    $('<td>', {'text': price}),
+                    $('<td>').append($price),
+                    $('<td>').append($('<div>', {
+                        'class': 'btn-group btn-group-xs'}).append(
+                            $('<button>', {
+                                'type': 'button',
+                                'class': 'btn btn-success btn-xs aumentar'}).append(
+                                    $('<span>', {'class': 'glyphicon glyphicon-plus-sign'})),
+                            $('<button>', {'class': 'btn btn-info', 'text': cantidad}),
+                            $('<button>', {
+                                'type': 'button',
+                                'class': 'btn btn-warning btn-xs eliminar pull-right'}
+                            ).append($('<span>', {'class': 'glyphicon glyphicon-minus-sign'}))
+                    )));
+            return $item
+        }
+
         function Cancelar(e){
             $.ajax({
                 async : false,
@@ -144,15 +179,14 @@
                 url : '{% url "Venta:url_aumentar_prod_ajax" %}',
                 type : 'get',
                 success : function(data){
-                    var htmlp = '';
+                    $tablaVenta.html('');
                     $.each(data.cuenta, function(i, item){
                         if(item.tprecio== false) {
-                            htmlp = htmlp + '<tr><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                            $tablaVenta.append(item_product(item.codigo, item.descripcion, item.punitario, item.cantidad, false));
                         }else{
-                            htmlp = htmlp + '<tr><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                            $tablaVenta.append(item_product(item.codigo, item.descripcion, item.pmayoreo, item.cantidad, true));
                         }
                     });
-                    $tablaVenta.html(htmlp);
                     $('.total').html('<strong>$ ' + data.precio + '</strong>')
                 }
             });
@@ -168,19 +202,18 @@
                 url : '{% url "Venta:url_remover_prod_ajax" %}',
                 type : 'get',
                 success : function(data){
-                    var htmlp = ''
                     if (data.precio <= 0) {
                         $('.thead-footer').html('');
                     }else {
+                        $tablaVenta.html('');
                         $.each(data.cuenta, function (i, item) {
                             if (item.tprecio == false) {
-                                htmlp = htmlp + '<tr><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0, 35) + '</td><td>' + item.punitario + '</td><td>' + chbF + '</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                                $tablaVenta.append(item_product(item.codigo, item.descripcion, item.punitario, item.cantidad, false));
                             } else {
-                                htmlp = htmlp + '<tr><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0, 35) + '</td><td>' + item.pmayoreo + '</td><td>' + chbT + '</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                                $tablaVenta.append(item_product(item.codigo, item.descripcion, item.pmayoreo, item.cantidad, true));
                             }
                         });
                     }
-                    $tablaVenta.html(htmlp);
                     $('.total').html('<strong>$ ' + data.precio + '</strong>')
                 }
             });
@@ -196,15 +229,14 @@
                 url : '{% url "Venta:url_tipo_precio_ajax" %}',
                 type : 'get',
                 success : function(data){
-                    var htmlp = ''
+                    $tablaVenta.html('');
                     $.each(data.cuenta, function(i, item){
                         if(item.tprecio== false) {
-                            htmlp = htmlp + '<tr><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                            $tablaVenta.append(item_product(item.codigo, item.descripcion, item.punitario, item.cantidad, false));
                         }else{
-                            htmlp = htmlp + '<tr><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
+                            $tablaVenta.append(item_product(item.codigo, item.descripcion, item.pmayoreo, item.cantidad, true));
                         }
                     });
-                    $tablaVenta.html(htmlp);
                     $('.total').html('<strong>$ ' + data.precio + '</strong>')
                 }
             });
@@ -213,37 +245,28 @@
 
         function Buscarpronom(e){
             var dato_nombre = $('#nombre').val();
-            console.log('Buscar por nombre'+dato_nombre);
             $.ajax({
                 async: false,
             	data : {'nombre': dato_nombre},
             	url : '{% url "Venta:url_buscar_ajax" %}',
             	type : 'get',
             	success: function(data){
-                    var htmlp = '';
-                    var cont = 0;
+                    $tablaVenta.html('');
                     $.each(data.cuenta, function(i, item){
-                        if(cont == 0){
-                            cont = 1;
-                            if(item.tprecio== false) {
-                                htmlp = htmlp + '<tr class="success loading"><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
-                            }else{
-                                htmlp = htmlp + '<tr class="success loading"><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
-                            }
-
+                        if(item.tprecio== false) {
+                            $tablaVenta.append(item_product(item.codigo, item.descripcion, item.punitario, item.cantidad, false));
                         }else{
-                            if(item.tprecio== false) {
-                                htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
-                            }else{
-                                htmlp = htmlp + '<tr class="info"><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
-                            }
+                            $tablaVenta.append(item_product(item.codigo, item.descripcion, item.pmayoreo, item.cantidad, true));
                         }
                     });
-                    $tablaVenta.html(htmlp);
+                    if (data.buscado) {
+                        $tablaVenta.children('tr').addClass('success loading');
+                    }
                     $('.total').html('<strong>$ ' + data.precio + '</strong>');
-
             	}
             });
+            $codigo.val('').focus();
+            return false;
         }
 
         function Buscarpro(e){
@@ -254,30 +277,22 @@
             	url : '{% url "Venta:url_buscar_ajax" %}',
             	type : 'get',
             	success: function(data){
-                    var htmlp = '';
-                    var cont = 0;
+                    $tablaVenta.html('');
                     if ($('.thead-footer').html() == '') {
                         $('.thead').html('<tr><td><strong>Codigo</strong></td><td><strong>Producto</strong></td><td><strong>Precio</strong></td><td><strong>Mayoreo</strong></td><td></td></tr>');
                         $('.tfooter').html('<tr><td><strong>Total:</strong></td><td class="total"><strong></strong></td><td></td><td></td><td></td></tr>');
                     }
                     $.each(data.cuenta, function(i, item){
-                        if(cont == 0){
-                            cont = 1;
-                            if(item.tprecio== false) {
-                                htmlp = htmlp + '<tr class="success loading"><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
-                            }else{
-                                htmlp = htmlp + '<tr class="success loading"><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
-                            }
-
+                        if(item.tprecio== false) {
+                            $tablaVenta.append(item_product(item.codigo, item.descripcion, item.punitario, item.cantidad, false));
                         }else{
-                            if(item.tprecio== false) {
-                                htmlp = htmlp + '<tr><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.punitario + '</td><td>'+chbF+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
-                            }else{
-                                htmlp = htmlp + '<tr><td class="cod">' + item.codigo + '</td><td title="' + item.descripcion + '">' + item.descripcion.slice(0,35) + '</td><td>' + item.pmayoreo + '</td><td>'+chbT+'</td><td><div class="btn-group btn-group-xs"><button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button><button class="btn btn-info">' + item.cantidad + '</button><button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button></div></td></tr>'
-                            }
+                            $tablaVenta.append(item_product(item.codigo, item.descripcion, item.pmayoreo, item.cantidad, true));
                         }
                     });
-                    $tablaVenta.html(htmlp);
+                    if (data.buscado) {
+                        $tablaVenta.children('tr').addClass('success loading');
+                    }
+
                     $('.total').html('<strong>$ ' + data.precio + '</strong>');
             	}
             });
@@ -363,9 +378,7 @@
 
         $tablaVenta.on('click', '.btx', TipoPre);
 
-        $('#nombre').on('keyup', Buscarpronom);
-
-        $('#form_nombre').on('submit', FormPreventD);
+        $('#form_nombre').on('submit', Buscarpronom);
 
         $('#formxD').on('submit',Buscarpro);
 

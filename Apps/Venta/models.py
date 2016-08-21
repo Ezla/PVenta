@@ -17,6 +17,7 @@ class Descuento(models.Model):
         if self.descuento > 100:
             raise ValidationError({'descuento': 'Este campo no puede contener numeros mayores a 100.'})
 
+
 class Cuenta(models.Model):
     tiket = models.CharField(max_length=30, null=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, null=True)
