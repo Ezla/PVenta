@@ -95,7 +95,7 @@
                     {% if data %}
                         <tr>
                             <td><strong>Total:</strong></td>
-                            <td class="total"><strong>$ {{precio}}</strong></td>
+                            <td class="total"><strong>$ {{ subtotal }}</strong></td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -172,15 +172,17 @@
         }
 
         function set_descount_ajax(e){
-            $.ajax({
-                async : false,
-                url : '{% url "Venta:url_agregar_descuento_ajax" %}',
-                type : 'get',
-                data : {'descuento':  $descuento.val()},
-                success : function(data){
-                    set_total(data.subtotal, data.descuento ,data.total);
-                }
-            });
+            if ($descuento.val() >= 0 && $descuento.val() <= 100){
+                $.ajax({
+                    async : false,
+                    url : '{% url "Venta:url_agregar_descuento_ajax" %}',
+                    type : 'get',
+                    data : {'descuento':  $descuento.val()},
+                    success : function(data){
+                        set_total(data.subtotal, data.descuento ,data.total);
+                    }
+                });
+            }
             $codigo.focus();
         }
 
@@ -230,7 +232,7 @@
                 url : '{% url "Venta:url_remover_prod_ajax" %}',
                 type : 'get',
                 success : function(data){
-                    if (data.precio <= 0) {
+                    if (data.total <= 0) {
                         $tablaVenta.html('');
                         set_total(0, 0, 0);
                         $descuento.val(0);
