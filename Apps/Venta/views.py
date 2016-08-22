@@ -9,7 +9,7 @@ from django.db import transaction
 from .forms import AuthenticationFormCustom
 from Apps.Producto.models import Producto
 from .logica import calcul_p, calcul_sql
-from .models import Cuenta, Venta as Ventas
+from .models import Cuenta, Venta as Ventas, Descuento
 from VentaAlex.settings import BASE_DIR
 from decimal import Decimal
 from io import BytesIO
@@ -37,7 +37,6 @@ class Login(FormView):
 
     def form_valid(self, form):
         login(self.request, form.get_user())
-        # self.request.session['cuenta'] = []
         return super(Login, self).form_valid(form)
 
 
@@ -68,8 +67,11 @@ class Venta(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Venta, self).get_context_data(**kwargs)
         context['data'] = self.request.session['cuenta']
-        precio = calcul_p(self.request)
-        context['precio'] = precio
+        subtotal, total, descuento = calcul_p(self.request)
+        context['subtotal'] = subtotal
+        context['total'] = total
+        context['descuento'] = descuento
+        context['valor_descuento'] = self.request.session.get('descuento', 0)
         return context
 
 
@@ -110,11 +112,15 @@ class VentaBuscarProducto(LoginRequiredMixin, View):
                     {'codigo': prod.codigo, 'descripcion': prod.descripcion, 'punitario': str(prod.punitario),
                      'pmayoreo': str(prod.pmayoreo), 'tprecio': False, 'cantidad': str(1)})
             # Calculamos precio total de la cuenta
-            precio = calcul_p(request)
-            data = JsonResponse({'cuenta': request.session['cuenta'], 'precio': precio, 'buscado': prod.id})
+            subtotal, total, descuento = calcul_p(request)
+            data = JsonResponse({'cuenta': request.session['cuenta'],
+                                 'subtotal': subtotal, 'total': total,
+                                 'descuento': descuento, 'buscado': prod.id})
         except Exception:
-            precio = calcul_p(request)
-            data = JsonResponse({'cuenta': request.session['cuenta'], 'precio': precio})
+            subtotal, total, descuento = calcul_p(request)
+            data = JsonResponse({'cuenta': request.session['cuenta'],
+                                 'subtotal': subtotal, 'total': total,
+                                 'descuento': descuento})
 
         request.session.save()
         return HttpResponse(data, content_type='application/json')
@@ -132,8 +138,10 @@ class VentaRemoverProd(LoginRequiredMixin, View):
                         request.session['cuenta'].remove(x)
                     break
         request.session.save()
-        precio = calcul_p(request)
-        data = JsonResponse({'cuenta': request.session['cuenta'], 'precio': precio})
+        subtotal, total, descuento = calcul_p(request)
+        data = JsonResponse({'cuenta': request.session['cuenta'],
+                             'subtotal': subtotal, 'total': total,
+                             'descuento': descuento})
         return HttpResponse(data, content_type='application/json')
 
 
@@ -147,8 +155,10 @@ class VentaAumentarProd(LoginRequiredMixin, View):
                     x['cantidad'] = str(int(x['cantidad']) + 1)
                     break
         request.session.save()
-        precio = calcul_p(request)
-        data = JsonResponse({'cuenta': request.session['cuenta'], 'precio': precio})
+        subtotal, total, descuento = calcul_p(request)
+        data = JsonResponse({'cuenta': request.session['cuenta'],
+                             'subtotal': subtotal, 'total': total,
+                             'descuento': descuento})
         return HttpResponse(data, 'application/json')
 
 
@@ -165,8 +175,10 @@ class VentaTipoPrecio(LoginRequiredMixin, View):
                         x['tprecio'] = False
                     break
         request.session.save()
-        precio = calcul_p(request)
-        data = JsonResponse({'cuenta': request.session['cuenta'], 'precio': precio})
+        subtotal, total, descuento = calcul_p(request)
+        data = JsonResponse({'cuenta': request.session['cuenta'],
+                             'subtotal': subtotal, 'total': total,
+                             'descuento': descuento})
         return HttpResponse(data, 'application/json')
 
 
@@ -174,15 +186,29 @@ class VentaCancelarCuenta(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         request.session['cuenta'] = []
+        request.session['descuento'] = 0
         request.session.save()
         data = JsonResponse({'listo': 'Se a cancelado la cuenta.'})
+        return HttpResponse(data, content_type='application/json')
+
+
+class VentaSetDescuento(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        descuento = request.GET.get('descuento', 0)
+        request.session['descuento'] = descuento
+        request.session.save()
+        subtotal, total, descuento = calcul_p(request)
+        data = JsonResponse({'subtotal': subtotal, 'total': total,
+                             'descuento': descuento})
         return HttpResponse(data, content_type='application/json')
 
 
 class VentaPagarCuenta(LoginRequiredMixin, View):
     # @transaction.atomic
     def get(self, request, *args, **kwargs):
-        total = calcul_p(request)
+        request.session['descuento']
+        subtotal, total, descuento = calcul_p(request)
         # Validamos si encontramos productos en la compra
         if total == 0:
             data = JsonResponse(
@@ -204,8 +230,13 @@ class VentaPagarCuenta(LoginRequiredMixin, View):
         elif efectivo >= total:
             # Creamos la cuenta con un numero de tiket generico
             cambio = efectivo - total
-            c = Cuenta.objects.create(tiket='0000', total=total, efectivo=efectivo, cambio=cambio)
-            # Creamos un Tiket para la cuenta en base al id de la cuenta y la fecha de creacion
+            descuento = Descuento.objects.get_or_create(
+                descuento=int(request.GET.get('descuento', 0)))[0]
+            c = Cuenta.objects.create(tiket='0000', subtotal=subtotal,
+                                      total=total, efectivo=efectivo,
+                                      cambio=cambio, descuento=descuento)
+            # Creamos un Tiket para la cuenta en base al id de la cuenta y
+            # la fecha de creacion
             x = ''
             val = len(str(c.id))
             while (val < 10):
@@ -225,15 +256,22 @@ class VentaPagarCuenta(LoginRequiredMixin, View):
                     precio = float(item.get('pmayoreo'))
                 cantidad = int(item.get('cantidad'))
                 sub = precio * cantidad
-                Ventas.objects.create(codigo=item.get('codigo'), nombre=item.get('descripcion'),
-                                      descuento=False, precio=precio, cantidad=cantidad, subtotal=sub, cuenta=c)
+                Ventas.objects.create(codigo=item.get('codigo'),
+                                      nombre=item.get('descripcion'),
+                                      descuento=False, precio=precio,
+                                      cantidad=cantidad, subtotal=sub,
+                                      cuenta=c)
             request.session['cuenta'] = []
-            # {'codigo': prod.codigo, 'descripcion': prod.descripcion, 'punitario':str(prod.punitario), 'pmayoreo':str(prod.pmayoreo), 'cantidad':str(1)}
-            data = JsonResponse({'mensaje': 'El pago ha sido realizado correctamente.', 'tipo': True, 'total': total,
-                                 'efectivo': efectivo, 'cambio': cambio, 'url': '/Tiket/%i/' % c.id})
+            request.session['descuento'] = 0
+            data = JsonResponse({
+                'mensaje': 'El pago ha sido realizado correctamente.',
+                'tipo': True, 'total': total, 'efectivo': efectivo,
+                'cambio': cambio, 'url': '/Tiket/%i/' % c.id})
         # Posible error no detectado ???
         else:
-            data = JsonResponse({'mensaje': 'Ha ocurrido un error, intenta nuevamente.', 'tipo': False, 'cambio': ''})
+            data = JsonResponse({
+                'mensaje': 'Ha ocurrido un error, intenta nuevamente.',
+                'tipo': False, 'cambio': ''})
         return HttpResponse(data, content_type='application/json')
 
 
@@ -338,19 +376,21 @@ class VentaTiket(LoginRequiredMixin, View):
             productos.append((Paragraph(p.nombre.upper(), styleN),' ',' ', p.precio, p.cantidad, p.subtotal))
             estilos_tabla.append(('SPAN',(0,cont),(2,cont)))
             cont = cont + 1
-        productos.append(('','','', '', 'TOTAL:', '$ %s' % str(cuenta.total)))
-        productos.append(('','','', '', 'PAGO:', '$ %s' % str(cuenta.efectivo)))
-        productos.append(('','','', '', 'CAMBIO:', '$ %s' % str(cuenta.cambio)))
+        pruce_decount = (cuenta.subtotal * cuenta.descuento.descuento) / 100
+        productos.append(('DESCUENTO', '' ,'% {}'.format(cuenta.descuento.descuento), '', 'SUBTOTAL:', '$ %s' % str(cuenta.subtotal)))
+        productos.append(('', '', '$ -{}'.format(pruce_decount), '', 'TOTAL:', '$ %s' % str(cuenta.total)))
+        productos.append(('', '', '', '', 'PAGO:', '$ %s' % str(cuenta.efectivo)))
+        productos.append(('', '', '', '', 'CAMBIO:', '$ %s' % str(cuenta.cambio)))
         estilos_tabla = estilos_tabla + [
                 ('LINEBELOW', (0, 0), (-1, 0), 2, colors.black),
                 ('LINEBELOW', (0, -1), (-1, -1), 2, colors.black),
                 ('LINEABOVE', (0, 0), (-1, 0), 2, colors.black),
-                ('LINEABOVE', (0, -3), (-1, -3), 2, colors.black),
+                ('LINEABOVE', (0, -4), (-1, -4), 2, colors.black),
                 ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
                 ('FONTSIZE', (0, 0), (5, -1), 6),
                 # ('LEFTPADDING',(4,0),(4,-1),-15),
                 # ('LEFTPADDING',(4,0),(4,-1),15),
-                ('BACKGROUND',(-2,-3),(-1,-1), colors.lightgrey),
+                ('BACKGROUND',(-2,-4),(-1,-1), colors.lightgrey),
                 ('ALIGN',(3,0),(3,-1),'RIGHT'),
                 ('ALIGN',(4,0),(4,-1),'CENTER'),
                 ('ALIGN',(5,0),(5,-1),'RIGHT'),
