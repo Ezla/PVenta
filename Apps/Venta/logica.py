@@ -4,14 +4,21 @@ from datetime import datetime
 
 
 def calcul_p(request):
-    precio = 0
+    subtotal = 0
+    descuento = 0
+    total = 0
     if request.session['cuenta']:
         for x in request.session['cuenta']:
             if not x['tprecio']:
-                precio = precio + (Decimal(x['punitario']) * Decimal(x['cantidad']))
+                subtotal = subtotal + (Decimal(x['punitario']) *
+                                       Decimal(x['cantidad']))
             else:
-                precio = precio + (Decimal(x['pmayoreo']) * Decimal(x['cantidad']))
-    return precio
+                subtotal = subtotal + (Decimal(x['pmayoreo']) *
+                                       Decimal(x['cantidad']))
+        descuento = (subtotal * Decimal(
+            request.session.get('descuento', 0))) / Decimal(100)
+        total = subtotal - descuento
+    return subtotal, total, descuento
 
 
 def calcul_sql(venta):
