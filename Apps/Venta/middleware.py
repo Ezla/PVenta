@@ -16,3 +16,5 @@ class ValidarCuenta():
                 request.session['visto'] = False
             if request.session.get('cantidad') is None:
                 request.session['cantidad'] = 0
+            if request.session.get('descuento') is None:
+                request.session['descuento'] = 0
