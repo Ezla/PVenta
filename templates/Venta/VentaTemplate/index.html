@@ -100,6 +100,14 @@
                             <td></td>
                             <td></td>
                         </tr>
+                    {% else %}
+                        <tr>
+                            <td><strong>Total:</strong></td>
+                            <td class="total"><strong>$ 0</strong></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
                     {% endif %}
                     </tfoot>
                 </table>
@@ -116,6 +124,7 @@
         var $codigo = $('#codigo');
         var $tablaVenta = $('#tVentaProd');
         var $efectivo = $('#efectivo');
+        var $descuento = $('#descuento');
         var $btnefectivo = $('#btnefectivo');
         var $mensaje = $('#mensaje');
         var $tprecio = $('#btx');
@@ -157,6 +166,24 @@
             return $item
         }
 
+        function set_total(subtotal, descuento, total){
+            $('td.total').html($('<strong>', {'text': '$ ' + subtotal}));
+            $('h2.total').html($('<strong>', {'text': '$ ' + total + ' (' + subtotal + ' - ' + descuento + ')'}));
+        }
+
+        function set_descount_ajax(e){
+            $.ajax({
+                async : false,
+                url : '{% url "Venta:url_agregar_descuento_ajax" %}',
+                type : 'get',
+                data : {'descuento':  $descuento.val()},
+                success : function(data){
+                    set_total(data.subtotal, data.descuento ,data.total);
+                }
+            });
+            $codigo.focus();
+        }
+
         function Cancelar(e){
             $.ajax({
                 async : false,
@@ -164,7 +191,8 @@
                 type : 'get',
                 success : function(data){
                     $tablaVenta.html('');
-                    $('.thead-footer').html('');
+                    set_total(0, 0, 0);
+                    $descuento.val(0);
                 }
             });
             $codigo.focus();
@@ -187,7 +215,7 @@
                             $tablaVenta.append(item_product(item.codigo, item.descripcion, item.pmayoreo, item.cantidad, true));
                         }
                     });
-                    $('.total').html('<strong>$ ' + data.precio + '</strong>')
+                    set_total(data.subtotal, data.descuento ,data.total);
                 }
             });
             $codigo.focus();
@@ -203,7 +231,9 @@
                 type : 'get',
                 success : function(data){
                     if (data.precio <= 0) {
-                        $('.thead-footer').html('');
+                        $tablaVenta.html('');
+                        set_total(0, 0, 0);
+                        $descuento.val(0);
                     }else {
                         $tablaVenta.html('');
                         $.each(data.cuenta, function (i, item) {
@@ -213,8 +243,8 @@
                                 $tablaVenta.append(item_product(item.codigo, item.descripcion, item.pmayoreo, item.cantidad, true));
                             }
                         });
+                        set_total(data.subtotal, data.descuento ,data.total);
                     }
-                    $('.total').html('<strong>$ ' + data.precio + '</strong>')
                 }
             });
             $codigo.focus();
@@ -237,7 +267,7 @@
                             $tablaVenta.append(item_product(item.codigo, item.descripcion, item.pmayoreo, item.cantidad, true));
                         }
                     });
-                    $('.total').html('<strong>$ ' + data.precio + '</strong>')
+                    set_total(data.subtotal, data.descuento ,data.total);
                 }
             });
             $codigo.focus();
@@ -262,7 +292,7 @@
                     if (data.buscado) {
                         $tablaVenta.children('tr').addClass('success loading');
                     }
-                    $('.total').html('<strong>$ ' + data.precio + '</strong>');
+                    set_total(data.subtotal, data.descuento ,data.total);
             	}
             });
             $codigo.val('').focus();
@@ -292,8 +322,7 @@
                     if (data.buscado) {
                         $tablaVenta.children('tr').addClass('success loading');
                     }
-
-                    $('.total').html('<strong>$ ' + data.precio + '</strong>');
+                    set_total(data.subtotal, data.descuento ,data.total);
             	}
             });
             $codigo.val('').focus();
@@ -306,7 +335,7 @@
             $btnefectivo.prop('disabled', true);
             $.ajax({
                 async : false,
-                data : {'efectivo': dato},
+                data : {'efectivo': dato, 'descuento': $descuento.val()},
                 url : {% url "Venta:url_pagar" %},
                 type : 'get',
                 success : function(data){
@@ -319,7 +348,8 @@
                                 '<table class="table table-hover"><tr><td><strong>Total: $ ' + data.total + '</strong></td><td><strong>Efectivo: $ ' + data.efectivo + '</strong></td><td><strong>Cambio: $ ' + data.cambio + '</strong></td></tr></table>' +
                                 '<strong>¡Completado!</strong> '+ data.mensaje +'</div>'
                         $tablaVenta.html('');
-                        $('.total').html('$ 0');
+                        set_total(0, 0, 0);
+                        $descuento.val(0);
 {#                        Imprimirtiket#}
                         var $btntiketoff = '<div class="box-tools pull-right"><button type="button" id="offtiket" class="btn btn-box-tool"><i class="fa fa-close"></i></button></div>'
                         var $framtiket = '<iframe id="visualizador-pdf" name="visualizador-pdf" src="'+data.url+'" width="100%" height="600px" ></iframe>'
@@ -361,7 +391,6 @@
             //return false;
         }
 
-
         //Eventos
 
 	    $(document).ready(function(){
@@ -379,6 +408,8 @@
         $tablaVenta.on('click', '.btx', TipoPre);
 
         $('#form_nombre').on('submit', Buscarpronom);
+
+        $descuento.on('change', set_descount_ajax);
 
         $('#formxD').on('submit',Buscarpro);
 
