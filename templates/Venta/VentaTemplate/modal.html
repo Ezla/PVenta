@@ -8,16 +8,21 @@
             </div>
             <div class="modal-body">
                 <p>Monto a cobrar.</p>
-                <h2 class="total">$ {{precio}}</h2>
+                <h2 class="total" data-total="{{ total }}" data-subtotal="{{ subtotal }}"><strong>$ {{ total }} ({{ subtotal }} - {{ descuento }})</strong></h2>
                 <div id="mensaje">
                 </div>
                 <p>Por favor, ingrese la cantidad con la que el cliente pagara.</p>
 
-                <form id="formPago">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-usd"></i></span>
-                        <input type="number" class="form-control" id="efectivo" name="efectivo" placeholder="Ingrese la cantidad de forma numerica" min="0" step="0.01">
+                <form id="formPago" class="form-inline">
+                    <div class="input-group col-xs-4">
+                        <span class="input-group-addon">%</span>
+                        <input type="number" class="form-control" id="descuento" name="descuento" placeholder="Porcentaje de descuento" min="0" step="1" max="100" value="{{ valor_descuento }}">
                     </div>
+                    <div class="input-group col-xs-7">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-usd"></i></span>
+                        <input type="number" class="form-control" id="efectivo" name="efectivo" placeholder="Cantidad en forma numerica" min="0" step="0.01">
+                    </div>
+                    <br/>
                     <br/>
                     <button type="submit" class="btn btn-primary" id="btnefectivo">
                         <i class=" glyphicon glyphicon-hand-right"></i> Pagar ahora

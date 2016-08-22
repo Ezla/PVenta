@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Cuenta, Venta
+from .models import Cuenta, Venta, Descuento
 
 
 class CuentaAdmin(admin.ModelAdmin):
@@ -14,3 +14,4 @@ class VentaAdmin(admin.ModelAdmin):
 
 admin.site.register(Cuenta, CuentaAdmin)
 admin.site.register(Venta, VentaAdmin)
+admin.site.register(Descuento)

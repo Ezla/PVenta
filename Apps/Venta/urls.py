@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
 from .views import Login, Logout, Venta, VentaBuscarProducto, VentaRemoverProd, VentaCancelarCuenta, \
-    VentaAumentarProd, VentaPagarCuenta, VentaTiket, VentaTipoPrecio
+    VentaAumentarProd, VentaPagarCuenta, VentaTiket, VentaTipoPrecio, VentaSetDescuento
 
 urlpatterns = [
     url(r'^$', Login.as_view(), name='url_index'),
@@ -14,5 +14,6 @@ urlpatterns = [
     url(r'^Ajax/Aumentar/$', VentaAumentarProd.as_view(), name='url_aumentar_prod_ajax'),
     url(r'^Ajax/Precio/$', VentaTipoPrecio.as_view(), name='url_tipo_precio_ajax'),
     url(r'^Ajax/Cancelar/$', VentaCancelarCuenta.as_view(), name='url_cancelar_cuenta_ajax'),
+    url(r'^Ajax/Descuento/$', VentaSetDescuento.as_view(), name='url_agregar_descuento_ajax'),
 
 ]
