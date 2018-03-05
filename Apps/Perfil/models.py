@@ -10,11 +10,12 @@ def url(obj, filename):
 
 class UserProfile(models.Model):
     avatar = models.ImageField(upload_to=url, blank=True, null=True)
-    user = models.OneToOneField(User, related_name="profile")
+    user = models.OneToOneField(User, on_delete=models.CASCADE,
+                                related_name="profile")
     STATUS_TEMPLATE = ((1, 'Predeterminado'), (2, 'Clasico'),)
     plantilla = models.IntegerField(choices=STATUS_TEMPLATE, default=1)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.user.username
 
     def get_avatar(self):

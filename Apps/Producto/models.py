@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 class Marca(models.Model):
     marca = models.CharField(max_length=30, unique=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.marca
 
 
@@ -13,7 +13,7 @@ class Producto(models.Model):
     code39 = models.BooleanField(default=False)
     codigo = models.CharField(max_length=48, unique=True, null=True, blank=True)
     descripcion = models.CharField(max_length=100)
-    marca = models.ForeignKey(Marca, null=True)
+    marca = models.ForeignKey(Marca, on_delete=models.SET_NULL, null=True)
     vunidad = models.BooleanField(default=True)
     punitario = models.DecimalField(max_digits=8, decimal_places=2)
     pmayoreo = models.DecimalField(max_digits=8, decimal_places=2)
@@ -22,17 +22,17 @@ class Producto(models.Model):
     minimo = models.IntegerField(null=True, blank=True)
     modificado = models.DateTimeField(auto_now=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.descripcion
 
     def clean(self):
         errores = {}
         cont = 0
         if not self.code39:
-            if len(self.codigo) == 0:
+            if not self.codigo:
                 errores.update({'codigo': 'Este campo es obligatorio.'})
                 cont = 1
-            if len(self.codigo) < 8:
+            elif len(self.codigo) < 8:
                 errores.update({'codigo': 'El codigo de barras debe contener al menos ocho caracteres.'})
                 cont = 1
         # ---punitario---

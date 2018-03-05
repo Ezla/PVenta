@@ -1,5 +1,5 @@
 from django.contrib.auth.hashers import make_password
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import ListView, FormView, UpdateView
@@ -7,6 +7,7 @@ from .models import UserProfile
 from .forms import FormUserUp, FormCreateUser, FormEditPass
 from django.contrib.auth.models import User
 from Apps.Venta.views import LoginRequiredMixin
+
 
 class ListPerfilUsuario(LoginRequiredMixin, ListView):
     template_name = 'Perfil/usuarios_list.html'
@@ -29,7 +30,9 @@ class EditUser(LoginRequiredMixin, UpdateView):
                 perfil.avatar = self.request.FILES.get('avatar')
                 perfil.save()
             except:
-                UserProfile.objects.create(user=user, avatar=self.request.FILES.get('avatar'))
+                UserProfile.objects.create(user=user,
+                                           avatar=self.request.FILES.get(
+                                               'avatar'))
 
         return HttpResponseRedirect(self.get_success_url())
 
@@ -48,7 +51,8 @@ class CreateUser(LoginRequiredMixin, FormView):
         user.first_name = form.cleaned_data.get('first_name')
         user.last_name = form.cleaned_data.get('last_name')
         user.save()
-        UserProfile.objects.create(user=user, avatar=self.request.FILES.get('avatar'))
+        UserProfile.objects.create(user=user,
+                                   avatar=self.request.FILES.get('avatar'))
         return super(CreateUser, self).form_valid(form)
 
 
@@ -60,6 +64,7 @@ class EditPass(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         user = form.save()
-        user.password = make_password(password=form.cleaned_data.get('password2'))
+        user.password = make_password(
+            password=form.cleaned_data.get('password2'))
         user.save()
         return HttpResponseRedirect(self.get_success_url())
