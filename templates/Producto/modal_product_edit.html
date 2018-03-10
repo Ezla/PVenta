@@ -1,0 +1,121 @@
+<!-- Modal product -->
+<div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span><span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    <i class="fa fa-barcode"></i>
+                    <strong>Editar producto</strong>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+{#                    Codigo 39#}
+                    <div class="form-group col-md-6">
+                        <div class="panel panel-default margin-top-one-half">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    Usar un code39
+                                    <div class="material-switch pull-right">
+                                        <input id="code39" name="code39-check" type="checkbox"/>
+                                        <label for="code39" class="label-primary"></label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+{#                    Coigo de barras#}
+                    <div class="form-group col-md-6">
+                        <label for="codigo">Codico de barras</label>
+                        <input type="text" class="form-control" id="codigo" placeholder="Codico de barras">
+                        <span id="help-codigo" class="help-block"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+{#                    Descripcion#}
+                    <div class="form-group col-md-8">
+                        <label for="descripcion">Descripción</label>
+                        <input type="text" class="form-control" id="descripcion" placeholder="Descripción del producto">
+                        <span id="help-descripcion" class="help-block"></span>
+                    </div>
+{#                Marca#}
+                    <div class="form-group col-md-4">
+                        <label for="marca">Marca</label>
+                        <select id="marca" class="form-control">
+                            {% for marca in marcas %}
+                                <option value="{{ marca.pk }}">{{ marca.marca }}</option>
+                            {% endfor %}
+                        </select>
+                        <span id="help-marca" class="help-block"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+{#                    Precio unitario#}
+                    <div class="form-group col-md-6">
+                        <label for="punitario">Precio unitario</label>
+                        <input type="number" class="form-control" id="punitario" placeholder="Precio regular">
+                        <span id="help-punitario" class="help-block"></span>
+                    </div>
+{#                    Precio mayoreo#}
+                    <div class="form-group col-md-6">
+                        <label for="pmayoreo">Precio de mayoreo </label>
+                        <input type="number" class="form-control" id="pmayoreo" placeholder="Precio al mayoreo ">
+                        <span id="help-pmayoreo" class="help-block"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+{#                    Venta por unidad#}
+                    <div class="form-group col-md-6">
+                        <div class="panel panel-default margin-top-one-half">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    Venta por unidad
+                                    <div class="material-switch pull-right">
+                                        <input id="vunidad" name="vunidad-check" type="checkbox"/>
+                                        <label for="vunidad" class="label-primary"></label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+{#                    Inventario#}
+                    <div class="form-group col-md-6">
+                        <div class="panel panel-default margin-top-one-half">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    Usar inventario
+                                    <div class="material-switch pull-right">
+                                        <input id="inventario" name="inventario-check" type="checkbox"/>
+                                        <label for="inventario" class="label-primary"></label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+{#                    Cantidad#}
+                    <div class="form-group col-md-6">
+                        <label for="cantidad">Cantidad</label>
+                        <input type="number" class="form-control" id="cantidad" placeholder="Cantidad en existencia">
+                        <span id="help-cantidad" class="help-block"></span>
+                    </div>
+{#                    Minimo#}
+                    <div class="form-group col-md-6">
+                        <label for="minimo">Minimo</label>
+                        <input type="number" class="form-control" id="minimo" placeholder="Cantidad minima de inventario">
+                        <span id="help-minimo" class="help-block"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="guardar">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
