@@ -1,11 +1,12 @@
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 from django.core import serializers
-from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView, View
-import datetime
+from django.views.generic import CreateView, ListView, UpdateView, DeleteView,\
+    DetailView, View
+
 import barcode
-from StringIO import StringIO
+from io import StringIO
 
 from .models import Producto, Marca
 from .forms import CrearProductoForm, CrearMarcaForm
@@ -36,9 +37,11 @@ class ProductoLista(LoginRequiredMixin, ListView):
     model = Producto
     paginate_by = 50
 
-
     def get_context_data(self, **kwargs):
         context = super(ProductoLista, self).get_context_data(**kwargs)
+        context['marcas'] = Marca.objects.all()
+        url_api = reverse('api_product-list')
+        context['url_api'] = url_api
         total = Producto.objects.count()
         context['total_productos'] = total
         buscar = self.request.GET.get('buscar_prod')
