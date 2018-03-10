@@ -21,6 +21,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='producto',
             name='marca',
-            field=models.ForeignKey(to='Producto.Marca', null=True),
+            field=models.ForeignKey(to='Producto.Marca', on_delete=models.SET_NULL, null=True),
         ),
     ]

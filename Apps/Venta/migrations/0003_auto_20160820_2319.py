@@ -22,6 +22,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cuenta',
             name='descuento',
-            field=models.ForeignKey(default=Apps.Venta.models.default_descuento, to='Venta.Descuento'),
+            field=models.ForeignKey(default=Apps.Venta.models.default_descuento, on_delete=models.CASCADE,
+                                    to='Venta.Descuento'),
         ),
     ]

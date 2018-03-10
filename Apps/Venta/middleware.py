@@ -1,9 +1,9 @@
+class ValidarCuenta:
+    def __init__(self, get_response):
+        self.get_response = get_response
 
-
-class ValidarCuenta():
-
-    def process_request(self, request):
-        if request.user.is_authenticated():
+    def __call__(self, request):
+        if request.user.is_authenticated:
             if request.session.get('cuenta') is None:
                 request.session['cuenta'] = list()
             if request.session.get('status_bar') is None:
@@ -18,3 +18,6 @@ class ValidarCuenta():
                 request.session['cantidad'] = 0
             if request.session.get('descuento') is None:
                 request.session['descuento'] = 0
+
+        response = self.get_response(request)
+        return response

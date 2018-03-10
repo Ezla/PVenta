@@ -2,7 +2,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView, RedirectView, FormView, View, ListView
 from django.http import HttpResponse, JsonResponse, Http404, HttpResponseRedirect
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.contrib.auth import login, logout
 from django.db import transaction
 
@@ -30,7 +30,7 @@ class Login(FormView):
     success_url = reverse_lazy('Venta:url_venta')
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return HttpResponseRedirect(self.get_success_url())
         else:
             return super(Login, self).dispatch(request, *args, **kwargs)
@@ -52,7 +52,7 @@ class Logout(RedirectView):
 class LoginRequiredMixin(object):
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             return HttpResponseRedirect(reverse_lazy('Venta:url_index'))
         else:
             return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)

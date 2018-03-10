@@ -10,6 +10,8 @@
 
 {% block conte %}
 
+{% include "Producto/modal_product_edit.html" %}
+
 <div class="box">
     <div class="box-body">
         <form action="{% url 'Producto:url_lista' 1 %}" method="get">
@@ -72,6 +74,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                {% csrf_token %}
                 {% if not object_list %}
                     <tr>
                         <td>---------</td>
@@ -83,36 +86,20 @@
                     </tr>
                 {% endif %}
                 {% for prod in object_list %}
-                    <tr>
+                    <tr class="tr-product" data-product="{{ prod.pk }}">
                         <td><a href="{% url 'Producto:url_consultar' prod.id %}" title="Ver detalles del producto."
                                                 class="btn btn-default btn-sm btn-block">{{prod.descripcion}}</a>
                         </td>
-                        <td class="hidden-xs"><a href='{% url 'Producto:url_actualizar_marca' prod.marca.id %}'
-                                                 class="btn btn-primary btn-xs btn-block">{{prod.marca.marca}}</a>
+                        <td class="hidden-xs">
+                            <strong class="btn btn-primary btn-xs btn-block">{{prod.marca.marca}}</strong>
                         </td>
                         <td class="hidden-xs text-center">{{prod.vunidad|yesno:'<i class="fa f fa-thumbs-o-up text-green"></i>,<i class="fa f fa-thumbs-o-down text-red"></i>'|safe}}</td>
                         <td class="hidden-xs">$ {{prod.punitario}}</td>
                         <td class="hidden-xs">$ {{prod.pmayoreo}}</td>
                         <td><a href=""></a>
                             <div class="btn-group pull-right">
-                              <button type="button" title="Opciones." class="btn btn-default btn-sm dropdown-toggle"
-                                      data-toggle="dropdown">
-                                <span class="glyphicon glyphicon-cog"></span> <span class="caret"></span>
-                              </button>
-
-                              <ul class="dropdown-menu" role="menu">
-                                <li>
-                                    <a href="{% url 'Producto:url_actualizar' prod.id %}">
-                                        <span class="glyphicon glyphicon-floppy-open"></span> Editar
-                                    </a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="{% url 'Producto:url_eliminar' prod.id %}">
-                                        <span class="glyphicon glyphicon-floppy-remove"></span> Eliminar
-                                    </a>
-                                </li>
-                              </ul>
+                                <button type="button" class="btn btn-primary edit-product" data-toggle="modal" data-target="#exampleModal" data-pk="{{ prod.pk}}">Editar</button>
+{#                                <button type="button" class="btn btn-danger">Eliminar</button>#}
                             </div>
                         </td>
                     </tr>
@@ -158,8 +145,10 @@
 {% endblock %}
 
 {% block script %}
+    <!-- AdminLTE App -->
+    {% load static %}
+    <script src="{% static 'js/product/product-ajax.js' %}"></script>
     <script type="text/javascript">
-        var $codigo = $('#buscar_prod')
-        $(document).ready($codigo.focus());
+        var base_api_url = '{{ url_api }}';
     </script>
 {% endblock %}

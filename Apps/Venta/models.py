@@ -10,12 +10,13 @@ def default_descuento():
 class Descuento(models.Model):
     descuento = models.PositiveSmallIntegerField(unique=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return 'Descuento del {}%'.format(self.descuento)
 
     def clean(self):
         if self.descuento > 100:
-            raise ValidationError({'descuento': 'Este campo no puede contener numeros mayores a 100.'})
+            msg = 'Este campo no puede contener numeros mayores a 100.'
+            raise ValidationError({'descuento': msg})
 
 
 class Cuenta(models.Model):
@@ -26,9 +27,10 @@ class Cuenta(models.Model):
     cambio = models.DecimalField(max_digits=8, decimal_places=2, null=True)
     creado = models.DateTimeField(auto_now_add=True, null=True)
     modificado = models.DateTimeField(auto_now=True, null=True)
-    descuento = models.ForeignKey(Descuento, default=default_descuento)
+    descuento = models.ForeignKey(Descuento, on_delete=models.CASCADE,
+                                  default=default_descuento)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.tiket
 
 
@@ -39,7 +41,7 @@ class Venta(models.Model):
     precio = models.DecimalField(max_digits=8, decimal_places=2, null=True)
     cantidad = models.IntegerField(null=True)
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    cuenta = models.ForeignKey(Cuenta, null=True)
+    cuenta = models.ForeignKey(Cuenta, on_delete=models.SET_NULL, null=True)
 
-    def __unicode__(self):
-        return unicode(self.nombre)
+    def __str__(self):
+        return self.nombre

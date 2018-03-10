@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
                 ('precio', models.DecimalField(null=True, max_digits=8, decimal_places=2)),
                 ('cantidad', models.IntegerField(null=True)),
                 ('subtotal', models.DecimalField(null=True, max_digits=10, decimal_places=2)),
-                ('cuenta', models.ForeignKey(to='Venta.Cuenta', null=True)),
+                ('cuenta', models.ForeignKey(to='Venta.Cuenta', on_delete=models.SET_NULL, null=True)),
             ],
         ),
     ]
