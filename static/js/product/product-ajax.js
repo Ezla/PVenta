@@ -4,6 +4,14 @@ var url = null;
 var data = {};
 
 /**
+ * Calcula segun el precio unitario, un 10% menos y lo ingresa en el campo de precio al mayoreo.
+ */
+function calculateDiscount() {
+    var price = $('#punitario').val();
+    $('#pmayoreo').val(price * 0.9);
+}
+
+/**
  * Si el campo "code39" esta seleccionado, el campo "codigo" es habilitado, y viceversa.
  */
 function updateStateCode() {
@@ -177,6 +185,7 @@ function saveProduct() {
 }
 
 $('#code39').on('change', updateStateCode);
+$('#calculate').on('click', calculateDiscount);
 $('#inventario').on('change', updateInventario);
 $('.edit-product').on('click', loadModal);
 $('#guardar').on('click', saveProduct);
