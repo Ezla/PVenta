@@ -40,6 +40,9 @@ function updateInventario() {
  */
 function cleanBrandForm() {
     $('#id_marca_modal').val('');
+
+    // Quita mensaje de error en campo del formulario si es que lo tiene
+    $('#help-marca').text('').parent().removeClass('has-error');
 }
 
 /**
@@ -60,6 +63,15 @@ function cleanProductForm() {
     // actualiza estado de campos (enable / disable)
     updateStateCode();
     updateInventario();
+
+    // Quita mensaje de error en campo del formulario si es que lo tiene
+    $('#help-codigo').text('').parent().removeClass('has-error');
+    $('#help-descripcion').text('').parent().removeClass('has-error');
+    $('#help-marca').text('').parent().removeClass('has-error');
+    $('#help-punitario').text('').parent().removeClass('has-error');
+    $('#help-pmayoreo').text('').parent().removeClass('has-error');
+    $('#help-cantidad').text('').parent().removeClass('has-error');
+    $('#help-minimo').text('').parent().removeClass('has-error');
 }
 
 /**
