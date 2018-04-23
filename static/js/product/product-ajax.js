@@ -123,7 +123,53 @@ function setList(pk, descripcion, marca, vunidad, punitario, pmayoreo) {
 }
 
 /**
- * Realiza la petición al servidor.
+ * Gestiona la consulta al servidor para guardar la informacion de la nueva marca.
+ * * @param {event} e: Evento propio del boton al hacer click.
+ */
+function saveNewBrand(e) {
+    e.preventDefault();
+    method = 'post';
+    var brand = $('#id_marca_modal').val();
+    data = {'marca': brand};
+    brandAjax(base_url_brand, method, data)
+}
+
+/**
+ * Realiza la petición al servidor para el modal para marca.
+ * @param {string} url: Dirección a la cual se realizara la petición.
+ * @param {string} type_method: Tipo de metodo http con el cual se realizara la petición (get/put).
+ * @param {object} data_ajax: Datos que se enviaran en la petición.
+ */
+function brandAjax(url, type_method, data_ajax) {
+    $.ajax({
+        url: url,
+        type: type_method,
+        data: data_ajax,
+        beforeSend: function(request) {
+            request.setRequestHeader("X-CSRFToken", $('[name=csrfmiddlewaretoken]').val());
+            $('#help-marca').text('').parent().removeClass('has-error');
+        },
+        success: function (data) {
+            if (type_method == 'post') {
+                $('#myModal').modal('toggle');
+                document.getElementById('audio_n').play();
+            }
+        },
+        error: function (jqXHR) {
+            var errors = jqXHR.responseJSON;
+            $.each(errors, function(key, msg){
+                if (key == 'marca') {
+                    $('#help-marca').text(msg).parent().addClass('has-error');
+                } else  {
+                    $('#help-marca').text(msg).parent().addClass('has-error');
+                }
+            });
+        }
+    });
+}
+
+/**
+ * Realiza la petición al servidor para el modal para producto.
  * @param {string} url: Dirección a la cual se realizara la petición.
  * @param {string} type_method: Tipo de metodo http con el cual se realizara la petición (get/put).
  * @param {object} data_ajax: Datos que se enviaran en la petición.
@@ -218,3 +264,4 @@ $('.edit-product').on('click', loadModal);
 $('#btnAddBrand').on('click', cleanBrandForm);
 $('#btnAddProduct').on('click', cleanProductForm);
 $('#guardar').on('click', saveProduct);
+$('#btnmarca').on('click', saveNewBrand);
