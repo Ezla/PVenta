@@ -1,5 +1,11 @@
 {% extends "base_v3.html" %}
 
+{% block style %}
+    {% load static %}
+    <!-- checkbox -->
+    <link rel="stylesheet" href="{% static 'css/floating_buttons.css' %}">
+{% endblock %}
+
 {% block title %} Productos {% endblock %}
 
 {% block encabezado %} Lista de productos {% endblock %}
@@ -9,6 +15,10 @@
 {% endblock %}
 
 {% block conte %}
+
+{% include "Producto/floating_buttons.html" %}
+
+{% include "Producto/modal_brand_form.html" %}
 
 {% include "Producto/modal_product_edit.html" %}
 
