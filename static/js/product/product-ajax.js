@@ -36,6 +36,33 @@ function updateInventario() {
 }
 
 /**
+ * Limpia el contenido del formulario para la marca.
+ */
+function cleanBrandForm() {
+    $('#id_marca_modal').val('');
+}
+
+/**
+ * Limpia el contenido del formulario para el producto.
+ */
+function cleanProductForm() {
+    $('#code39').prop('checked', false);
+    $('#vunidad').prop('checked', false);
+    $('#inventario').prop('checked', false);
+    $('#codigo').val('');
+    $('#descripcion').val('');
+    $('#punitario').val('');
+    $('#pmayoreo').val('');
+    $('#cantidad').val('');
+    $('#minimo').val('');
+    $('#marca').val('');
+
+    // actualiza estado de campos (enable / disable)
+    updateStateCode();
+    updateInventario();
+}
+
+/**
  * Inserta los valores proporcionados a los campos correspondientes del formulario (modal).
  * @param {boolean} code39: Valor del campo a mostrar.
  * @param {string} codigo: Valor del campo a mostrar.
@@ -188,4 +215,6 @@ $('#code39').on('change', updateStateCode);
 $('#calculate').on('click', calculateDiscount);
 $('#inventario').on('change', updateInventario);
 $('.edit-product').on('click', loadModal);
+$('#btnAddBrand').on('click', cleanBrandForm);
+$('#btnAddProduct').on('click', cleanProductForm);
 $('#guardar').on('click', saveProduct);
