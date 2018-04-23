@@ -21,4 +21,4 @@ class ProductoSerializer(serializers.ModelSerializer):
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Marca
-        fields = ('marca',)
+        fields = ('marca', 'pk')

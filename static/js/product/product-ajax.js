@@ -36,6 +36,33 @@ function updateInventario() {
 }
 
 /**
+ * Inserta nuevas opciones en el select de marcas (modal) segun la lista enviada.
+ * @param {object} brands: Lista de marcas.
+ */
+function setBrans(brands) {
+    // removemos antiguas opciones
+    $('#marca option').remove();
+
+    // inserta nuevas opciones enviadas
+    $.each(brands, function (key, item) {
+        var option = $('<option/>', {
+            'value': item.pk,
+            'text': item.marca
+        });
+        $('#marca').append(option);
+    });
+}
+
+/**
+ * Gestiona la consulta al servidor para cargar la informacion de todas las marcas.
+ */
+function loadBrands() {
+    method = 'get';
+    data = {};
+    brandAjax(base_url_brand, method, data)
+}
+
+/**
  * Limpia el contenido del formulario para la marca.
  */
 function cleanBrandForm() {
@@ -143,7 +170,7 @@ function saveNewBrand(e) {
     method = 'post';
     var brand = $('#id_marca_modal').val();
     data = {'marca': brand};
-    brandAjax(base_url_brand, method, data)
+    brandAjax(base_url_brand, method, data);
 }
 
 /**
@@ -162,9 +189,12 @@ function brandAjax(url, type_method, data_ajax) {
             $('#help-marca').text('').parent().removeClass('has-error');
         },
         success: function (data) {
-            if (type_method == 'post') {
+            if (type_method == 'get') {
+                setBrans(data);
+            } else if (type_method == 'post') {
                 $('#myModal').modal('toggle');
                 document.getElementById('audio_n').play();
+                loadBrands();
             }
         },
         error: function (jqXHR) {
