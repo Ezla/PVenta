@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from datetime import datetime
 from Apps.Venta.views import LoginRequiredMixin
 from Apps.Venta.models import Venta, Cuenta
@@ -30,3 +30,7 @@ class VentaDemo(ListView):
     template_name = 'Estadistica/compras_list.html'
     queryset = Cuenta.objects.filter(creado__range=('2015-10-01','2015-11-01'))
     # queryset = Cuenta.objects.all()2015-11-09 05:04:47.821000
+
+
+class InvoiceList(TemplateView):
+    template_name = 'Estadistica/invoice_app.html'

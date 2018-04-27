@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Provider, ForeignInvoice, Payment
 
-# Register your models here.
+admin.site.register(Provider)
+admin.site.register(ForeignInvoice)
+admin.site.register(Payment)
