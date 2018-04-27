@@ -24,7 +24,7 @@ class ProductoApiView(viewsets.ModelViewSet):
                 self.product.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-        return Response( self.product.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response( serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, pk=None):
         self.product = self.get_object()
