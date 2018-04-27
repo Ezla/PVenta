@@ -1,6 +1,7 @@
 var id_product = null;
 var method = null;
 var url = null;
+var type_form = null;
 var data = {};
 
 /**
@@ -69,13 +70,16 @@ function cleanBrandForm() {
     $('#id_marca_modal').val('');
 
     // Quita mensaje de error en campo del formulario si es que lo tiene
-    $('#help-marca').text('').parent().removeClass('has-error');
+    $('#help-marca-name').text('').parent().removeClass('has-error');
 }
 
 /**
  * Limpia el contenido del formulario para el producto.
  */
 function cleanProductForm() {
+    type_form = 'post';
+
+    // limpiamos contenido del formulario
     $('#code39').prop('checked', false);
     $('#vunidad').prop('checked', false);
     $('#inventario').prop('checked', false);
@@ -132,33 +136,59 @@ function setForm(code39, codigo, descripcion, vunidad, punitario, pmayoreo, inve
 }
 
 /**
- * Inserta los valores del formulario (modal) a la lista de productos.
+ * Regresa un renglon (tr) que mostrara el registro del producto para que el usuario pueda interactuar con el.
  * @param {number} pk: Valor del campo a mostrar.
  * @param {string} descripcion: Valor del campo a mostrar.
  * @param {string} marca: Valor del campo a mostrar.
  * @param {boolean} vunidad: Valor del campo a mostrar.
  * @param {number} punitario: Valor del campo a mostrar.
  * @param {number} pmayoreo: Valor del campo a mostrar.
+ * @returns {jQuery}: Objeto del DOM.
  */
-function setList(pk, descripcion, marca, vunidad, punitario, pmayoreo) {
-    $('.tr-product').each(function () {
-        if ($(this).data('product') == pk) {
-
-            $(this).children('td').eq(0).children('a').text(descripcion);
-
-            $(this).children('td').eq(1).children('strong').text(marca);
-
-            var $icon = $(this).children('td').eq(2).children('i');
-            if (vunidad) {
-                $($icon).removeClass('fa-thumbs-o-down text-red').addClass('fa-thumbs-o-up text-green');
-            } else {
-                $($icon).removeClass('fa-thumbs-o-up text-green').addClass('fa-thumbs-o-down text-red');
-            }
-
-            $(this).children('td').eq(3).text('$ ' + Number(punitario).toFixed(2));
-            $(this).children('td').eq(4).text('$ ' + Number(pmayoreo).toFixed(2));
-        }
-    })
+function createVisualProuct(pk, descripcion, marca, vunidad, punitario, pmayoreo) {
+    var classSale = 'fa f fa-thumbs-o-down text-red';
+    if (vunidad){
+        classSale = 'fa f fa-thumbs-o-up text-green';
+    }
+    var $description = $('<td/>').append($('<a/>', {
+        'class': 'btn btn-default btn-sm btn-block',
+        'href': '/Producto/Consultar/' + pk +'/',
+        'title': 'Ver detalles del producto.',
+        'text': descripcion
+    }));
+    var $brand = $('<td/>', {
+        'class': 'hidden-xs'
+    }).append($('<strong/>', {
+        'class': 'btn btn-primary btn-xs btn-block',
+        'text': marca
+    }));
+    var $salePerUnit = $('<td/>', {
+        'class': 'hidden-xs text-center'
+    }).append($('<i/>', {
+        'class': classSale
+    }));
+    var $unitPriece = $('<td/>', {
+        'class': 'hidden-xs',
+        'text': '$ ' + punitario
+    });
+    var $wholesalePrice = $('<td/>', {
+        'class': 'hidden-xs',
+        'text': '$ ' + pmayoreo
+    });
+    var $editProduct = $('<td/>').append($('<div/>', {
+        'class': 'btn-group pull-right'
+    }).append($('<button/>', {
+        'type': 'button',
+        'class': 'btn btn-primary edit-product',
+        'data-toggle': 'modal',
+        'data-target': '#exampleModal',
+        'data-pk': pk,
+        'text': 'Editar'
+    }).on('click', loadProductForm)));
+    var $itemProduct = $('<tr/>', {
+        'class': 'tr-product',
+        'data-product': pk}).append($description, $brand, $salePerUnit, $unitPriece, $wholesalePrice, $editProduct);
+    return $itemProduct;
 }
 
 /**
@@ -186,7 +216,7 @@ function brandAjax(url, type_method, data_ajax) {
         data: data_ajax,
         beforeSend: function(request) {
             request.setRequestHeader("X-CSRFToken", $('[name=csrfmiddlewaretoken]').val());
-            $('#help-marca').text('').parent().removeClass('has-error');
+            $('#help-marca-name').text('').parent().removeClass('has-error');
         },
         success: function (data) {
             if (type_method == 'get') {
@@ -201,9 +231,9 @@ function brandAjax(url, type_method, data_ajax) {
             var errors = jqXHR.responseJSON;
             $.each(errors, function(key, msg){
                 if (key == 'marca') {
-                    $('#help-marca').text(msg).parent().addClass('has-error');
+                    $('#help-marca-name').text(msg).parent().addClass('has-error');
                 } else  {
-                    $('#help-marca').text(msg).parent().addClass('has-error');
+                    $('#help-marca-name').text(msg).parent().addClass('has-error');
                 }
             });
         }
@@ -234,16 +264,24 @@ function productAjax(url, type_method, data_ajax) {
         success: function (data) {
             if (type_method == 'get') {
                 setForm(data.code39, data.codigo, data.descripcion, data.vunidad, data.punitario, data.pmayoreo, data.inventario, data.cantidad, data.minimo, data.marca);
+            } else if (type_method == 'post') {
+                var name_marca = $('#marca option:selected').text();
+                $('tbody').prepend(createVisualProuct(data.pk, data.descripcion, name_marca, data.vunidad, data.punitario, data.pmayoreo));
+                $('#exampleModal').modal('toggle');
+                document.getElementById('audio_n').play();
             } else if (type_method == 'put') {
                 var name_marca = $('#marca option:selected').text();
-                setList(id_product, data.descripcion, name_marca, data.vunidad, data.punitario, data.pmayoreo);
+                var $visual_product = createVisualProuct(id_product, data.descripcion, name_marca, data.vunidad, data.punitario, data.pmayoreo);
+                var tr = 'tr[data-product="' + id_product + '"]';
+                var $prev_tr = $(tr).prev();
+                $(tr).remove();
+                $($prev_tr).after($visual_product);
                 $('#exampleModal').modal('toggle');
                 document.getElementById('audio_n').play();
             }
         },
         error: function (jqXHR) {
             var errors = jqXHR.responseJSON;
-
             $.each(errors, function(key, msg){
                 if (key == 'codigo') {
                     $('#help-codigo').text(msg).parent().addClass('has-error');
@@ -268,7 +306,8 @@ function productAjax(url, type_method, data_ajax) {
 /**
  * Gestiona la consulta al servidor para cargar la informacion del producto a modificar.
  */
-function loadModal() {
+function loadProductForm() {
+    type_form = 'put';
     id_product = $(this).data('pk');
     url = base_api_url + id_product + '/';
     method = 'get';
@@ -278,11 +317,18 @@ function loadModal() {
 }
 
 /**
- * Gestiona la consulta al servidor para guardar la informacion del producto modificado.
+ * Gestiona la consulta al servidor para guardar la informacion del producto.
  */
 function saveProduct() {
-    url = base_api_url + id_product + '/';
-    method = 'put';
+    // configuramos el tipo de gruardado
+    if (type_form == 'put') {
+        url = base_api_url + id_product + '/';
+        method = 'put';
+    } else {
+        url = base_api_url;
+        method = 'post';
+    }
+
     data = {
         "code39": $('#code39').prop('checked'),
         "codigo": $('#codigo').val(),
@@ -302,7 +348,7 @@ function saveProduct() {
 $('#code39').on('change', updateStateCode);
 $('#calculate').on('click', calculateDiscount);
 $('#inventario').on('change', updateInventario);
-$('.edit-product').on('click', loadModal);
+$('.edit-product').on('click', loadProductForm);
 $('#btnAddBrand').on('click', cleanBrandForm);
 $('#btnAddProduct').on('click', cleanProductForm);
 $('#guardar').on('click', saveProduct);
