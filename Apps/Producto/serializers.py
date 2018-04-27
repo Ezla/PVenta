@@ -7,7 +7,7 @@ from .validators import validate_product
 class ProductoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
-        fields = ('code39', 'codigo', 'descripcion', 'vunidad', 'punitario',
+        fields = ('pk', 'code39', 'codigo', 'descripcion', 'vunidad', 'punitario',
                   'pmayoreo', 'inventario', 'cantidad', 'minimo', 'marca')
 
     def validate(self, data):
