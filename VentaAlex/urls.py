@@ -6,10 +6,12 @@ from django.conf.urls.static import static
 from rest_framework import routers
 
 from Apps.Producto.api_views import ProductoApiView, BrandApiView
+from Apps.Estadistica.api_views import InvoiceApiView
 
 router = routers.DefaultRouter()
 router.register(r'product', ProductoApiView, base_name='api_product')
 router.register(r'brand', BrandApiView, base_name='api_brand')
+router.register(r'invoice', InvoiceApiView, base_name='api_invoice',)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
