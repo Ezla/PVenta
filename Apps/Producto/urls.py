@@ -1,5 +1,6 @@
 from django.conf.urls import url
 
+from .api_views import ProductExistsView
 from .views import ProductoNuevo, ProductoLista, ProductoActualizar, \
     ProductoEliminar, ProductoConsultar, MarcaNuevo, MarcaLista, \
     MarcaActualizar, MarcaEliminar, MarcaNuevoAjax, CodeImagen, \
@@ -33,4 +34,5 @@ urlpatterns = [
     url(r'^Notification/look/$', LookNotifications.as_view(),
         name='url_look_notificaciones'),
     url(r'^Status/bar/$', StatusBar.as_view(), name='url_status_bar'),
+    url(r'^api/search/product/(?P<code>[0-9]+)/$', ProductExistsView.as_view()),
 ]

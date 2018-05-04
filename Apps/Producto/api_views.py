@@ -1,7 +1,18 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import viewsets, status
-from .serializers import ProductoSerializer, BrandSerializer
+from rest_framework.views import APIView
+from .serializers import ProductoSerializer, ProductoExistsSerializer, BrandSerializer
 from .models import Producto, Marca
+
+
+class ProductExistsView(APIView):
+
+    def get(self, request, code=None):
+        queryset = Producto.objects.all()
+        user = get_object_or_404(queryset, codigo=code)
+        serializer = ProductoExistsSerializer(user)
+        return Response(serializer.data)
 
 
 class ProductoApiView(viewsets.ModelViewSet):

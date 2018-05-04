@@ -4,6 +4,12 @@ from .models import Producto, Marca
 from .validators import validate_product
 
 
+class ProductoExistsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Producto
+        fields = ('codigo', 'descripcion')
+
+
 class ProductoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
