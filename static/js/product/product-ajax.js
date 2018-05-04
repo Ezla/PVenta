@@ -24,6 +24,47 @@ function updateStateCode() {
 }
 
 /**
+ * Gestiona la busquea del producto cuando se escribe en el input del codigo.
+ * @param {event} e: Evento al teclear una letra.
+ */
+function searchCodeProduct(e) {
+    if (e.keyCode == 13) {
+        var code = $('#codigo').val();
+        if (code.length >= 10) {
+            var url = '/api/search/product/' + code + '/';
+            var type_method = 'get';
+            searchProductAjax(url, type_method, {})
+        }
+    }
+}
+
+/**
+ * Realiza la petición al servidor para para consultar eistencia de un producto.
+ * @param {string} url: Dirección a la cual se realizara la petición.
+ * @param {string} type_method: Tipo de metodo http con el cual se realizara la petición (get/put).
+ * @param {object} data_ajax: Datos que se enviaran en la petición.
+ */
+function searchProductAjax(url, type_method, data_ajax) {
+    $.ajax({
+        url: url,
+        type: 'get',
+        data: {'coigo': 'qwerrtqww'},
+        beforeSend: function(request) {
+            request.setRequestHeader("X-CSRFToken", $('[name=csrfmiddlewaretoken]').val());
+        },
+        success: function (data) {
+            var msg = 'El producto con codigo "' + data.codigo + '" ya existe como el siguiente producto: '+ data.descripcion;
+            $('#help-codigo').text(msg).parent().addClass('has-error');
+        },
+        error: function (jqXHR) {
+            if (jqXHR.status == 404) {
+                $('#help-codigo').text('').parent().removeClass('has-error');
+            }
+        }
+    });
+}
+
+/**
  * Si el campo "inventario" esta seleccionado, los campos "cantidad" y "minimo" son habilitados, y viceversa.
  */
 function updateInventario() {
@@ -193,7 +234,7 @@ function createVisualProuct(pk, descripcion, marca, vunidad, punitario, pmayoreo
 
 /**
  * Gestiona la consulta al servidor para guardar la informacion de la nueva marca.
- * * @param {event} e: Evento propio del boton al hacer click.
+ * @param {event} e: Evento propio del boton al hacer click.
  */
 function saveNewBrand(e) {
     e.preventDefault();
@@ -351,5 +392,6 @@ $('#inventario').on('change', updateInventario);
 $('.edit-product').on('click', loadProductForm);
 $('#btnAddBrand').on('click', cleanBrandForm);
 $('#btnAddProduct').on('click', cleanProductForm);
+$('#codigo').on('keyup', searchCodeProduct);
 $('#guardar').on('click', saveProduct);
 $('#btnmarca').on('click', saveNewBrand);
