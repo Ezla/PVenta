@@ -5,6 +5,20 @@ var type_form = null;
 var data = {};
 
 /**
+ * Llama el metodo click asociado al botono de agregar producto.
+ */
+function keyOpenModalProduct() {
+    $('#btnAddProduct').click();
+}
+
+/**
+ * Llama el metodo click asociado al botono de agregar marca.
+ */
+function keyOpenModalBrand() {
+    $('#btnAddBrand').click();
+}
+
+/**
  * Calcula segun el precio unitario, un 10% menos y lo ingresa en el campo de precio al mayoreo.
  */
 function calculateDiscount() {
@@ -395,3 +409,5 @@ $('#btnAddProduct').on('click', cleanProductForm);
 $('#codigo').on('keyup', searchCodeProduct);
 $('#guardar').on('click', saveProduct);
 $('#btnmarca').on('click', saveNewBrand);
+$(document).on('keydown', null, 'alt+8', keyOpenModalProduct);
+$(document).on('keydown', null, 'alt+9', keyOpenModalBrand);
