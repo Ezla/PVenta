@@ -136,8 +136,8 @@ function cleanProductForm() {
 
     // limpiamos contenido del formulario
     $('#code39').prop('checked', false);
-    $('#vunidad').prop('checked', false);
-    $('#inventario').prop('checked', false);
+    $('#vunidad').prop('checked', true);
+    $('#inventario').prop('checked', true);
     $('#codigo').val('');
     $('#descripcion').val('');
     $('#punitario').val('');
