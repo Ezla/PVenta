@@ -2,8 +2,8 @@ from django.urls import reverse_lazy, reverse
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 from django.core import serializers
-from django.views.generic import CreateView, ListView, UpdateView, DeleteView,\
-    DetailView, View
+from django.views.generic import CreateView, ListView, UpdateView, \
+    DeleteView, DetailView, View, TemplateView
 
 import json
 
@@ -191,6 +191,10 @@ class MarcaNuevoAjax(LoginRequiredMixin, View):
         data = JsonResponse({'Errores': e, 'Marcas': dic_marcas, 'mensaje': mensaje})
         # data = serializers.serialize('json', marcas)
         return HttpResponse(data, content_type='application/json')
+
+
+class GenerateBarcodeView(TemplateView):
+    template_name = 'Producto/product_barcode.html'
 
 
 class CodeImagen(LoginRequiredMixin, View):
