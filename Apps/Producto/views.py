@@ -5,9 +5,9 @@ from django.core import serializers
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView,\
     DetailView, View
 
-import barcode
-from io import StringIO
+import json
 
+from .utils import barcode_three_column_format
 from .models import Producto, Marca
 from .forms import CrearProductoForm, CrearMarcaForm
 from Apps.Venta.views import LoginRequiredMixin
@@ -196,11 +196,13 @@ class MarcaNuevoAjax(LoginRequiredMixin, View):
 class CodeImagen(LoginRequiredMixin, View):
 
     def get(self, *args, **kwargs):
-        fp = StringIO()
-        code39 = barcode.generate('Code39', '123456789012', writer=barcode.writer.ImageWriter(), output=fp)
-        # filename = code39.save('img')
-        response = HttpResponse(code39, content_type='application/png')
-        response['Content-Disposition'] = 'filename="img.png"'
+        products = json.loads(self.request.GET.get('products'))
+
+        barcodes = barcode_three_column_format(products)
+
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'filename="barcodes.pdf"'
+        response.write(barcodes)
         return response
 
 
