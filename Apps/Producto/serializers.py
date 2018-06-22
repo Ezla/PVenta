@@ -7,7 +7,7 @@ from .validators import validate_product
 class ProductoExistsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
-        fields = ('codigo', 'descripcion')
+        fields = ('pk', 'codigo', 'descripcion')
 
 
 class ProductoSerializer(serializers.ModelSerializer):
