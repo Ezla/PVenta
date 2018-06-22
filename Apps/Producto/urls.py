@@ -38,5 +38,5 @@ urlpatterns = [
     url(r'^Status/bar/$', StatusBar.as_view(), name='url_status_bar'),
     url(r'^api/search/product/(?P<code>[0-9]+)/$', ProductExistsView.as_view()),
     path('api/search/products/<str:word>/', ProductSearchSuggestionsView.as_view()),
-    path('products/barcode/', GenerateBarcodeView.as_view()),
+    path('products/barcode/', GenerateBarcodeView.as_view(), name='url_generate_barcodes'),
 ]
