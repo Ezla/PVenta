@@ -1,3 +1,5 @@
+from string import digits, ascii_uppercase, ascii_lowercase
+from random import choice
 from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
@@ -5,6 +7,36 @@ from reportlab.lib.units import mm
 from reportlab.graphics.barcode import code39
 
 from .models import Producto
+
+
+def random_string(length=1, uppercase=False, lowercase=False):
+    """
+    Genera una cadena aleatoria de caracteres, que puede contener numeros,
+    letras mayusculas y letras minusculas, el primer caracter sera siempre
+    una letra mayuscula.
+    :param length: (int) Cantidad de caracteres que contendra la cadena.
+    :param uppercase: (boolean) Valida si la cadena contendra letras
+    mayusculas.
+    :param lowercase: (boolean) Valida si la cadena contendra letras
+    minusculas.
+    :return: (str) Cadena aleatoria.
+    """
+    characters = digits
+    code = str()
+
+    if uppercase:
+        characters += ascii_uppercase
+    if lowercase:
+        characters += ascii_lowercase
+
+    while len(code) < length:
+        character = choice(characters)
+        if len(code) == 0:
+            character = choice(ascii_uppercase)
+
+        code += character
+
+    return code
 
 
 def barcode_three_column_format(products=list()):
