@@ -85,14 +85,15 @@ function renderNotMatches() {
  * @param {String} description
  * @returns {jQuery}
  */
-function renderSuggestions(pk, code, description) {
+function renderSuggestions(pk, code, description, brand_name) {
     var $code = $('<td/>', {'text': code});
+    var $brand = $('<td/>', {'text': brand_name});
     var $description = $('<td/>', {'text': description});
     var $itemSuggestions = $('<tr/>', {
         'data-pk': pk,
         'data-code': code,
         'data-description': description
-    }).append($code, $description);
+    }).append($code, $description, $brand);
     $itemSuggestions.on('click', selectSuggestions);
     return $itemSuggestions
 }
@@ -208,7 +209,7 @@ function productAjax(url, type_method, data_ajax) {
                 $('#counter').html('').append($counterStatus);
                 if (counter > 0) {
                     $.each(data, function (key, item) {
-                        var $itemSuggestions = renderSuggestions(item.pk, item.codigo, item.descripcion);
+                        var $itemSuggestions = renderSuggestions(item.pk, item.codigo, item.descripcion, item.brand_name);
                         $('#suggestions').append($itemSuggestions);
                     });
                 } else {

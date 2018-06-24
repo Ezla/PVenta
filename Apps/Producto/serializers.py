@@ -5,16 +5,19 @@ from .validators import validate_product
 
 
 class ProductoExistsSerializer(serializers.ModelSerializer):
+    brand_name = serializers.CharField(source='marca.marca')
+
     class Meta:
         model = Producto
-        fields = ('pk', 'codigo', 'descripcion')
+        fields = ('pk', 'codigo', 'descripcion', 'brand_name')
 
 
 class ProductoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
-        fields = ('pk', 'code39', 'codigo', 'descripcion', 'vunidad', 'punitario',
-                  'pmayoreo', 'inventario', 'cantidad', 'minimo', 'marca')
+        fields = ('pk', 'code39', 'codigo', 'descripcion', 'vunidad',
+                  'punitario', 'pmayoreo', 'inventario', 'cantidad',
+                  'minimo', 'marca')
 
     def validate(self, data):
         valid, errores = validate_product(dict(data))
