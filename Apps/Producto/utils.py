@@ -59,7 +59,8 @@ def barcode_three_column_format(products=list()):
         while cont_quantity < item.get('quantity'):
             barcode = code39.Extended39(product.codigo,
                                         barWidth=0.3 * mm,
-                                        barHeight=12 * mm)
+                                        barHeight=12 * mm,
+                                        checksum=False)
             template.setFontSize(6, 15)
 
             template.drawString(x_axis + 5 * mm,
