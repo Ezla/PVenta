@@ -155,7 +155,7 @@ function renderStickerExample() {
  */
 function searchProduct(e) {
     var word = $('#buscar_prod').val();
-    if (word.length > 0) {
+    if (e.keyCode != 27 && word.length > 0) {
         var url = '/api/search/products/' + word + '/';
         var type_method = 'get';
         productAjax(url, type_method, {});
@@ -163,6 +163,7 @@ function searchProduct(e) {
         var $counterStatus = renderCounterStatus(-1);
         $('#counter').html('').append($counterStatus);
         $('#search-suggestions').addClass('hidden');
+        $('#buscar_prod').val('').focus();
     }
 }
 
