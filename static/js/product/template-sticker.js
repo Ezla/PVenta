@@ -92,6 +92,7 @@ function renderSuggestions(pk, code, description, brand_name) {
     var $brand = $('<td/>', {'text': brand_name});
     var $description = $('<td/>', {'text': description});
     var $itemSuggestions = $('<tr/>', {
+        'class': 'pointer',
         'data-pk': pk,
         'data-code': code,
         'data-description': description
