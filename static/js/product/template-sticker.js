@@ -6,8 +6,14 @@ function selectSuggestions() {
     var pk = $(this).data('pk');
     var codigo = $(this).data('code');
     var descripcion = $(this).data('description');
-    var $item = renderProductOption(pk, codigo, descripcion);
-    $('#options').append($item);
+    var $product = $('.tr-product[data-product=' + pk + ']');
+    if ($product.length) {
+        var quantity = Number($product.find('input').val()) + 1;
+        $product.find('input').val(quantity)
+    } else {
+        var $item = renderProductOption(pk, codigo, descripcion);
+        $('#options').append($item);
+    }
     $('#buscar_prod').focus();
     if ($('#productsCollapse').hasClass('collapsed-box')) {
         $('#productsBtnCollapse').click();
