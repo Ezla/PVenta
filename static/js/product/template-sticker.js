@@ -7,12 +7,8 @@ function selectSuggestions() {
     var codigo = $(this).data('code');
     var descripcion = $(this).data('description');
     var $item = renderProductOption(pk, codigo, descripcion);
-    var $counterStatus = renderCounterStatus(-1);
-    $('#counter').html('').append($counterStatus);
     $('#options').append($item);
-    $('#search-suggestions').addClass('hidden');
-    $('#suggestions').html('');
-    $('#buscar_prod').val('').focus();
+    $('#buscar_prod').focus();
     if ($('#productsCollapse').hasClass('collapsed-box')) {
         $('#productsBtnCollapse').click();
     }
