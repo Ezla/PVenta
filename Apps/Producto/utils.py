@@ -129,3 +129,50 @@ def barcode_three_column_format(products=list()):
     pdf = buffer.getvalue()
     buffer.close()
     return pdf
+
+
+def barcode_six_column_format(products=list()):
+    """
+    Genera un pdf con un maximo 150 códigos de barras, con un formato de 6
+    columnas.
+    :param products: Lista (list) de diccionarios (dict) con formato
+            [{'pk': 1, 'quantity': 2}]
+    :return: Archivo PDF
+    """
+    buffer = BytesIO()
+    template = canvas.Canvas(buffer, pagesize=A4)
+    x_axis = 0 * mm
+    y_axis = 275 * mm
+    cont = 0
+    template.drawString(x_axis + 73 * mm,
+                        y_axis + 10 * mm,
+                        'Plantilla con 150 codigos de barras')
+
+    for item in products:
+        product = Producto.objects.get(pk=item.get('pk'))
+        cont_quantity = 0
+        while cont_quantity < item.get('quantity'):
+            barcode = code39.Extended39(product.codigo,
+                                        barWidth=0.17 * mm,
+                                        barHeight=5 * mm,
+                                        checksum=False)
+            template.setFontSize(6, 15)
+            barcode.drawOn(template, x_axis, y_axis)
+            template.drawString(x_axis + 13 * mm,
+                                y_axis - 2.4 * mm,
+                                product.codigo)
+
+            x_axis = x_axis + 34 * mm
+            cont += 1
+
+            if cont == 6:
+                x_axis -= 204 * mm
+                y_axis -= 10.5 * mm
+                cont = 0
+            cont_quantity += 1
+
+    template.showPage()
+    template.save()
+    pdf = buffer.getvalue()
+    buffer.close()
+    return pdf
