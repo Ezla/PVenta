@@ -39,6 +39,50 @@ def random_string(length=1, uppercase=False, lowercase=False):
     return code
 
 
+def barcode_two_column_format(products=list()):
+    """
+    Genera un pdf con un maximo 20 códigos de barras, con un formato de 2
+    columnas.
+    :param products: Lista (list) de diccionarios (dict) con formato
+            [{'pk': 1, 'quantity': 2}]
+    :return: Archivo PDF
+    """
+    buffer = BytesIO()
+    template = canvas.Canvas(buffer, pagesize=A4)
+    x_axis = 10 * mm
+    y_axis = 260 * mm
+    cont = 1
+    for item in products:
+        product = Producto.objects.get(pk=item.get('pk'))
+        barcode = code39.Extended39(product.codigo,
+                                    barWidth=0.5 * mm,
+                                    barHeight=20 * mm,
+                                    checksum=False)
+        cont_quantity = 0
+        while cont_quantity < item.get('quantity'):
+            template.drawString(x_axis + 5 * mm,
+                                y_axis + 22 * mm,
+                                product.descripcion)
+            barcode.drawOn(template, x_axis, y_axis)
+            template.drawString(x_axis + 35 * mm,
+                                y_axis - 5 * mm,
+                                product.codigo)
+
+            x_axis = x_axis + 90 * mm
+            cont_quantity += 1
+            cont += 1
+
+            if (cont % 2) == 1:
+                x_axis = x_axis - 180 * mm
+                y_axis = y_axis - 35 * mm
+
+    template.showPage()
+    template.save()
+    pdf = buffer.getvalue()
+    buffer.close()
+    return pdf
+
+
 def barcode_three_column_format(products=list()):
     """
     Genera un pdf con un maximo 30 códigos de barras, con un formato de 3

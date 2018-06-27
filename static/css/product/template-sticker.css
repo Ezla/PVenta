@@ -8,7 +8,7 @@
     list-style: none;
 }
 
-.sticker-30 {
+.sticker-30, .sticker-20 {
     margin: 1em 0 0 1em;
     padding: 2em;
     width: 10em;
@@ -19,6 +19,11 @@
     float: left;
     transition: background 0.2s;
     box-shadow: 0 0 5px rgba(0, 0, 0, 8);
+}
+
+.sticker-20 {
+    width: 15.5em;
+    height: 3em;
 }
 
 .sticker-selected {

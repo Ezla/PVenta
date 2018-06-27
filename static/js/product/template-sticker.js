@@ -139,12 +139,13 @@ function renderProductOption(pk, code, description) {
  */
 function renderStickerExample() {
     var size = $(this).val();
+    var css_class = 'sticker-' + size;
     var i;
     var $item;
     var $list = $('<ul/>', {'class': 'ul-sticker'});
 
     for (i = 0; i < size; i++) {
-        $item = $('<li/>', {'class': 'sticker-30', 'text': i + 1});
+        $item = $('<li/>', {'class': css_class, 'text': i + 1});
         $list.append($item);
     }
 
@@ -183,8 +184,12 @@ function generatePDF(e) {
             'quantity': Number($(this).find('input').val())
         });
     });
-    var procesoData = JSON.stringify(preData);
-    var url = '/Codigo/PNG/?products=' + encodeURIComponent(procesoData);
+    var data = {
+        'quantity': $('#select-template').val(),
+        'products': preData
+    };
+    var procesoData = JSON.stringify(data);
+    var url = '/Codigo/PNG/?data=' + encodeURIComponent(procesoData);
 
     var $iframe = $('<iframe>', {'class': 'frame-pdf', 'src': url});
     $('.template').append($iframe);

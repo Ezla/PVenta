@@ -7,7 +7,7 @@ from django.views.generic import CreateView, ListView, UpdateView, \
 
 import json
 
-from .utils import barcode_three_column_format
+from .utils import barcode_two_column_format, barcode_three_column_format
 from .models import Producto, Marca
 from .forms import CrearProductoForm, CrearMarcaForm
 from Apps.Venta.views import LoginRequiredMixin
@@ -200,9 +200,16 @@ class GenerateBarcodeView(TemplateView):
 class CodeImagen(LoginRequiredMixin, View):
 
     def get(self, *args, **kwargs):
-        products = json.loads(self.request.GET.get('products'))
+        data = json.loads(self.request.GET.get('data'))
+        products = data.get('products', [])
+        type_template = int(data.get('quantity', 20))
 
-        barcodes = barcode_three_column_format(products)
+        if type_template == 20:
+            barcodes = barcode_two_column_format(products)
+        elif type_template == 30:
+            barcodes = barcode_three_column_format(products)
+        elif type_template == 0:
+            barcodes = None
 
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'filename="barcodes.pdf"'
