@@ -3,6 +3,7 @@ from django.views.generic import ListView, DetailView, TemplateView
 from datetime import datetime
 from Apps.Venta.views import LoginRequiredMixin
 from Apps.Venta.models import Venta, Cuenta
+from .models import ForeignInvoice
 
 
 class VentaLista(LoginRequiredMixin, ListView):
@@ -34,3 +35,8 @@ class VentaDemo(ListView):
 
 class InvoiceList(TemplateView):
     template_name = 'Estadistica/invoice_app.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(InvoiceList, self).get_context_data(**kwargs)
+        context['count_invoices'] = ForeignInvoice.objects.count()
+        return context
