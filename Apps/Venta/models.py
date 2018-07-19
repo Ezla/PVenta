@@ -1,4 +1,4 @@
-from decimal import Decimal
+from decimal import Decimal, ROUND_UP
 from django.core.exceptions import ValidationError
 from django.db import models
 
@@ -29,8 +29,10 @@ class SalesAccount(models.Model):
 
     @property
     def discount_amount(self):
-        return (self.subtotal * Decimal(
-            self.discount.percentage)) / Decimal(100)
+        percentage = self.discount.percentage
+        amout = self.subtotal * Decimal(percentage) / Decimal(100)
+        # rounding
+        return amout.quantize(Decimal('.01'), rounding=ROUND_UP)
 
     @property
     def total(self):

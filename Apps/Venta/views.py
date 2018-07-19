@@ -11,7 +11,7 @@ from Apps.Producto.models import Producto
 from .logica import calcul_p, calcul_sql
 from .models import SalesAccount, SalesProduct, Discount
 from VentaAlex.settings import BASE_DIR
-from decimal import Decimal
+from decimal import Decimal, ROUND_UP
 from io import BytesIO
 import datetime
 from reportlab.platypus import SimpleDocTemplate, Paragraph, TableStyle,Spacer, Table, Image
@@ -387,7 +387,8 @@ class VentaTiket(LoginRequiredMixin, View):
             productos.append((Paragraph(p.name.upper(), styleN),' ',' ', p.price, p.quantity, p.total))
             estilos_tabla.append(('SPAN',(0,cont),(2,cont)))
             cont = cont + 1
-        pruce_decount = (cuenta.subtotal * cuenta.discount.percentage) / 100
+        discount = cuenta.subtotal * cuenta.discount.percentage / 100
+        pruce_decount = discount.quantize(Decimal('.01'), rounding=ROUND_UP)
         productos.append(('DESCUENTO', '' ,'% {}'.format(cuenta.discount.percentage), '', 'SUBTOTAL:', '$ %s' % str(cuenta.subtotal)))
         productos.append(('', '', '$ -{}'.format(pruce_decount), '', 'TOTAL:', '$ %s' % str(cuenta.total)))
         productos.append(('', '', '', '', 'PAGO:', '$ %s' % str(cuenta.cash)))

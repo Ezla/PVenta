@@ -1,4 +1,4 @@
-from decimal import Decimal
+from decimal import Decimal, ROUND_UP
 
 
 def process_cart(cart=list(), percent_off=0):
@@ -24,6 +24,7 @@ def process_cart(cart=list(), percent_off=0):
         subtotal_product = Decimal(price) * Decimal(quantity)
         subtotal += subtotal_product
 
-    discount = (subtotal * Decimal(percent_off)) / Decimal(100)
-    total = subtotal - discount
+    discount = subtotal * Decimal(percent_off) / Decimal(100)
+    # rounding
+    total = subtotal - discount.quantize(Decimal('.01'), rounding=ROUND_UP)
     return subtotal, total, discount
