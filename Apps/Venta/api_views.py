@@ -1,7 +1,11 @@
+from decimal import Decimal
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from .serializers import SalesProductSerialiser
+from .serializers import SalesAccountSerialiser, SalesProductSerialiser, \
+    SalesCartSerialiser
+from .models import Discount
 from .utils import process_cart
 from Apps.Producto.models import Producto
 
@@ -84,3 +88,36 @@ class SalesCartStatusView(APIView):
                                                  percent_off=percent_off)
         data = {'subtotal': subtotal, 'total': total, 'discount': discount}
         return Response(data, status=status.HTTP_200_OK)
+
+
+class AccountView(APIView):
+
+    def post(self, request):
+        cart = request.session.get('account', list())
+        percentage = request.data.get('percent_off')
+        cash = Decimal(request.data.get('cash'))
+        percent_off = get_object_or_404(Discount, percentage=percentage)
+
+        percentage = percent_off.percentage
+        subtotal, total, discount = process_cart(cart=cart,
+                                                 percent_off=percentage)
+        change_due = cash - total
+        data = {'subtotal': subtotal, 'total': total, 'cash': cash,
+                'change_due': change_due, 'discount': percent_off.pk}
+        account = SalesAccountSerialiser(data=data)
+        sales = SalesProductSerialiser(data=cart, many=True)
+
+        if account.is_valid() and sales.is_valid():
+            # guardamos cuenta
+            sales_account = account.save()
+            cart = sales.data
+            # agregamos la id de la cuenta a los productos en cart
+            for product in cart:
+                product.update({'sales_account': sales_account.pk})
+            # guardamos productos de la venta
+            new_sales = SalesCartSerialiser(data=cart, many=True)
+            if new_sales.is_valid():
+                new_sales.save()
+            request.session['account'] = list()
+            return Response(account.data, status=status.HTTP_201_CREATED)
+        return Response(account.errors, status=status.HTTP_400_BAD_REQUEST)
