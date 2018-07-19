@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .serializers import SalesProductSerialiser
+from .utils import process_cart
 from Apps.Producto.models import Producto
 
 
@@ -72,3 +73,14 @@ class SalesProductChangeView(APIView):
             return Response(sales.data, status=status.HTTP_200_OK)
         # respondemos un 400 si la data no es valida
         return Response(sales.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SalesCartStatusView(APIView):
+
+    def get(self, request):
+        cart = request.session.get('account', list())
+        percent_off = request.GET.get('percent_off', 0)
+        subtotal, total, discount = process_cart(cart=cart,
+                                                 percent_off=percent_off)
+        data = {'subtotal': subtotal, 'total': total, 'discount': discount}
+        return Response(data, status=status.HTTP_200_OK)

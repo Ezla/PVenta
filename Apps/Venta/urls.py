@@ -4,7 +4,7 @@ from django.urls import path
 from .views import Login, Logout, Venta, VentaBuscarProducto, \
     VentaRemoverProd, VentaCancelarCuenta, VentaAumentarProd, \
     VentaPagarCuenta, VentaTiket, VentaTipoPrecio, VentaSetDescuento
-from .api_views import SalesProductChangeView, SearchProductView
+from .api_views import SalesProductChangeView, SearchProductView, SalesCartStatusView
 
 app_name = 'Venta'
 urlpatterns = [
@@ -27,4 +27,5 @@ urlpatterns = [
         name='url_agregar_descuento_ajax'),
     path('api/sales/product/change/', SalesProductChangeView.as_view(), name='url_change_product'),
     path('api/sales/product/search/', SearchProductView.as_view(), name='url_search_product'),
+    path('api/sales/cart/status/', SalesCartStatusView.as_view(), name='url_cart_status'),
 ]
