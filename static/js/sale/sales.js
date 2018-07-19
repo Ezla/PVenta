@@ -167,6 +167,13 @@ function ajaxChangeProduct(data, url, methodType) {
                 getCartStatus();
                 renderCart(data);
             }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            var data = jqXHR.responseJSON;
+            if ('cash' in data) {
+                $('#cash').data('content', data.cash);
+                $('#cash').popover().click();
+            }
         }
     });
 }
@@ -291,6 +298,7 @@ function payCart() {
  */
 function selectCash() {
     $(this).select();
+    $(this).popover('destroy');
 }
 
 /**
