@@ -286,5 +286,59 @@ function payCart() {
     ajaxChangeProduct(data, url_cart_pay, 'post');
 }
 
+/**
+ * Permite seleccionar el contenido del input al seleccionarlo el mismo.
+ */
+function selectCash() {
+    $(this).select();
+}
+
+/**
+ * Permite negar la antrada de teclas que no cincidan con un numero:
+ * Backspace = 8, Enter = 13, ‘0′ = 48, ‘9′ = 57, ‘.’ = 46, ‘-’ = 43
+ * @param {event} e: evento que contiene el caracter tecleado.
+ * @returns {boolean}: Esto permitira la incercion del caracter al input.
+ */
+function filterFloat(e) {
+    var key = window.Event ? e.which : e.keyCode;
+    var chark = String.fromCharCode(key);
+    var tempValue = $(this).val() + chark;
+    if (key >= 48 && key <= 57) {
+        if (filter(tempValue) === false) {
+            return false;
+        } else {
+            return true;
+        }
+    } else {
+        if (key == 8 || key == 13 || key == 0) {
+            return true;
+        } else if (key == 46) {
+            if (filter(tempValue) === false) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
+}
+
+/**
+ * Valida si el parametro enviado coincide con el patron de numero con
+ * solo 2 decimales.
+ * @param key {Numeric}: numero a comparar con el patron.
+ * @returns {boolean}: regresa si el dato enviado coincide con el patrón.
+ */
+function filter(key) {
+    var pattern = /^([0-9]+\.?[0-9]{0,2})$/;
+    if (pattern.test(key) === true) {
+        return true;
+    }
+    return false;
+}
+
+$('#cash').on('keypress', filterFloat);
+$('#cash').on('focus', selectCash);
 $('#percent_off').on('change', getCartStatus);
 $('#pagar_cuenta').on('click', payCart);
