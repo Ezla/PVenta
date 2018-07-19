@@ -4,10 +4,11 @@
             <h3 class="box-title"><i class="fa fa-shopping-cart"></i></h3>
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-                <i class="fa fa-minus"></i></button>
+                    <i class="fa fa-minus"></i>
+                </button>
             </div>
         </div>
-        <div class="box-body" >
+        <div class="box-body">
             <div class="row pricing">
                 <div class="col-md-12">
                     <div class="well">
@@ -40,10 +41,9 @@
                                 <div class="input-group">
                                     <span class="input-group-addon">Menos</span>
                                     <select id="percent_off" class="form-control text-center">
-                                        <option value="0">0 %</option>
-                                        <option value="5">5 %</option>
-                                        <option value="10">10 %</option>
-                                        <option value="30">30 %</option>
+                                        {% for discount in discounts %}
+                                            <option value="{{ discount.percentage }}">{{ discount.percentage }} %</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>
@@ -51,15 +51,10 @@
                         <hr>
                         <p><b>Cambio: 0</b></p>
                         <hr>
-
                         <button id="pagar_cuenta" type="button" class="btn btn-app"  title="Realiza el cobro al cliente">
                             <i class="fa fa-money"></i>
                             <p>Pagar</p>
                         </button>
-            {#            <button id="guardar_cuenta" type="button" class="btn btn-app"  title="Guarda la lista de productos para pagar despues">#}
-            {#                <i class="fa fa-money"></i>#}
-            {#                <p>Guardar</p>#}
-            {#            </button>#}
                         <button id="cancelar" type="button" class="btn btn-app pull-right" title="Elimina la lista de compra">
                             <i class="fa fa-times-circle"></i>
                             <p>Cancelar</p>
@@ -68,7 +63,6 @@
                 </div>
             </div>
         </div>
-    <!-- /.box-body -->
     </div>
 </div>
 

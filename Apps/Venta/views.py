@@ -70,6 +70,7 @@ class Venta(LoginRequiredMixin, TemplateView):
         context['subtotal'] = subtotal
         context['total'] = total
         context['descuento'] = descuento
+        context['discounts'] = Discount.objects.all()
         context['valor_descuento'] = self.request.session.get('descuento', 0)
         return context
 
