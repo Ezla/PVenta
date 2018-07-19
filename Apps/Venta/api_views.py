@@ -44,3 +44,31 @@ class SearchProductView(APIView):
                 suggestions.append({'code': product.codigo,
                                     'name': product.descripcion})
             return Response(suggestions, status=status.HTTP_202_ACCEPTED)
+
+
+class SalesProductChangeView(APIView):
+
+    def post(self, request):
+        products = request.session.get('account', list())
+        data = request.data
+        # Actualizamos data
+        product_exists = False
+        for product in products:
+            product_exists = product.get('code') == data.get('code')
+            if product_exists and int(data.get('quantity')) > 0:
+                product['quantity'] = data.get('quantity')
+                product['with_discount'] = data.get('with_discount')
+                break
+            elif product_exists:
+                products.remove(product)
+                break
+        # respondemos un 404 si no se encuentra el producto
+        if not product_exists:
+            return Response({'code', 'El producto no esta en el carrito.'},
+                            status=status.HTTP_404_NOT_FOUND)
+        sales = SalesProductSerialiser(data=products, many=True)
+        if sales.is_valid():
+            request.session['account'] = sales.data
+            return Response(sales.data, status=status.HTTP_200_OK)
+        # respondemos un 400 si la data no es valida
+        return Response(sales.errors, status=status.HTTP_400_BAD_REQUEST)
