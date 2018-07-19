@@ -1,8 +1,10 @@
 from django.conf.urls import url
+from django.urls import path
 
 from .views import Login, Logout, Venta, VentaBuscarProducto, \
     VentaRemoverProd, VentaCancelarCuenta, VentaAumentarProd, \
     VentaPagarCuenta, VentaTiket, VentaTipoPrecio, VentaSetDescuento
+from .api_views import SearchProductView
 
 app_name = 'Venta'
 urlpatterns = [
@@ -23,4 +25,5 @@ urlpatterns = [
         name='url_cancelar_cuenta_ajax'),
     url(r'^Ajax/Descuento/$', VentaSetDescuento.as_view(),
         name='url_agregar_descuento_ajax'),
+    path('api/sales/product/search/', SearchProductView.as_view(), name='url_search_product'),
 ]
