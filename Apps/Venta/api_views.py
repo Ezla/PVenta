@@ -34,7 +34,7 @@ class SearchProductView(APIView):
                            'price_down': query.pmayoreo,
                            'quantity': 1,
                            'sales_account': None}
-                products.append(product)
+                products.insert(0, product)
             sales = SalesProductSerialiser(data=products, many=True)
             if sales.is_valid():
                 request.session['account'] = sales.data
