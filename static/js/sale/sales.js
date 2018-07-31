@@ -104,7 +104,7 @@ function renderCartStatus(cart) {
 }
 
 /**
- * Dubuja un iframe para visualizar un pdf con el ticket de compra, para
+ * Dibuja un iframe para visualizar un pdf con el ticket de compra, para
  * posteriormente solicitar la imprecion del mismo.
  * @param {string} url: Url donde esta el el ticket.
  */
@@ -125,6 +125,31 @@ function renderTicket(url) {
     setTimeout(function () {
         $('#visualizador-pdf').remove();
     }, 30000);
+}
+
+/**
+ * Dibuja las sugerencias de busqueda en un modal.
+ * @param {array} products: lista de productos.
+ */
+function renderSuggestions(products) {
+    $('#modal-body').html('');
+    if (products.length > 0) {
+        $.each(products, function (i, item) {
+            var $code = $('<td/>', {'text': item.code});
+            var $name = $('<td/>', {'text': item.name});
+            var $tr = $('<tr/>', {
+                'role': 'button',
+                'data-code': item.code
+            }).append($code, $name).on('click', selectProuct);
+            $('#modal-body').append($tr);
+        });
+    } else {
+        var $tr = $('<tr/>').append($('<td/>', {
+            'text': 'No se encontraron coincidencias'
+        }));
+        $('#modal-body').append($tr);
+    }
+    $('#suggestions').modal('show');
 }
 
 /**
@@ -164,8 +189,12 @@ function ajaxChangeProduct(data, url, methodType) {
             } else if (methodType == 'post' && url == url_cart_pay) {
                 cleanCart(data.pk);
             } else if (methodType == 'post') {
-                getCartStatus();
-                renderCart(data);
+                if (jqXHR.status == 200) {
+                    getCartStatus();
+                    renderCart(data);
+                } else {
+                    renderSuggestions(data);
+                }
             }
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -182,11 +211,19 @@ function ajaxChangeProduct(data, url, methodType) {
  * Gestiona una consulta al servidor para buscar productos por el codigo
  * de barras.
  */
-function Buscarpro(e){
+function searchProuct(e){
     e.preventDefault();
     var data = {'word': $codigo.val()};
     ajaxChangeProduct(data, url_search_product, 'post');
     $codigo.val('').focus();
+}
+
+/**
+ * Selecciona un producto de las sugerencias para agregarlo al carrito.
+ */
+function selectProuct() {
+    $codigo.val($(this).data('code'));
+    $('#form_search').submit();
 }
 
 /**
@@ -349,4 +386,5 @@ function filter(key) {
 $('#cash').on('keypress', filterFloat);
 $('#cash').on('focus', selectCash);
 $('#percent_off').on('change', getCartStatus);
+$('#form_search').on('submit', searchProuct);
 $('#pagar_cuenta').on('click', payCart);
