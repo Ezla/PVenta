@@ -1,3 +1,6 @@
+var $codigo = $('#codigo');
+var $tablaVenta = $('#tVentaProd');
+
 /**
  * Creara un producto en un tr, para poder representar el carrito de
  * compra.
@@ -382,6 +385,10 @@ function filter(key) {
     }
     return false;
 }
+
+$(document).ready(function () {
+    $codigo.focus();
+});
 
 $('#cash').on('keypress', filterFloat);
 $('#cash').on('focus', selectCash);
