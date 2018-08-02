@@ -28,18 +28,16 @@
                 </form>
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-                    <i class="fa fa-minus"></i></button>
+                        <i class="fa fa-minus"></i>
+                    </button>
                 </div>
             </div>
             <div class="box-body">
                 <div class="table-responsive">
                     <table class="table table-hover">
-                        <thead class="thead-footer thead">
-                        </thead>
-                        <tbody id="tVentaProd">
-                        </tbody>
-                        <tfoot class="thead-footer tfooter">
-                        </tfoot>
+                        <thead class="thead-footer thead"></thead>
+                        <tbody id="tVentaProd"></tbody>
+                        <tfoot class="thead-footer tfooter"></tfoot>
                     </table>
                 </div>
             </div>
@@ -58,5 +56,6 @@
         var url_cart_status = '{% url "Venta:url_cart_status" %}';
         var url_cart_pay = '{% url "Venta:url_cart_pay" %}';
         var url_ticket = '/Tiket/';
+        var account = '{{ account }}'.replace(/&quot;/g,"\"");
     </script>
 {% endblock %}

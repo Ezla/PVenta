@@ -386,8 +386,13 @@ function filter(key) {
     return false;
 }
 
+/**
+ * Inicializa la aplicacion, una vez que se cargan todos los scripts.
+ */
 $(document).ready(function () {
     $codigo.focus();
+    renderCart(JSON.parse(account));
+    getCartStatus();
 });
 
 $('#cash').on('keypress', filterFloat);

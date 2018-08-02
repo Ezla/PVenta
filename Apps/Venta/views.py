@@ -14,6 +14,7 @@ from VentaAlex.settings import BASE_DIR
 from decimal import Decimal, ROUND_UP
 from io import BytesIO
 import datetime
+import json
 from reportlab.platypus import SimpleDocTemplate, Paragraph, TableStyle,Spacer, Table, Image
 from reportlab.lib.pagesizes import A6
 from reportlab.lib.styles import getSampleStyleSheet
@@ -65,13 +66,9 @@ class Venta(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(Venta, self).get_context_data(**kwargs)
-        context['data'] = self.request.session.get('cuenta', list())
-        subtotal, total, descuento = calcul_p(self.request)
-        context['subtotal'] = subtotal
-        context['total'] = total
-        context['descuento'] = descuento
+        context['account'] = json.dumps(
+            self.request.session.get('account', list()))
         context['discounts'] = Discount.objects.all()
-        context['valor_descuento'] = self.request.session.get('descuento', 0)
         return context
 
 
