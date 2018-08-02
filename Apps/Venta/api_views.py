@@ -89,6 +89,10 @@ class SalesCartStatusView(APIView):
         data = {'subtotal': subtotal, 'total': total, 'discount': discount}
         return Response(data, status=status.HTTP_200_OK)
 
+    def delete(self, request):
+        request.session['account'] = list()
+        return Response({}, status=status.HTTP_200_OK)
+
 
 class AccountView(APIView):
 

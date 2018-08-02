@@ -198,6 +198,9 @@ function ajaxChangeProduct(data, url, methodType) {
                 } else {
                     renderSuggestions(data);
                 }
+            } else if (methodType == 'delete') {
+                $tablaVenta.html('');
+                getCartStatus();
             }
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -373,6 +376,14 @@ function filterFloat(e) {
 }
 
 /**
+ * Gestiona la peticion al servidor para eliminar la lista de productos
+ * en el carrito de compra.
+ */
+function cleanCart() {
+    ajaxChangeProduct({}, url_cart_status, 'delete');
+}
+
+/**
  * Valida si el parametro enviado coincide con el patron de numero con
  * solo 2 decimales.
  * @param key {Numeric}: numero a comparar con el patron.
@@ -400,3 +411,4 @@ $('#cash').on('focus', selectCash);
 $('#percent_off').on('change', getCartStatus);
 $('#form_search').on('submit', searchProuct);
 $('#pagar_cuenta').on('click', payCart);
+$('#clean_cart').on('click', cleanCart);
