@@ -1,5 +1,4 @@
 .template {
-    width: 33em;
     box-shadow: 0 0 5px rgba(0, 0, 0, 8);
 }
 
@@ -8,10 +7,10 @@
     list-style: none;
 }
 
-.sticker-20, .sticker-30, .sticker-150 {
-    margin: 1em 0 0 1em;
+.sticker-16, .sticker-30, .sticker-150 {
     padding: 2em;
-    width: 10em;
+    width: 30%;
+    margin: 1.6%;
     height: 2em;
     background: dodgerblue;
     cursor: pointer;
@@ -21,15 +20,17 @@
     box-shadow: 0 0 5px rgba(0, 0, 0, 8);
 }
 
-.sticker-20 {
-    width: 15.5em;
+.sticker-16 {
+    width: 47%;
     height: 3em;
+    margin: 1.5%;
 }
 
 .sticker-150 {
-    width: 4.5em;
     height: 1.5em;
     padding: 0 0 0 1.5em;
+    width: 14.6%;
+    margin: 1%;
 }
 
 .sticker-selected {

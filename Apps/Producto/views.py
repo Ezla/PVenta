@@ -203,9 +203,9 @@ class CodeImagen(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         data = json.loads(self.request.GET.get('data'))
         products = data.get('products', [])
-        type_template = int(data.get('quantity', 20))
+        type_template = int(data.get('quantity', 16))
 
-        if type_template == 20:
+        if type_template == 16:
             barcodes = barcode_two_column_format(products)
         elif type_template == 30:
             barcodes = barcode_three_column_format(products)

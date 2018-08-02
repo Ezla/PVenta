@@ -41,7 +41,7 @@ def random_string(length=1, uppercase=False, lowercase=False):
 
 def barcode_two_column_format(products=list()):
     """
-    Genera un pdf con un maximo 20 códigos de barras, con un formato de 2
+    Genera un pdf con un maximo 16 códigos de barras, con un formato de 2
     columnas.
     :param products: Lista (list) de diccionarios (dict) con formato
             [{'pk': 1, 'quantity': 2}]
@@ -51,7 +51,7 @@ def barcode_two_column_format(products=list()):
     template = canvas.Canvas(buffer, pagesize=A4)
     x_axis = 10 * mm
     y_axis = 260 * mm
-    cont = 1
+    cont = 0
     for item in products:
         product = Producto.objects.get(pk=item.get('pk'))
         barcode = code39.Extended39(product.codigo,
@@ -72,11 +72,14 @@ def barcode_two_column_format(products=list()):
             cont_quantity += 1
             cont += 1
 
-            if (cont % 2) == 1:
+            if (cont % 16) == 0:
+                x_axis = 10 * mm
+                y_axis = 260 * mm
+                template.showPage()
+            elif (cont % 2) == 0:
                 x_axis = x_axis - 180 * mm
                 y_axis = y_axis - 35 * mm
 
-    template.showPage()
     template.save()
     pdf = buffer.getvalue()
     buffer.close()
@@ -116,15 +119,17 @@ def barcode_three_column_format(products=list()):
                                 product.codigo)
 
             x_axis = x_axis + 72.5 * mm
+            cont_quantity += 1
             cont += 1
 
-            if cont == 3:
+            if (cont % 30) == 0:
+                x_axis = 0 * mm
+                y_axis = 275 * mm
+                template.showPage()
+            elif (cont % 3) == 0:
                 x_axis -= 217.5 * mm
                 y_axis -= 26.5 * mm
-                cont = 0
-            cont_quantity += 1
 
-    template.showPage()
     template.save()
     pdf = buffer.getvalue()
     buffer.close()
@@ -163,15 +168,17 @@ def barcode_six_column_format(products=list()):
                                 product.codigo)
 
             x_axis = x_axis + 34 * mm
+            cont_quantity += 1
             cont += 1
 
-            if cont == 6:
+            if (cont % 150) == 0:
+                x_axis = 0 * mm
+                y_axis = 275 * mm
+                template.showPage()
+            elif (cont % 6) == 0:
                 x_axis -= 204 * mm
                 y_axis -= 10.5 * mm
-                cont = 0
-            cont_quantity += 1
 
-    template.showPage()
     template.save()
     pdf = buffer.getvalue()
     buffer.close()
