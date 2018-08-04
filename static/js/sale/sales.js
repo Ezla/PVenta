@@ -160,7 +160,7 @@ function renderSuggestions(products) {
  * @param {integer} id: id de la cuenta para formar la url donde se
  * encuentra el ticket de la misma.
  */
-function cleanCart(id) {
+function paidCart(id) {
     var url = url_ticket + id + '/';
     renderTicket(url);
     $('#percent_off').val(0);
@@ -190,7 +190,7 @@ function ajaxChangeProduct(data, url, methodType) {
             if (methodType == 'get') {
                 renderCartStatus(data);
             } else if (methodType == 'post' && url == url_cart_pay) {
-                cleanCart(data.pk);
+                paidCart(data.pk);
             } else if (methodType == 'post') {
                 if (jqXHR.status == 200) {
                     getCartStatus();
