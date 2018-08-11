@@ -6,7 +6,7 @@
 
 {% block breadcrumb %}
     <li><a href="{% url 'Estadistica:url_lista' 1 %}"><i class="fa fa-bar-chart"></i> Ventas</a></li>
-    <li class="active"> Detalles: {{ object.tiket }}</li>
+    <li class="active"> Detalles: {{ object.ticket }}</li>
 {% endblock %}
 
 {% block conte %}
@@ -19,10 +19,10 @@
 		<table class="table table-hover">
 			<tr>
 				<td class="text-right"><strong>Ticket:</strong></td>
-				<td><strong>{{object.tiket}}</strong></td>
+				<td><strong>{{object.ticket}}</strong></td>
                 <td></td>
 				<td class="text-right"><strong>Fecha:</strong></td>
-				<td><strong>{{object.creado|date:"d-m-Y"}}</strong></td>
+				<td><strong>{{object.created|date:"d-m-Y"}}</strong></td>
 			</tr>
             <tr>
                 <td class="text-center"><strong>#</strong></td>
@@ -31,13 +31,13 @@
                 <td class="text-center"><strong>Precio</strong></td>
                 <td class="text-center"><strong>Subtotal</strong></td>
             </tr>
-            {% for x in Venta_producto %}
+            {% for product in Venta_producto %}
             <tr>
                 <td class="text-center">{{ forloop.counter }}</td>
-                <td title="{{ x.nombre }}">{{ x.nombre|slice:":45" }}</td>
-                <td class="text-center">{{ x.cantidad }}</td>
-                <td class="text-center">{{ x.precio|intcomma }}</td>
-                <td class="text-center">{{ x.subtotal|intcomma }}</td>
+                <td title="{{ product.name }}">{{ product.name|slice:":45" }}</td>
+                <td class="text-center">{{ product.quantity }}</td>
+                <td class="text-center">{{ product.price|intcomma }}</td>
+                <td class="text-center">{{ product.total|intcomma }}</td>
             </tr>
             {% endfor %}
             <tr>
@@ -48,17 +48,14 @@
             <tr>
                 <td></td><td></td><td></td>
                 <td class="text-right"><Strong>Efectivo:</Strong></td>
-                <td class="text-center text-success"><strong>$ {{object.efectivo|intcomma}}</strong></td>
+                <td class="text-center text-success"><strong>$ {{object.cash|intcomma}}</strong></td>
             </tr>
             <tr>
                 <td></td><td></td><td></td>
                 <td class="text-right"><Strong>Cambio:</Strong></td>
-                <td class="text-center text-primary"><strong>$ {{object.cambio|intcomma}}</strong></td>
+                <td class="text-center text-primary"><strong>$ {{object.change_due|intcomma}}</strong></td>
             </tr>
 		</table>
-
-
-
 	</div>
 	<div class="panel-footer">
 

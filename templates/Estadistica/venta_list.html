@@ -27,6 +27,8 @@
 			<thead>
 				<tr>
 					<td>Tiket</td>
+					<td class="hidden-xs">Subtotal</td>
+					<td class="hidden-xs">Descuento</td>
 					<td class="hidden-xs">Saldo total</td>
 					<td class="hidden-xs">Pago</td>
 					<td class="hidden-xs">Cambio</td>
@@ -35,10 +37,12 @@
 			<tbody>
 			{% for prod in object_list %}
 				<tr>
-					<td><a href="{% url 'Estadistica:url_consultar' prod.id %}" class="btn btn-default btn-sm btn-block">{{prod.tiket}}</a></td>
+					<td><a href="{% url 'Estadistica:url_consultar' prod.id %}" class="btn btn-default btn-sm btn-block">{{prod.ticket}}</a></td>
+					<td class="hidden-xs">$ {{prod.subtotal}}</td>
+					<td class="hidden-xs">$ {{prod.discount_amount}} / ({{prod.discount.percentage}} %)</td>
 					<td class="hidden-xs">$ {{prod.total}}</td>
-					<td class="hidden-xs">$ {{prod.efectivo}}</td>
-					<td class="hidden-xs">$ {{prod.cambio}}</td>
+					<td class="hidden-xs">$ {{prod.cash}}</td>
+					<td class="hidden-xs">$ {{prod.change_due}}</td>
 					<td><a href=""></a>
 						<div class="btn-group pull-right">
 						  <button type="button" class="btn btn-default btn-sm dropdown-toggle"
@@ -48,13 +52,13 @@
 						 
 						  <ul class="dropdown-menu" role="menu">
 						    <li>
-						    	<a href="{% url 'Producto:url_actualizar' prod.id %}">
+						    	<a href="#">
 						    		<span class="glyphicon glyphicon-floppy-open"></span> Editar
 						    	</a>
 						    </li>
 						    <li class="divider"></li>
 						    <li>
-						    	<a href="{% url 'Producto:url_eliminar' prod.id %}">
+						    	<a href="#">
 						    		<span class="glyphicon glyphicon-floppy-remove"></span> Eliminar
 						    	</a>
 						    </li>
