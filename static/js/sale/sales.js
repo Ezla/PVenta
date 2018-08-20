@@ -50,7 +50,7 @@ function renderProductCart(code, name, withDiscount, price, quantity) {
             'class': 'form-control text-center',
             'data-quantity': quantity,
             'value': quantity
-        }).on('change', changeQuantityProduct);
+        }).on('change', changeQuantityProduct).on('focus', selectInput);
     var $groupQuantity = $('<td/>').append($('<div/>',
         {'class': 'input-group'}).append($downQuantity, $inputQuantity,
         $upQuantity));
@@ -334,6 +334,13 @@ function payCart() {
         'cash': $('#cash').val()
     };
     ajaxChangeProduct(data, url_cart_pay, 'post');
+}
+
+/**
+ * Permite seleccionar el contenido del input al seleccionarlo el mismo.
+ */
+function selectInput() {
+    $(this).select();
 }
 
 /**

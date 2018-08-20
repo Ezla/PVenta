@@ -8,7 +8,7 @@
                 </button>
             </div>
         </div>
-        <div class="box-body">
+        <div class="box-body font-one-point-five">
             <div class="row pricing">
                 <div class="col-md-12">
                     <div class="well">
@@ -35,14 +35,14 @@
                                         <span class="glyphicon glyphicon-usd"></span>
                                     </span>
                                     <div class="tooltip-demo">
-                                        <input id="cash" type="text" class="form-control text-center" value="0" data-container="body" data-toggle="popover" data-placement="top" data-content="">
+                                        <input id="cash" type="text" class="form-control input-lg text-center" value="0" data-container="body" data-toggle="popover" data-placement="top" data-content="">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xs-5 col-xs-offset-2">
                                 <div class="input-group">
                                     <span class="input-group-addon">Menos</span>
-                                    <select id="percent_off" class="form-control text-center">
+                                    <select id="percent_off" class="form-control input-lg text-center">
                                         {% for discount in discounts %}
                                             <option value="{{ discount.percentage }}">{{ discount.percentage }} %</option>
                                         {% endfor %}
