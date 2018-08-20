@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .serializers import SalesAccountSerialiser, SalesProductSerialiser, \
-    SalesCartSerialiser
+    SalesCartSerialiser, ChangeProductSerialiser
 from .models import Discount
 from .utils import process_cart
 from Apps.Producto.models import Producto
@@ -22,7 +22,9 @@ class SearchProductView(APIView):
             for product in products:
                 if product.get('code') == query.codigo:
                     product_exist = True
-                    product['quantity'] += 1
+                    new_quantity = Decimal(
+                        product.get('quantity')) + Decimal(1)
+                    product['quantity'] = new_quantity
                     break
             if not product_exist:
                 price = query.punitario
@@ -32,7 +34,7 @@ class SearchProductView(APIView):
                            'price': price,
                            'price_up': query.punitario,
                            'price_down': query.pmayoreo,
-                           'quantity': 1,
+                           'quantity': Decimal(1),
                            'sales_account': None}
                 products.insert(0, product)
             sales = SalesProductSerialiser(data=products, many=True)
@@ -43,26 +45,39 @@ class SearchProductView(APIView):
                 return Response(sales.errors,
                                 status=status.HTTP_400_BAD_REQUEST)
         except Producto.DoesNotExist:
-            query = Producto.objects.filter(descripcion__icontains=word)
-            suggestions = list()
-            for product in query:
-                suggestions.append({'code': product.codigo,
-                                    'name': product.descripcion})
+            suggestions = self.get_suggestions(word=word)
             return Response(suggestions, status=status.HTTP_202_ACCEPTED)
+
+    def get_suggestions(self, word):
+        suggestions = list()
+        if word:
+            query = Producto.objects.filter(descripcion__icontains=word)
+            for product in query:
+                suggestions.append(
+                    {'code': product.codigo, 'name': product.descripcion})
+        return suggestions
 
 
 class SalesProductChangeView(APIView):
 
     def post(self, request):
         products = request.session.get('account', list())
-        data = request.data
+        change_product = ChangeProductSerialiser(data=request.data)
+
+        if not change_product.is_valid():
+            return Response(change_product.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+        code = change_product.validated_data.get('code')
+        quantity = change_product.validated_data.get('quantity')
+        with_discount = change_product.validated_data.get('with_discount')
+
         # Actualizamos data
         product_exists = False
         for product in products:
-            product_exists = product.get('code') == data.get('code')
-            if product_exists and int(data.get('quantity')) > 0:
-                product['quantity'] = data.get('quantity')
-                product['with_discount'] = data.get('with_discount')
+            product_exists = product.get('code') == code
+            if product_exists and quantity >= Decimal(0.5):
+                product['quantity'] = quantity
+                product['with_discount'] = with_discount
                 break
             elif product_exists:
                 products.remove(product)

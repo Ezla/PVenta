@@ -22,9 +22,13 @@ def process_cart(cart=list(), percent_off=0):
             price = product.get('price_down')
 
         subtotal_product = Decimal(price) * Decimal(quantity)
-        subtotal += subtotal_product
+        subtotal += subtotal_product.quantize(Decimal('.01'),
+                                              rounding=ROUND_UP)
 
-    discount = subtotal * Decimal(percent_off) / Decimal(100)
+    subtotal = subtotal.quantize(Decimal('.01'), rounding=ROUND_UP)
+    discount = (subtotal * Decimal(percent_off) / Decimal(100)).quantize(
+        Decimal('.01'), rounding=ROUND_UP)
     # rounding
-    total = subtotal - discount.quantize(Decimal('.01'), rounding=ROUND_UP)
+    total = (subtotal - discount).quantize(Decimal('.01'),
+                                           rounding=ROUND_UP)
     return subtotal, total, discount

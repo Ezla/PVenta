@@ -1,3 +1,4 @@
+from decimal import Decimal
 from rest_framework import serializers
 from .models import SalesAccount, SalesProduct
 from .validators import validateAccount
@@ -15,6 +16,18 @@ class SalesAccountSerialiser(serializers.ModelSerializer):
         if errors:
             raise serializers.ValidationError(errors)
         return data
+
+
+class ChangeProductSerialiser(serializers.Serializer):
+    code = serializers.CharField()
+    quantity = serializers.DecimalField(max_digits=8, decimal_places=2)
+    with_discount = serializers.BooleanField()
+
+    def validate_quantity(self, value):
+        if not value % Decimal(0.5) == Decimal(0):
+            msg = 'Solo se aceptan multiplos de 0.5'
+            raise serializers.ValidationError(msg)
+        return value
 
 
 class SalesProductSerialiser(serializers.ModelSerializer):
