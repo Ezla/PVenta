@@ -139,11 +139,13 @@ function renderSuggestions(products) {
     if (products.length > 0) {
         $.each(products, function (i, item) {
             var $code = $('<td/>', {'text': item.code});
+            var $brand = $('<td/>', {'text': item.brand});
+            var $price = $('<td/>', {'text': '$ ' + item.price});
             var $name = $('<td/>', {'text': item.name});
             var $tr = $('<tr/>', {
                 'role': 'button',
                 'data-code': item.code
-            }).append($code, $name).on('click', selectProuct);
+            }).append($code, $brand, $price, $name).on('click', selectProuct);
             $('#modal-body').append($tr);
         });
     } else {

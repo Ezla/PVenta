@@ -54,7 +54,9 @@ class SearchProductView(APIView):
             query = Producto.objects.filter(descripcion__icontains=word)
             for product in query:
                 suggestions.append(
-                    {'code': product.codigo, 'name': product.descripcion})
+                    {'code': product.codigo, 'name': product.descripcion,
+                     'brand': product.marca.marca,
+                     'price': str(product.punitario)})
         return suggestions
 
 
