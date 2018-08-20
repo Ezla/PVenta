@@ -49,6 +49,7 @@
 
 {% block script %}
     {% load static %}
+    <script src="{% static 'js/jquery.hotkeys.js' %}"></script>
     <script src="{% static 'js/sale/sales.js' %}"></script>
     <script type="text/javascript">
         var url_search_product = '{% url "Venta:url_search_product" %}';

@@ -398,6 +398,34 @@ function filter(key) {
 }
 
 /**
+ * Evento para seleccionar (focus) al input de descuento.
+ */
+function keyPercentOff() {
+    $('#percent_off').focus();
+}
+
+/**
+ * Evento para seleccionar (focus) al input de efectivo.
+ */
+function keyFocusCash() {
+    $('#cash').focus();
+}
+
+/**
+ * Evento para seleccionar (focus) al input de codigo de barras.
+ */
+function keyFocusCode() {
+    $codigo.focus();
+}
+
+/**
+ * Evento para pagar (click en el boton de pagar).
+ */
+function keyPay() {
+    $('#pagar_cuenta').click();
+}
+
+/**
  * Inicializa la aplicacion, una vez que se cargan todos los scripts.
  */
 $(document).ready(function () {
@@ -412,3 +440,20 @@ $('#percent_off').on('change', getCartStatus);
 $('#form_search').on('submit', searchProuct);
 $('#pagar_cuenta').on('click', payCart);
 $('#clean_cart').on('click', cleanCart);
+// Focus en descuento
+$(document).on('keydown', null, 'alt+7', keyPercentOff);
+$codigo.on('keydown', null, 'alt+7', keyPercentOff);
+$('#cash').on('keydown', null, 'alt+7', keyPercentOff);
+// Focus en efectivo
+$(document).on('keydown', null, 'alt+8', keyFocusCash);
+$codigo.on('keydown', null, 'alt+8', keyFocusCash);
+$('#percent_off').on('keydown', null, 'alt+8', keyFocusCash);
+// Focus en buscador
+$(document).on('keydown', null, 'alt+9', keyFocusCode);
+$('#cash').on('keydown', null, 'alt+9', keyFocusCode);
+$('#percent_off').on('keydown', null, 'alt+9', keyFocusCode);
+// Pagar cuenta
+$(document).on('keydown', null, 'alt+1', keyPay);
+$codigo.on('keydown', null, 'alt+1', keyPay);
+$('#cash').on('keydown', null, 'alt+1', keyPay);
+$('#percent_off').on('keydown', null, 'alt+1', keyPay);
