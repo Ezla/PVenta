@@ -44,7 +44,7 @@ class SalesProduct(models.Model):
     name = models.CharField(max_length=100)
     with_discount = models.BooleanField(default=False)
     price = models.DecimalField(max_digits=8, decimal_places=2)
-    quantity = models.IntegerField()
+    quantity = models.DecimalField(max_digits=8, decimal_places=2)
     sales_account = models.ForeignKey(SalesAccount,
                                       on_delete=models.CASCADE,
                                       related_name='products',
@@ -55,4 +55,5 @@ class SalesProduct(models.Model):
 
     @property
     def total(self):
-        return self.price * self.quantity
+        return (self.price * self.quantity).quantize(Decimal('.01'),
+                                                     rounding=ROUND_UP)
