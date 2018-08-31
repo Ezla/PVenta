@@ -97,7 +97,7 @@ def barcode_three_column_format(products=list()):
     buffer = BytesIO()
     template = canvas.Canvas(buffer, pagesize=A4)
     x_axis = 0 * mm
-    y_axis = 275 * mm
+    y_axis = 272 * mm
     cont = 0
 
     for item in products:
@@ -106,19 +106,21 @@ def barcode_three_column_format(products=list()):
         while cont_quantity < item.get('quantity'):
             barcode = code39.Extended39(product.codigo,
                                         barWidth=0.3 * mm,
-                                        barHeight=12 * mm,
+                                        barHeight=8 * mm,
                                         checksum=False)
-            template.setFontSize(6, 15)
+            template.setFontSize(25, 15)
+            price = '$ {}'.format(product.punitario)
+            template.drawString(x_axis + 13 * mm,
+                                y_axis + 8 * mm,
+                                price)
+            barcode.drawOn(template, x_axis, y_axis - 2 * mm)
 
-            template.drawString(x_axis + 5 * mm,
-                                y_axis + 13 * mm,
-                                product.descripcion)
-            barcode.drawOn(template, x_axis, y_axis)
-            template.drawString(x_axis + 25 * mm,
-                                y_axis - 3 * mm,
+            template.setFontSize(6, 15)
+            template.drawString(x_axis + 23 * mm,
+                                y_axis - 5 * mm,
                                 product.codigo)
 
-            x_axis = x_axis + 72.5 * mm
+            x_axis = x_axis + 74.5 * mm
             cont_quantity += 1
             cont += 1
 
@@ -127,8 +129,8 @@ def barcode_three_column_format(products=list()):
                 y_axis = 275 * mm
                 template.showPage()
             elif (cont % 3) == 0:
-                x_axis -= 217.5 * mm
-                y_axis -= 26.5 * mm
+                x_axis -= 223.5 * mm
+                y_axis -= 26.3 * mm
 
     template.save()
     pdf = buffer.getvalue()
@@ -136,9 +138,9 @@ def barcode_three_column_format(products=list()):
     return pdf
 
 
-def barcode_six_column_format(products=list()):
+def barcode_five_column_format(products=list()):
     """
-    Genera un pdf con un maximo 150 códigos de barras, con un formato de 6
+    Genera un pdf con un maximo 125 códigos de barras, con un formato de 6
     columnas.
     :param products: Lista (list) de diccionarios (dict) con formato
             [{'pk': 1, 'quantity': 2}]
@@ -149,33 +151,39 @@ def barcode_six_column_format(products=list()):
     x_axis = 0 * mm
     y_axis = 275 * mm
     cont = 0
-    template.drawString(x_axis + 73 * mm,
-                        y_axis + 10 * mm,
-                        'Plantilla con 150 codigos de barras')
+    title = 'Plantilla con 125 codigos de barras'
+    template.drawString(x_axis + 73 * mm, y_axis + 10 * mm, title)
+    quantity = 0
+
+    for item in products:
+        quantity += item.get('quantity')
 
     for item in products:
         product = Producto.objects.get(pk=item.get('pk'))
         cont_quantity = 0
         while cont_quantity < item.get('quantity'):
             barcode = code39.Extended39(product.codigo,
-                                        barWidth=0.17 * mm,
+                                        barWidth=0.21 * mm,
                                         barHeight=5 * mm,
                                         checksum=False)
             template.setFontSize(6, 15)
             barcode.drawOn(template, x_axis, y_axis)
-            template.drawString(x_axis + 13 * mm,
+            template.drawString(x_axis + 17 * mm,
                                 y_axis - 2.4 * mm,
                                 product.codigo)
 
-            x_axis = x_axis + 34 * mm
+            x_axis = x_axis + 40.8 * mm
             cont_quantity += 1
             cont += 1
 
-            if (cont % 150) == 0:
+            if (cont % 125) == 0 and (cont % quantity) != 0:
                 x_axis = 0 * mm
                 y_axis = 275 * mm
                 template.showPage()
-            elif (cont % 6) == 0:
+                template.drawString(x_axis + 73 * mm,
+                                    y_axis + 10 * mm,
+                                    title)
+            elif (cont % 5) == 0:
                 x_axis -= 204 * mm
                 y_axis -= 10.5 * mm
 

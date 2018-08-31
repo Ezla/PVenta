@@ -8,7 +8,7 @@ from django.views.generic import CreateView, ListView, UpdateView, \
 import json
 
 from .utils import barcode_two_column_format, \
-    barcode_three_column_format, barcode_six_column_format
+    barcode_three_column_format, barcode_five_column_format
 from .models import Producto, Marca
 from .forms import CrearProductoForm, CrearMarcaForm
 from Apps.Venta.views import LoginRequiredMixin
@@ -209,8 +209,8 @@ class CodeImagen(LoginRequiredMixin, View):
             barcodes = barcode_two_column_format(products)
         elif type_template == 30:
             barcodes = barcode_three_column_format(products)
-        elif type_template == 150:
-            barcodes = barcode_six_column_format(products)
+        elif type_template == 125:
+            barcodes = barcode_five_column_format(products)
         else:
             barcodes = None
 

@@ -123,8 +123,7 @@ function renderProductOption(pk, code, description) {
             'class': 'form-control input-sticker text-center',
             'type': 'number',
             'value': 1,
-            'min': 1,
-            'max': 30
+            'min': 1
         }).on('change', validateStickers));
     var $itemProduct = $('<tr/>', {
         'class': 'tr-product',
