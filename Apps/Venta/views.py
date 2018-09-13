@@ -5,12 +5,12 @@ from django.http import HttpResponse, JsonResponse, Http404, HttpResponseRedirec
 from django.urls import reverse_lazy
 from django.contrib.auth import login, logout
 from django.db import transaction
+from django.conf import settings
 
 from .forms import AuthenticationFormCustom
 from Apps.Producto.models import Producto
 from .logica import calcul_p, calcul_sql
 from .models import SalesAccount, SalesProduct, Discount
-from VentaAlex.settings import BASE_DIR
 from decimal import Decimal, ROUND_UP
 from io import BytesIO
 import datetime
@@ -345,7 +345,7 @@ class VentaTiket(LoginRequiredMixin, View):
         emitidotxt = '%s %s' % (fecha, hora)
         emitido = Paragraph(emitidotxt, styleM)
         # Imagen
-        I = Image(BASE_DIR + '/static/img/car.png', width=78, height=60)
+        I = Image(settings.BASE_DIR + '/static/img/car.png', width=78, height=60)
         # Tabla para encabezado
         tas = Table([
             # ['',''],
