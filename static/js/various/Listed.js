@@ -25,6 +25,12 @@ function renderListed(products) {
             }).append($number, $name, $type, $active);
             $('#table-body').append($tr);
         });
+        $('#table-listed').DataTable({
+            "language": {
+                "url": "/static/json/tools/datatables/Spanish.json"
+            }
+        });
+
     } else {
         var $tr = $('<tr/>').append($('<td/>', {
             'text': 'No se encontraron coincidencias'
