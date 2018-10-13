@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^', include('Apps.Producto.urls', namespace='Producto')),
     url(r'^', include('Apps.Estadistica.urls', namespace='Estadistica')),
     url(r'^', include('Apps.Perfil.urls', namespace='PerfilUsuario')),
+    url(r'^', include('Apps.Varios.urls', namespace='varios')),
     url(r'^api/', include(router.urls)),
 ]
 

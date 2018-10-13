@@ -1,0 +1,58 @@
+{% extends "base_v3.html" %}
+
+{% block style %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/loading.css' %}">
+{% endblock %}
+
+{% block title %} Listados {% endblock %}
+
+{% block encabezado %} Listas de indexación {% endblock %}
+
+{% block breadcrumb %}
+    <li class="active"><i class="fa fa-barcode"></i> Listados</li>
+{% endblock %}
+
+{% block conte %}
+
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <i class="fa fa-barcode"></i>
+                <strong class="hidden-xs">Listas</strong>
+            </h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool"
+                        data-widget="collapse" data-toggle="tooltip"
+                        title="Collapse">
+                    <i class="fa fa-minus"></i></button>
+            </div>
+        </div>
+        <div class="box-body">
+            <table id="table-listed" class="table table-hover">
+                <thead>
+                <tr>
+                    <th><strong>Numero</strong></th>
+                    <th><strong>Nombre</strong></th>
+                    <th class="hidden-xs"><strong>Tipo</strong></th>
+                    <th class="hidden-xs"><strong>Estado</strong></th>
+                </tr>
+                </thead>
+                <tbody id="table-body">
+                </tbody>
+            </table>
+            {% include "include/loading.html" %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <!-- AdminLTE App -->
+    {% load static %}
+    <script src="{% static 'js/jquery.hotkeys.js' %}"></script>
+
+    <script src="{% static 'js/various/listed.js' %}"></script>
+    <script type="text/javascript">
+        var url_api_listed = '{{ url_api }}';
+    </script>
+{% endblock %}

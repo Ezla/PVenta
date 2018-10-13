@@ -1,3 +1,6 @@
-from django.shortcuts import render
+from django.views.generic import TemplateView
+from Apps.Venta.views import LoginRequiredMixin
 
-# Create your views here.
+
+class ListedView(LoginRequiredMixin, TemplateView):
+    template_name = 'varios/listed.html'
