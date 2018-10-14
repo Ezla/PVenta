@@ -18,7 +18,6 @@ class ApiEnumerateListingView(APIView):
 
     def get(self, request):
         query = Listed.objects.all().order_by('name')
-        print('entro')
         count = 0
         for item in query:
             count += 1
