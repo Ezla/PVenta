@@ -26,11 +26,23 @@ function renderListed(products) {
             $('#table-body').append($tr);
         });
         $('#table-listed').DataTable({
+            dom: 'Bfrtip',
             "language": {
                 "url": "/static/json/tools/datatables/Spanish.json"
-            }
+            },
+            buttons: [
+                'csv',
+                {
+                    extend: 'pdfHtml5',
+                    pageSize: 'A4',
+                    exportOptions: {
+                        columns: [0, 1, 2]
+                    },
+                }
+            ],
+            pageLength: 100,
+            select: true
         });
-
     } else {
         var $tr = $('<tr/>').append($('<td/>', {
             'text': 'No se encontraron coincidencias'
