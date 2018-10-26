@@ -1,3 +1,5 @@
+var datatable = undefined;
+
 /**
  * Dibuja los registros en la tabla (tr) y aplica el cargado de DataTable
  * en la tabla generada.
@@ -25,7 +27,7 @@ function renderListed(products) {
             }).append($number, $name, $type, $active);
             $('#table-body').append($tr);
         });
-        $('#table-listed').DataTable({
+        datatable = $('#table-listed').DataTable({
             dom: 'Bfrtip',
             "language": {
                 "url": "/static/json/tools/datatables/Spanish.json"
@@ -38,6 +40,12 @@ function renderListed(products) {
                     exportOptions: {
                         columns: [0, 1, 2]
                     },
+                },
+                {
+                    text: 'Re numerar',
+                    action: function (e, dt, node, config) {
+                        $("#confirmation-modal").modal('show');
+                    }
                 }
             ],
             pageLength: 100,
@@ -55,7 +63,37 @@ function renderListed(products) {
  * Gestiona la peticion para obtener la lista al servidor.
  */
 function getListed() {
-    runAjax({}, '/api/listed/', 'get')
+    runAjax({}, '/api/listed/', 'get');
+}
+
+/**
+ * Inicializa comportamiento del modal.
+ */
+function initalModal() {
+    var modalConfirm = function (callback) {
+        $("#modal-btn-si").on("click", function () {
+            $("#confirmation-modal").modal('hide');
+            callback(true);
+        });
+        $("#modal-btn-no").on("click", function () {
+            $("#confirmation-modal").modal('hide');
+            callback(false);
+        });
+    };
+    modalConfirm(function (confirm) {
+        if (confirm) {
+            reNumberListed();
+        }
+    });
+}
+
+/**
+ * Gestiona la peticion para re numerar la lista.
+ */
+function reNumberListed() {
+    $('#table-body').hide();
+    $('.loading-container').show();
+    runAjax({}, '/api/listed/enumerate/', 'get');
 }
 
 /**
@@ -76,8 +114,13 @@ function runAjax(data, url, methodType) {
                 $('[name=csrfmiddlewaretoken]').val());
         },
         success: function (data, textStatus, jqXHR) {
-            if (methodType == 'get') {
+            if (methodType == 'get' && url == '/api/listed/') {
                 $('.loading-container').hide();
+                renderListed(data);
+            } else if (methodType == 'get' && url == '/api/listed/enumerate/') {
+                $('.loading-container').hide();
+                $('#table-body').show();
+                datatable.destroy();
                 renderListed(data);
             }
         },
@@ -86,4 +129,5 @@ function runAjax(data, url, methodType) {
 
 $(document).ready(function () {
     getListed();
+    initalModal();
 });
