@@ -345,7 +345,7 @@ class VentaTiket(LoginRequiredMixin, View):
         emitidotxt = '%s %s' % (fecha, hora)
         emitido = Paragraph(emitidotxt, styleM)
         # Imagen
-        I = Image(settings.BASE_DIR + '/static/img/car.png', width=78, height=60)
+        I = Image(settings.BASE_DIR + '/../static/img/car.png', width=78, height=60)
         # Tabla para encabezado
         tas = Table([
             # ['',''],
