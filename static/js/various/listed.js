@@ -1,4 +1,8 @@
 var datatable = undefined;
+var row = undefined;
+var modal_status = undefined;
+var item_pk = undefined;
+var url_listed = '/api/listed/';
 
 /**
  * Regresa un registro jquey (tr) listo para ser agregado a la tabla.
@@ -14,6 +18,7 @@ function renderRecord(item) {
     } else if (item.type == '3') {
         name = 'Mapa';
     }
+    var $pk = $('<td/>', {'text': item.pk});
     var $number = $('<td/>', {'text': item.number});
     var $name = $('<td/>', {'text': item.name});
     var $type = $('<td/>', {'text': name});
@@ -21,7 +26,7 @@ function renderRecord(item) {
     var $tr = $('<tr/>', {
         'role': 'button',
         'data-code': item.pk
-    }).append($number, $name, $type, $active);
+    }).append($pk, $number, $name, $type, $active);
     return $tr
 }
 
@@ -60,20 +65,36 @@ function renderListed(products) {
                 {
                     text: 'Agregar nuevo',
                     action: function (e, dt, node, config) {
-                        $('#id_name').val('');
-                        $('#id_number').val(0);
-                        $('#id_type').val('');
-                        $('#id_active').prop('checked', true);
-                        $('#help-name').text('').parent().removeClass('has-error');
-                        $('#help-number').text('').parent().removeClass('has-error');
-                        $('#help-type').text('').parent().removeClass('has-error');
-                        $('#help-active').text('').parent().removeClass('has-error');
-                        $("#listed-modal").modal('show');
+                        item_pk = undefined;
+                        modal_status = 'post';
+                        openModal('', 0, '', true);
                     }
                 }
             ],
             pageLength: 100,
             select: true
+        });
+        $('#table-listed tbody').on('dblclick', 'tr', function () {
+            row = datatable.row(this);
+            var data = row.data();
+            var id_active = (data[4] == 'true');
+            var id_type;
+            switch (data[3]) {
+                case 'Monografía':
+                    id_type = 1;
+                    break;
+                case 'Biografia':
+                    id_type = 2;
+                    break;
+                case 'Mapa':
+                    id_type = 3;
+                    break;
+                default:
+                    id_type = '';
+            }
+            item_pk = data[0];
+            modal_status = 'put';
+            openModal(data[2], data[1], id_type, id_active);
         });
     } else {
         var $tr = $('<tr/>').append($('<td/>', {
@@ -87,7 +108,26 @@ function renderListed(products) {
  * Gestiona la peticion para obtener la lista al servidor.
  */
 function getListed() {
-    runAjax({}, '/api/listed/', 'get');
+    runAjax({}, url_listed, 'get');
+}
+
+/**
+ * Setea los datos en el modal, para abrir el modal.
+ * @param {string} name: Nombre del producto.
+ * @param {number} number: Numero de lista.
+ * @param {number} type: Tipo de producto.
+ * @param {boolean} active: Si el producto est activo.
+ */
+function openModal(name, number, type, active) {
+    $('#id_name').val(name);
+    $('#id_number').val(number);
+    $('#id_type').val(type);
+    $('#id_active').prop('checked', active);
+    $('#help-name').text('').parent().removeClass('has-error');
+    $('#help-number').text('').parent().removeClass('has-error');
+    $('#help-type').text('').parent().removeClass('has-error');
+    $('#help-active').text('').parent().removeClass('has-error');
+    $("#listed-modal").modal('show');
 }
 
 /**
@@ -124,13 +164,17 @@ function reNumberListed() {
  * Gestiona la consulta al servidor para guardar el registro.
  */
 function saveListed() {
+    var url_modal = url_listed;
     var data = {
         'name': $('#id_name').val(),
         'number': $('#id_number').val(),
         'type': $('#id_type').val(),
         'active': $('#id_active').prop('checked')
     };
-    runAjax(data, '/api/listed/', 'post');
+    if (modal_status == 'put') {
+        url_modal = url_listed.concat(item_pk, '/');
+    }
+    runAjax(data, url_modal, modal_status);
 }
 
 /**
@@ -151,7 +195,7 @@ function runAjax(data, url, methodType) {
                 $('[name=csrfmiddlewaretoken]').val());
         },
         success: function (data, textStatus, jqXHR) {
-            if (methodType == 'get' && url == '/api/listed/') {
+            if (methodType == 'get' && url == url_listed) {
                 $('.loading-container').hide();
                 renderListed(data);
             } else if (methodType == 'get' && url == '/api/listed/enumerate/') {
@@ -163,6 +207,24 @@ function runAjax(data, url, methodType) {
                 $("#listed-modal").modal('hide');
                 var $newTr = renderRecord(data);
                 datatable.row.add($newTr).draw();
+            } else if (methodType == 'put') {
+                $("#listed-modal").modal('hide');
+                var id_type;
+                switch (data.type) {
+                    case '1':
+                        id_type = 'Monografía';
+                        break;
+                    case '2':
+                        id_type = 'Biografia';
+                        break;
+                    case '3':
+                        id_type = 'Mapa';
+                        break;
+                    default:
+                        id_type = '';
+                }
+                var new_item = [data.pk, data.number, data.name, id_type, data.active];
+                row.data(new_item).invalidate();
             }
         },
         error: function (jqXHR) {
