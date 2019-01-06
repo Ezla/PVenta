@@ -244,9 +244,19 @@ function runAjax(data, url, methodType) {
     });
 }
 
+/**
+ * Llama el metodo click asociado al botono de agregar producto.
+ */
+function keyOpenModalListed() {
+    item_pk = undefined;
+    modal_status = 'post';
+    openModal('', 0, '', true);
+}
+
 $(document).ready(function () {
     getListed();
     initalModal();
 });
 
 $('#guardar').on('click', saveListed);
+$(document).on('keydown', null, 'alt+9', keyOpenModalListed);
