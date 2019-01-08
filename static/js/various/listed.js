@@ -69,6 +69,37 @@ function renderListed(products) {
                         modal_status = 'post';
                         openModal('', 0, '', true);
                     }
+                },
+                {
+                    extend: 'collection',
+                    text: 'Filtrar',
+                    autoClose: true,
+                    buttons: [
+                        {
+                            text: 'Todas',
+                            action: function (e, dt, node, config) {
+                                datatable.column(3).search('').draw();
+                            }
+                        },
+                        {
+                            text: 'Monografía',
+                            action: function (e, dt, node, config) {
+                                datatable.column(3).search('Monografía').draw();
+                            }
+                        },
+                        {
+                            text: 'Biografia',
+                            action: function (e, dt, node, config) {
+                                datatable.column(3).search('Biografia').draw();
+                            }
+                        },
+                        {
+                            text: 'Mapa',
+                            action: function (e, dt, node, config) {
+                                datatable.column(3).search('Mapa').draw();
+                            }
+                        }
+                    ]
                 }
             ],
             pageLength: 100,
