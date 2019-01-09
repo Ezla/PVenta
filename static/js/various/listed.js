@@ -2,6 +2,7 @@ var datatable = undefined;
 var row = undefined;
 var modal_status = undefined;
 var item_pk = undefined;
+var type_list = undefined;
 var url_listed = '/api/listed/';
 
 /**
@@ -49,10 +50,35 @@ function renderListed(products) {
             },
             buttons: [
                 {
-                    text: 'Re numerar',
-                    action: function (e, dt, node, config) {
-                        $("#confirmation-modal").modal('show');
-                    }
+                    extend: 'collection',
+                    text: 'Re numerars',
+                    autoClose: true,
+                    buttons: [
+                        {
+                            text: 'Re numerar monografía',
+                            action: function (e, dt, node, config) {
+                                $("#confirmation-modal").modal('show');
+                                $("#type_alert").text('MONOGRAFIAS');
+                                type_list = '1';
+                            }
+                        },
+                        {
+                            text: 'Re numerar biografia',
+                            action: function (e, dt, node, config) {
+                                $("#confirmation-modal").modal('show');
+                                $("#type_alert").text('BIOGRAFIAS');
+                                type_list = '2';
+                            }
+                        },
+                        {
+                            text: 'Re numerar mapa',
+                            action: function (e, dt, node, config) {
+                                $("#confirmation-modal").modal('show');
+                                $("#type_alert").text('MAPAS');
+                                type_list = '3';
+                            }
+                        }
+                    ]
                 },
                 'csv',
                 {
@@ -188,7 +214,7 @@ function initalModal() {
 function reNumberListed() {
     $('#table-body').hide();
     $('.loading-container').show();
-    runAjax({}, '/api/listed/enumerate/', 'get');
+    runAjax({'key': type_list}, '/api/listed/enumerate/', 'get');
 }
 
 /**
@@ -230,6 +256,7 @@ function runAjax(data, url, methodType) {
                 $('.loading-container').hide();
                 renderListed(data);
             } else if (methodType == 'get' && url == '/api/listed/enumerate/') {
+                type_list = undefined;
                 $('.loading-container').hide();
                 $('#table-body').show();
                 datatable.destroy();
@@ -260,6 +287,7 @@ function runAjax(data, url, methodType) {
         },
         error: function (jqXHR) {
             var errors = jqXHR.responseJSON;
+            type_list = undefined;
             $.each(errors, function(key, msg){
                 if (key == 'name') {
                     $('#help-name').text(msg).parent().addClass('has-error');
