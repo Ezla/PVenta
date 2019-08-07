@@ -85,7 +85,7 @@ function renderListed(products) {
                     extend: 'pdfHtml5',
                     pageSize: 'A4',
                     exportOptions: {
-                        columns: [0, 1, 2]
+                        columns: [1, 2, 3]
                     },
                 },
                 {
