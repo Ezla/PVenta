@@ -6,4 +6,5 @@ class ListedSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Listed
         fields = (
-            'pk', 'name', 'number', 'type', 'active')
+            'pk', 'name', 'number', 'type', 'reference_number', 'provider',
+            'active')
