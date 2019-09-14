@@ -19,15 +19,23 @@ function renderRecord(item) {
     } else if (item.type == '3') {
         name = 'Mapa';
     }
+    var provider;
+    if (item.provider == '1') {
+        provider = 'SUN RISE';
+    } else if (item.provider == '2') {
+        provider = 'RAF';
+    }
     var $pk = $('<td/>', {'text': item.pk});
     var $number = $('<td/>', {'text': item.number});
     var $name = $('<td/>', {'text': item.name});
     var $type = $('<td/>', {'text': name});
     var $active = $('<td/>', {'text': item.active});
+    var $reference = $('<td/>', {'text': item.reference_number});
+    var $provider = $('<td/>', {'text': provider});
     var $tr = $('<tr/>', {
         'role': 'button',
         'data-code': item.pk
-    }).append($pk, $number, $name, $type, $active);
+    }).append($pk, $number, $name, $type, $active, $reference, $provider);
     return $tr
 }
 
