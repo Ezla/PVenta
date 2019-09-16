@@ -28,17 +28,19 @@ class ListedSerialiser(serializers.ModelSerializer):
             listed = Listed.objects.get(reference_number=reference_number,
                                         provider=provider, type=type)
             listed_pk = listed.pk
+            # Si la ID de la isntancia a actualizar es direfente que la del
+            # egistro que tiene coincidencias, indicamos que ya esta registrada
+            # esa referencia.
+            if instance_pk != listed_pk:
+                for key, value in Listed.PROVIDERS_CHOICES:
+                    if key == provider:
+                        provider = value
+                        break
+                msg = 'La referencia "{}" asociada al proveedor "{}" ya esta registrada.'.format(
+                    reference_number, provider)
+                raise serializers.ValidationError(
+                    {'reference_number': msg})
         except Listed.DoesNotExist:
-            listed_pk = None
-        # Si la ID de la isntancia a actualizar es direfente que la del
-        # egistro que tiene coincidencias, indicamos que ya esta registrada
-        # esa referencia.
-        if instance_pk != listed_pk:
-            for key, value in Listed.PROVIDERS_CHOICES:
-                if key == provider:
-                    provider = value
-                    break
-            msg = 'La referencia "{}" asociada al proveedor "{}" ya esta registrada.'.format(
-                reference_number, provider)
-            raise serializers.ValidationError({'reference_number': msg})
+            # No existe producto con referencia igual
+            pass
         return data
