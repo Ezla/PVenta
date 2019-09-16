@@ -24,6 +24,8 @@ function renderRecord(item) {
         provider = 'SUN RISE';
     } else if (item.provider == '2') {
         provider = 'RAF';
+    } else if (item.provider == '3') {
+        provider = 'BOB';
     }
     var $pk = $('<td/>', {'text': item.pk});
     var $number = $('<td/>', {'text': item.number});
@@ -164,6 +166,9 @@ function renderListed(products) {
                     break;
                 case 'RAF':
                     id_provider = 2;
+                    break;
+                case 'BOB':
+                    id_provider = 3;
                     break;
                 default:
                     id_provider = '';
@@ -313,6 +318,9 @@ function runAjax(data, url, methodType) {
                         break;
                     case '2':
                         provider = 'RAF';
+                        break;
+                    case '3':
+                        provider = 'BOB';
                         break;
                     default:
                         provider = '';

@@ -12,9 +12,11 @@ class Listed(models.Model):
     )
     SUN_RISE = '1'
     RAF = '2'
+    BOB = '3'
     PROVIDERS_CHOICES = (
         (SUN_RISE, 'SUN RISE'),
-        (RAF, 'RAF')
+        (RAF, 'RAF'),
+        (BOB, 'BOB')
     )
     name = models.CharField(verbose_name='Nombre', max_length=100,
                             unique=True)
