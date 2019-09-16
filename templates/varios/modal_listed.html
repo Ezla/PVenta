@@ -18,20 +18,46 @@
                         <input class="form-control" id="id_name" name="name" maxlength="100" type="text" required="">
                         <span id="help-name" class="help-block"></span>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label">Numero de lista</label>
-                        <input class="form-control" id="id_number" name="number" value="0" type="number" required="">
-                        <span id="help-number" class="help-block"></span>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">Número de lista</label>
+                                <input class="form-control" id="id_number" name="number" value="0" type="number" required="">
+                                <span id="help-number" class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">Tipo de producto</label>
+                                <select class="form-control" id="id_type" name="type" required="">
+                                    <option value="" selected="">---------</option>
+                                    <option value="1">Monografía</option>
+                                    <option value="2">Biografia</option>
+                                    <option value="3">Mapa</option>
+                                </select>
+                                <span id="help-type" class="help-block"></span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label">Tipo de producto</label>
-                        <select class="form-control" id="id_type" name="type" required="">
-                            <option value="" selected="">---------</option>
-                            <option value="1">Monografía</option>
-                            <option value="2">Biografia</option>
-                            <option value="3">Mapa</option>
-                        </select>
-                        <span id="help-type" class="help-block"></span>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">Número de referencia</label>
+                                <input class="form-control" id="id_reference_number" name="reference_number" type="text" required="">
+                                <span id="help-reference_number" class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">Proveedor del producto</label>
+                                <select class="form-control" id="id_provider" name="provider" required="">
+                                    <option value="" selected="">---------</option>
+                                    <option value="1">SUN RISE</option>
+                                    <option value="2">RAF</option>
+                                </select>
+                                <span id="help-provider" class="help-block"></span>
+                            </div>
+                        </div>
                     </div>
                     <div class="checkbox">
                         <label>

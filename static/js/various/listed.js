@@ -101,7 +101,7 @@ function renderListed(products) {
                     action: function (e, dt, node, config) {
                         item_pk = undefined;
                         modal_status = 'post';
-                        openModal('', 0, '', true);
+                        openModal('', 0, '', '', '', true);
                     }
                 },
                 {
@@ -157,9 +157,20 @@ function renderListed(products) {
                 default:
                     id_type = '';
             }
+            var id_provider;
+            switch (data[6]) {
+                case 'SUN RISE':
+                    id_provider = 1;
+                    break;
+                case 'RAF':
+                    id_provider = 2;
+                    break;
+                default:
+                    id_provider = '';
+            }
             item_pk = data[0];
             modal_status = 'put';
-            openModal(data[2], data[1], id_type, id_active);
+            openModal(data[2], data[1], id_type, data[5], id_provider, id_active);
         });
     } else {
         var $tr = $('<tr/>').append($('<td/>', {
@@ -183,14 +194,18 @@ function getListed() {
  * @param {number} type: Tipo de producto.
  * @param {boolean} active: Si el producto est activo.
  */
-function openModal(name, number, type, active) {
+function openModal(name, number, type, reference_number, provider, active) {
     $('#id_name').val(name);
     $('#id_number').val(number);
     $('#id_type').val(type);
+    $('#id_reference_number').val(reference_number);
+    $('#id_provider').val(provider);
     $('#id_active').prop('checked', active);
     $('#help-name').text('').parent().removeClass('has-error');
     $('#help-number').text('').parent().removeClass('has-error');
     $('#help-type').text('').parent().removeClass('has-error');
+    $('#help-reference_number').text('').parent().removeClass('has-error');
+    $('#help-provider').text('').parent().removeClass('has-error');
     $('#help-active').text('').parent().removeClass('has-error');
     $("#listed-modal").modal('show');
 }
@@ -234,6 +249,8 @@ function saveListed() {
         'name': $('#id_name').val(),
         'number': $('#id_number').val(),
         'type': $('#id_type').val(),
+        'reference_number': $('#id_reference_number').val(),
+        'provider': $('#id_provider').val(),
         'active': $('#id_active').prop('checked')
     };
     if (modal_status == 'put') {
@@ -289,7 +306,18 @@ function runAjax(data, url, methodType) {
                     default:
                         id_type = '';
                 }
-                var new_item = [data.pk, data.number, data.name, id_type, data.active];
+                var provider;
+                switch (data.provider) {
+                    case '1':
+                        provider = 'SUN RISE';
+                        break;
+                    case '2':
+                        provider = 'RAF';
+                        break;
+                    default:
+                        provider = '';
+                }
+                var new_item = [data.pk, data.number, data.name, id_type, data.active, data.reference_number, provider];
                 row.data(new_item).invalidate();
             }
         },
@@ -305,6 +333,10 @@ function runAjax(data, url, methodType) {
                     $('#help-type').text(msg).parent().addClass('has-error');
                 } else if (key == 'active') {
                     $('#help-active').text(msg).parent().addClass('has-error');
+                } else if (key == 'reference_number') {
+                    $('#help-reference_number').text(msg).parent().addClass('has-error');
+                } else if (key == 'provider') {
+                    $('#help-provider').text(msg).parent().addClass('has-error');
                 }
             });
         }
@@ -317,7 +349,7 @@ function runAjax(data, url, methodType) {
 function keyOpenModalListed() {
     item_pk = undefined;
     modal_status = 'post';
-    openModal('', 0, '', true);
+    openModal('', 0, '', '', '', true);
 }
 
 $(document).ready(function () {
