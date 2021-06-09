@@ -1,8 +1,10 @@
 from django.conf.urls import url
+from django.urls import path
 
 from .views import Login, Logout, Venta, VentaBuscarProducto, \
     VentaRemoverProd, VentaCancelarCuenta, VentaAumentarProd, \
     VentaPagarCuenta, VentaTiket, VentaTipoPrecio, VentaSetDescuento
+from .api_views import AccountView, SalesProductChangeView, SearchProductView, SalesCartStatusView
 
 app_name = 'Venta'
 urlpatterns = [
@@ -23,4 +25,8 @@ urlpatterns = [
         name='url_cancelar_cuenta_ajax'),
     url(r'^Ajax/Descuento/$', VentaSetDescuento.as_view(),
         name='url_agregar_descuento_ajax'),
+    path('api/sales/pay/', AccountView.as_view(), name='url_cart_pay'),
+    path('api/sales/product/change/', SalesProductChangeView.as_view(), name='url_change_product'),
+    path('api/sales/product/search/', SearchProductView.as_view(), name='url_search_product'),
+    path('api/sales/cart/status/', SalesCartStatusView.as_view(), name='url_cart_status'),
 ]

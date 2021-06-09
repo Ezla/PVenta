@@ -1,5 +1,11 @@
 {% extends "base_v3.html" %}
 
+{% block style %}
+    {% load static %}
+    <!-- checkbox -->
+    <link rel="stylesheet" href="{% static 'css/floating_buttons.css' %}">
+{% endblock %}
+
 {% block title %} Productos {% endblock %}
 
 {% block encabezado %} Lista de productos {% endblock %}
@@ -9,6 +15,10 @@
 {% endblock %}
 
 {% block conte %}
+
+{% include "Producto/floating_buttons.html" %}
+
+{% include "Producto/modal_brand_form.html" %}
 
 {% include "Producto/modal_product_edit.html" %}
 
@@ -96,7 +106,7 @@
                         <td class="hidden-xs text-center">{{prod.vunidad|yesno:'<i class="fa f fa-thumbs-o-up text-green"></i>,<i class="fa f fa-thumbs-o-down text-red"></i>'|safe}}</td>
                         <td class="hidden-xs">$ {{prod.punitario}}</td>
                         <td class="hidden-xs">$ {{prod.pmayoreo}}</td>
-                        <td><a href=""></a>
+                        <td>
                             <div class="btn-group pull-right">
                                 <button type="button" class="btn btn-primary edit-product" data-toggle="modal" data-target="#exampleModal" data-pk="{{ prod.pk}}">Editar</button>
 {#                                <button type="button" class="btn btn-danger">Eliminar</button>#}
@@ -147,8 +157,10 @@
 {% block script %}
     <!-- AdminLTE App -->
     {% load static %}
+    <script src="{% static 'js/jquery.hotkeys.js' %}"></script>
     <script src="{% static 'js/product/product-ajax.js' %}"></script>
     <script type="text/javascript">
         var base_api_url = '{{ url_api }}';
+        var base_url_brand = '/api/brand/';
     </script>
 {% endblock %}

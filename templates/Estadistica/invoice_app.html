@@ -1,0 +1,68 @@
+{% extends "base_v3.html" %}
+
+{% block title %} Facturas {% endblock %}
+
+{% block encabezado %} Lista de facturas {% endblock %}
+
+{% block style %}
+    {% load static %}
+    <!-- estipos para animacion de cargando -->
+    <link rel="stylesheet" href="{% static 'css/loading.css' %}">
+{% endblock %}
+
+{% block conte %}
+
+    <div class="panel panel-default offer">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-xs-2 col-sm-4">
+                    <strong class="hidden-xs">Facturas disponibles</strong>
+                    <span class="badge pull-rigth">{{ count_invoices }} / {{ count_invoices }}</span>
+                </div>
+                <div class="col-xs-10 col-sm-7 col-sm-offset-1">
+                    <form action="{% url 'Producto:url_lista_marca' 1 %}"
+                          method="get">
+                        <input id="buscar_marca" name="buscar_marca"
+                               type="text" class="form-control"
+                               placeholder="Buscar">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                {% include 'include/loading.html' %}
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td><strong>Folio</strong></td>
+                            <td><strong>Provedor</strong></td>
+                            <td><strong>Monto</strong></td>
+                            <td><strong>Estado</strong></td>
+                            <td><strong>Fecha de emicion</strong></td>
+                            <td><strong>Fecha limite</strong></td>
+                        </tr>
+                    </thead>
+                    <tbody id="list-invoices"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-xs-12 col-ml-6 col-ml-offset-3">
+                    <div class="text-center"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    {% load static %}
+    <script src="{% static 'js/estadistica/estadistica.js' %}"></script>
+    <script type="text/javascript">
+        var url_invoice = '/api/invoice/';
+        $(document).ready(load_invoices());
+    </script>
+{% endblock %}

@@ -2,12 +2,13 @@ from django.urls import reverse_lazy, reverse
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 from django.core import serializers
-from django.views.generic import CreateView, ListView, UpdateView, DeleteView,\
-    DetailView, View
+from django.views.generic import CreateView, ListView, UpdateView, \
+    DeleteView, DetailView, View, TemplateView
 
-import barcode
-from io import StringIO
+import json
 
+from .utils import barcode_two_column_format, \
+    barcode_three_column_format, barcode_five_column_format
 from .models import Producto, Marca
 from .forms import CrearProductoForm, CrearMarcaForm
 from Apps.Venta.views import LoginRequiredMixin
@@ -193,14 +194,29 @@ class MarcaNuevoAjax(LoginRequiredMixin, View):
         return HttpResponse(data, content_type='application/json')
 
 
+class GenerateBarcodeView(TemplateView):
+    template_name = 'Producto/product_barcode.html'
+
+
 class CodeImagen(LoginRequiredMixin, View):
 
     def get(self, *args, **kwargs):
-        fp = StringIO()
-        code39 = barcode.generate('Code39', '123456789012', writer=barcode.writer.ImageWriter(), output=fp)
-        # filename = code39.save('img')
-        response = HttpResponse(code39, content_type='application/png')
-        response['Content-Disposition'] = 'filename="img.png"'
+        data = json.loads(self.request.GET.get('data'))
+        products = data.get('products', [])
+        type_template = int(data.get('quantity', 16))
+
+        if type_template == 16:
+            barcodes = barcode_two_column_format(products)
+        elif type_template == 30:
+            barcodes = barcode_three_column_format(products)
+        elif type_template == 125:
+            barcodes = barcode_five_column_format(products)
+        else:
+            barcodes = None
+
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'filename="barcodes.pdf"'
+        response.write(barcodes)
         return response
 
 

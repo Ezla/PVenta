@@ -1,9 +1,12 @@
 from django.conf.urls import url
+from django.urls import path
 
+from .api_views import ProductExistsView, ProductSearchSuggestionsView
 from .views import ProductoNuevo, ProductoLista, ProductoActualizar, \
     ProductoEliminar, ProductoConsultar, MarcaNuevo, MarcaLista, \
     MarcaActualizar, MarcaEliminar, MarcaNuevoAjax, CodeImagen, \
-    GetNotifications, DeleteNotifications, LookNotifications, StatusBar
+    GetNotifications, DeleteNotifications, LookNotifications, StatusBar, \
+    GenerateBarcodeView
 
 app_name = 'Producto'
 urlpatterns = [
@@ -33,4 +36,7 @@ urlpatterns = [
     url(r'^Notification/look/$', LookNotifications.as_view(),
         name='url_look_notificaciones'),
     url(r'^Status/bar/$', StatusBar.as_view(), name='url_status_bar'),
+    url(r'^api/search/product/(?P<code>[0-9]+)/$', ProductExistsView.as_view()),
+    path('api/search/products/<str:word>/', ProductSearchSuggestionsView.as_view()),
+    path('products/barcode/', GenerateBarcodeView.as_view(), name='url_generate_barcodes'),
 ]

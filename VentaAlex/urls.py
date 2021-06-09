@@ -5,10 +5,13 @@ from django.conf.urls.static import static
 
 from rest_framework import routers
 
-from Apps.Producto.api_views import ProductoApiView
+from Apps.Producto.api_views import ProductoApiView, BrandApiView
+from Apps.Estadistica.api_views import InvoiceApiView
 
 router = routers.DefaultRouter()
-router.register(r'api/product', ProductoApiView, base_name='api_product')
+router.register(r'product', ProductoApiView, base_name='api_product')
+router.register(r'brand', BrandApiView, base_name='api_brand')
+router.register(r'invoice', InvoiceApiView, base_name='api_invoice',)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -16,7 +19,8 @@ urlpatterns = [
     url(r'^', include('Apps.Producto.urls', namespace='Producto')),
     url(r'^', include('Apps.Estadistica.urls', namespace='Estadistica')),
     url(r'^', include('Apps.Perfil.urls', namespace='PerfilUsuario')),
-    url(r'^', include(router.urls)),
+    url(r'^', include('Apps.Varios.urls', namespace='varios')),
+    url(r'^api/', include(router.urls)),
 ]
 
 if settings.DEBUG:

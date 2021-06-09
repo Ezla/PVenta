@@ -1,3 +1,11 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Listed
+
+
+class ListedAdmin(admin.ModelAdmin):
+    list_display = ('number', 'name', 'type', 'active')
+    ordering = ('name',)
+
+
+admin.site.register(Listed, ListedAdmin)

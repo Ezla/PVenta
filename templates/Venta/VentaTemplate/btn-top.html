@@ -1,24 +1,70 @@
-<div class="box box-primary">
-    <div class="box-header with-border">
-        <h3 class="box-title"><i class="fa fa-shopping-cart"></i></h3>
-        <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-            <i class="fa fa-minus"></i></button>
+<div class="col-lg-5">
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title"><i class="fa fa-shopping-cart"></i></h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="box-body font-one-point-five">
+            <div class="row pricing">
+                <div class="col-md-12">
+                    <div class="well">
+                        <div id="cart">
+                            <p>
+                                <b>Subtotal:</b>
+                                <b class="pull-right">$ 0</b>
+                            </p>
+                            <p>
+                                <b>Descuento:</b>
+                                <b class="pull-right">$ -0</b>
+                            </p>
+                            <p>
+                                <b>TOTAL:</b>
+                                <b class="pull-right">$ 0</b>
+                            </p>
+                        </div>
+                        <hr>
+                        <p>Efectivo:</p>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-usd"></span>
+                                    </span>
+                                    <div class="tooltip-demo">
+                                        <input id="cash" type="text" class="form-control input-lg text-center" value="0" data-container="body" data-toggle="popover" data-placement="top" data-content="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-5 col-xs-offset-2">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Menos</span>
+                                    <select id="percent_off" class="form-control input-lg text-center">
+                                        {% for discount in discounts %}
+                                            <option value="{{ discount.percentage }}">{{ discount.percentage }} %</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <p><b>Cambio: 0</b></p>
+                        <hr>
+                        <button id="pagar_cuenta" type="button" class="btn btn-app"  title="Realiza el cobro al cliente">
+                            <i class="fa fa-money"></i>
+                            <p>Pagar</p>
+                        </button>
+                        <button id="clean_cart" type="button" class="btn btn-app pull-right" title="Elimina la lista de compra">
+                            <i class="fa fa-times-circle"></i>
+                            <p>Limpiar</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="box-body" >
-            <button id="pagar_cuenta" type="button" class="btn btn-app"  title="Realiza el cobro al cliente" data-toggle="modal" data-target="#myModal">
-                <i class="fa fa-money"></i>
-                <p>Pagar</p>
-            </button>
-{#            <button id="guardar_cuenta" type="button" class="btn btn-app"  title="Guarda la lista de productos para pagar despues">#}
-{#                <i class="fa fa-money"></i>#}
-{#                <p>Guardar</p>#}
-{#            </button>#}
-            <button id="cancelar" type="button" class="btn btn-app pull-right" title="Elimina la lista de compra">
-                <i class="fa fa-times-circle"></i>
-                <p>Cancelar</p>
-            </button>
-    </div>
-<!-- /.box-body -->
 </div>
+

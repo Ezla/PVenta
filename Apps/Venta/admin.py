@@ -1,17 +1,19 @@
 from django.contrib import admin
 
-from .models import Cuenta, Venta, Descuento
+from .models import SalesAccount, SalesProduct, Discount
 
 
-class CuentaAdmin(admin.ModelAdmin):
-    list_display = ('tiket', 'total', 'efectivo', 'cambio', 'creado', 'modificado')
-    search_fields = ('tiket',)
+class SalesAccountAdmin(admin.ModelAdmin):
+    list_display = ('ticket', 'subtotal', 'cash', 'change_due',
+                    'created', 'modified')
+    search_fields = ('ticket',)
 
 
-class VentaAdmin(admin.ModelAdmin):
-    list_display = ('codigo', 'nombre', 'descuento', 'precio', 'cantidad', 'subtotal', 'cuenta')
+class SalesProductAdmin(admin.ModelAdmin):
+    list_display = ('code', 'name', 'with_discount', 'price',
+                    'quantity', 'sales_account')
 
 
-admin.site.register(Cuenta, CuentaAdmin)
-admin.site.register(Venta, VentaAdmin)
-admin.site.register(Descuento)
+admin.site.register(SalesAccount, SalesAccountAdmin)
+admin.site.register(SalesProduct, SalesProductAdmin)
+admin.site.register(Discount)

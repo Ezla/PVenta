@@ -2,421 +2,66 @@
 {#{% extends "base_v2.html" %}#}
 {#{% extends "base.html" %}#}
 
-
 {% block title %}Hacer ventas{% endblock %}
 
 {% block encabezado %} Hacer Venta{% endblock %}
+
+{% block style %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/sale/sale.css' %}">
+{% endblock %}
 
 {% block breadcrumb %}
     <li class="active"><i class="fa fa-shopping-cart"></i> Hacer venta</li>
 {% endblock %}
 
 {% block conte %}
-
     {% include 'Venta/VentaTemplate/modal.html' %}
-
     {% include 'Venta/VentaTemplate/btn-top.html' %}
 
-    <div class="box box-success">
-        <div class="box-header with-border">
-            <h3 class="box-title"><i class="fa fa-shopping-cart"></i></h3>
-            <form id="formxD">
-                <div class="form-group">
-                    <div class="col-lg-6">
-                        <input type="text" class="form-control" id="codigo" name="codigo" placeholder="Codigo de barras del producto">
+    <div class="col-lg-7">
+        <div class="box box-success">
+            <div class="box-header with-border">
+                <h3 class="box-title"><i class="fa fa-shopping-cart"></i></h3>
+                <form id="form_search">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <input type="text" class="form-control input-lg" id="codigo" name="codigo" placeholder="Codigo de barras del producto">
+                        </div>
                     </div>
+                </form>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
                 </div>
-            </form>
-            <form id="form_nombre">
-                <div class="col-lg-6">
-                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Buscar producto por nombre">
+            </div>
+            <div class="box-body font-one-point-four">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="thead-footer thead"></thead>
+                        <tbody id="tVentaProd"></tbody>
+                        <tfoot class="thead-footer tfooter"></tfoot>
+                    </table>
                 </div>
-            </form>
-
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-                <i class="fa fa-minus"></i></button>
             </div>
+        <!-- /.box-body -->
         </div>
-        <div class="box-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="thead-footer thead">
-                    {% if data %}
-                        <tr>
-                            <td><strong>Codigo</strong></td>
-                            <td><strong>Producto</strong></td>
-                            <td><strong>Precio</strong></td>
-                            <td><strong>Mayoreo</strong></td>
-                            <td></td>
-                        </tr>
-                    {% endif %}
-                    </thead>
-                    <tbody id="tVentaProd">
-                        {% if data %}
-                            {% for item in data %}
-                                <tr>
-                                    <td class="cod">{{ item.codigo }}</td>
-                                    <td title="{{ item.descripcion }}">{{ item.descripcion|slice:":35" }}</td>
-                                    {% if item.tprecio == True %}
-                                    <td>{{item.pmayoreo}}</td>
-                                    <td>
-                                        <div class="btn-group" data-toggle="buttons">
-                                            <label class="btn btx btn-xs btn-success active">
-                                                <input type="checkbox" autocomplete="off" checked>
-                                                <span class="glyphicon glyphicon-thumbs-up"></span>
-                                            </label>
-                                        </div>
-                                    </td>
-                                    {% else %}
-                                    <td>{{item.punitario}}</td>
-                                    <td>
-                                        <div class="btn-group" data-toggle="buttons">
-                                            <label class="btn btx btn-xs btn-danger">
-                                                <input type="checkbox" autocomplete="off">
-                                                <span class="glyphicon glyphicon-thumbs-down"></span>
-                                            </label>
-                                        </div>
-                                    </td>
-                                    {% endif %}
-
-                                    <td>
-                                        <div class="btn-group btn-group-xs">
-                                            <button type="button" class="btn btn-success btn-xs aumentar"><span class="glyphicon glyphicon-plus-sign"></span></button>
-                                            <button class="btn btn-info">{{item.cantidad}}</button>
-                                            <button type="button" class="btn btn-warning btn-xs eliminar pull-right"><span class="glyphicon glyphicon-minus-sign"></span></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        {% endif %}
-                    </tbody>
-                    <tfoot class="thead-footer tfooter">
-                    {% if data %}
-                        <tr>
-                            <td><strong>Total:</strong></td>
-                            <td class="total"><strong>$ {{ subtotal }}</strong></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td><strong>Total:</strong></td>
-                            <td class="total"><strong>$ 0</strong></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    {% endif %}
-                    </tfoot>
-                </table>
-            </div>
-        </div>
-    <!-- /.box-body -->
+        {% csrf_token %}
     </div>
-
-
 {% endblock %}
 
 {% block script %}
-	<script type="text/javascript">
-        var $codigo = $('#codigo');
-        var $tablaVenta = $('#tVentaProd');
-        var $efectivo = $('#efectivo');
-        var $descuento = $('#descuento');
-        var $btnefectivo = $('#btnefectivo');
-        var $mensaje = $('#mensaje');
-        var $tprecio = $('#btx');
-
-        //funciones
-        function item_product(codigo, descripcion, price, cantidad, mayoreo){
-            var $price;
-            if (mayoreo){
-                $price = $('<div>', {'class': 'btn-group',
-                    'data-toggle': 'buttons'}).append($('<label>', {
-                    'class': 'btn btx btn-xs btn-success active',}).append(
-                    $('<input>', {'type': 'checkbox', 'autocomplete': 'off',
-                        'checked': true}),
-                    $('<span>', {'class': 'glyphicon glyphicon-thumbs-up'})));
-            } else {
-                $price = $('<div>', {'class': 'btn-group',
-                    'data-toggle': 'buttons'}).append($('<label>', {
-                    'class': 'btn btx btn-xs btn-danger',}).append(
-                    $('<input>', {'type': 'checkbox', 'autocomplete': 'off'}),
-                    $('<span>', {'class': 'glyphicon glyphicon-thumbs-down'})));
-            }
-            var  $item = $('<tr>').append(
-                    $('<td>', {'class': 'cod', 'text': codigo}),
-                    $('<td>', {'title': descripcion, 'text': descripcion.slice(0,35)}),
-                    $('<td>', {'text': price}),
-                    $('<td>').append($price),
-                    $('<td>').append($('<div>', {
-                        'class': 'btn-group btn-group-xs'}).append(
-                            $('<button>', {
-                                'type': 'button',
-                                'class': 'btn btn-success btn-xs aumentar'}).append(
-                                    $('<span>', {'class': 'glyphicon glyphicon-plus-sign'})),
-                            $('<button>', {'class': 'btn btn-info', 'text': cantidad}),
-                            $('<button>', {
-                                'type': 'button',
-                                'class': 'btn btn-warning btn-xs eliminar pull-right'}
-                            ).append($('<span>', {'class': 'glyphicon glyphicon-minus-sign'}))
-                    )));
-            return $item
-        }
-
-        function set_total(subtotal, descuento, total){
-            $('td.total').html($('<strong>', {'text': '$ ' + subtotal}));
-            $('h2.total').html($('<strong>', {'text': '$ ' + total + ' (' + subtotal + ' - ' + descuento + ')'}));
-        }
-
-        function set_descount_ajax(e){
-            if ($descuento.val() >= 0 && $descuento.val() <= 100){
-                $.ajax({
-                    async : false,
-                    url : '{% url "Venta:url_agregar_descuento_ajax" %}',
-                    type : 'get',
-                    data : {'descuento':  $descuento.val()},
-                    success : function(data){
-                        set_total(data.subtotal, data.descuento ,data.total);
-                    }
-                });
-            }
-            $codigo.focus();
-        }
-
-        function Cancelar(e){
-            $.ajax({
-                async : false,
-                url : '{% url "Venta:url_cancelar_cuenta_ajax" %}',
-                type : 'get',
-                success : function(data){
-                    $tablaVenta.html('');
-                    set_total(0, 0, 0);
-                    $descuento.val(0);
-                }
-            });
-            $codigo.focus();
-        }
-
-        function AumentarFil(e){
-        	var parent = $(this).parent().parent().parent().html();
-            var cod = $(parent).html();
-            $.ajax({
-                async: false,
-                data : {'cod': cod},
-                url : '{% url "Venta:url_aumentar_prod_ajax" %}',
-                type : 'get',
-                success : function(data){
-                    $tablaVenta.html('');
-                    $.each(data.cuenta, function(i, item){
-                        if(item.tprecio== false) {
-                            $tablaVenta.append(item_product(item.codigo, item.descripcion, item.punitario, item.cantidad, false));
-                        }else{
-                            $tablaVenta.append(item_product(item.codigo, item.descripcion, item.pmayoreo, item.cantidad, true));
-                        }
-                    });
-                    set_total(data.subtotal, data.descuento ,data.total);
-                }
-            });
-            $codigo.focus();
-        }
-
-        function EliminarFil(e){
-        	var parent = $(this).parent().parent().parent().html();
-            var cod = $(parent).html();
-            $.ajax({
-                async: false,
-                data : {'cod': cod},
-                url : '{% url "Venta:url_remover_prod_ajax" %}',
-                type : 'get',
-                success : function(data){
-                    if (data.total <= 0) {
-                        $tablaVenta.html('');
-                        set_total(0, 0, 0);
-                        $descuento.val(0);
-                    }else {
-                        $tablaVenta.html('');
-                        $.each(data.cuenta, function (i, item) {
-                            if (item.tprecio == false) {
-                                $tablaVenta.append(item_product(item.codigo, item.descripcion, item.punitario, item.cantidad, false));
-                            } else {
-                                $tablaVenta.append(item_product(item.codigo, item.descripcion, item.pmayoreo, item.cantidad, true));
-                            }
-                        });
-                        set_total(data.subtotal, data.descuento ,data.total);
-                    }
-                }
-            });
-            $codigo.focus();
-        }
-
-        function TipoPre(e){
-        	var parent = $(this).parent().parent().parent().html();
-            var cod = $(parent).html();
-            $.ajax({
-                async: false,
-                data : {'cod': cod},
-                url : '{% url "Venta:url_tipo_precio_ajax" %}',
-                type : 'get',
-                success : function(data){
-                    $tablaVenta.html('');
-                    $.each(data.cuenta, function(i, item){
-                        if(item.tprecio== false) {
-                            $tablaVenta.append(item_product(item.codigo, item.descripcion, item.punitario, item.cantidad, false));
-                        }else{
-                            $tablaVenta.append(item_product(item.codigo, item.descripcion, item.pmayoreo, item.cantidad, true));
-                        }
-                    });
-                    set_total(data.subtotal, data.descuento ,data.total);
-                }
-            });
-            $codigo.focus();
-        }
-
-        function Buscarpronom(e){
-            var dato_nombre = $('#nombre').val();
-            $.ajax({
-                async: false,
-            	data : {'nombre': dato_nombre},
-            	url : '{% url "Venta:url_buscar_ajax" %}',
-            	type : 'get',
-            	success: function(data){
-                    $tablaVenta.html('');
-                    $.each(data.cuenta, function(i, item){
-                        if(item.tprecio== false) {
-                            $tablaVenta.append(item_product(item.codigo, item.descripcion, item.punitario, item.cantidad, false));
-                        }else{
-                            $tablaVenta.append(item_product(item.codigo, item.descripcion, item.pmayoreo, item.cantidad, true));
-                        }
-                    });
-                    if (data.buscado) {
-                        $tablaVenta.children('tr').addClass('success loading');
-                    }
-                    set_total(data.subtotal, data.descuento ,data.total);
-            	}
-            });
-            $codigo.val('').focus();
-            return false;
-        }
-
-        function Buscarpro(e){
-            var dato = $codigo.val();
-            $.ajax({
-                async: false,
-            	data : {'cod': dato},
-            	url : '{% url "Venta:url_buscar_ajax" %}',
-            	type : 'get',
-            	success: function(data){
-                    $tablaVenta.html('');
-                    if ($('.thead-footer').html() == '') {
-                        $('.thead').html('<tr><td><strong>Codigo</strong></td><td><strong>Producto</strong></td><td><strong>Precio</strong></td><td><strong>Mayoreo</strong></td><td></td></tr>');
-                        $('.tfooter').html('<tr><td><strong>Total:</strong></td><td class="total"><strong></strong></td><td></td><td></td><td></td></tr>');
-                    }
-                    $.each(data.cuenta, function(i, item){
-                        if(item.tprecio== false) {
-                            $tablaVenta.append(item_product(item.codigo, item.descripcion, item.punitario, item.cantidad, false));
-                        }else{
-                            $tablaVenta.append(item_product(item.codigo, item.descripcion, item.pmayoreo, item.cantidad, true));
-                        }
-                    });
-                    if (data.buscado) {
-                        $tablaVenta.children('tr').addClass('success loading');
-                    }
-                    set_total(data.subtotal, data.descuento ,data.total);
-            	}
-            });
-            $codigo.val('').focus();
-            return false;
-        }
-
-        function Pagar(e){
-            var dato = $efectivo.val();
-            $efectivo.prop('disabled', true);
-            $btnefectivo.prop('disabled', true);
-            $.ajax({
-                async : false,
-                data : {'efectivo': dato, 'descuento': $descuento.val()},
-                url : {% url "Venta:url_pagar" %},
-                type : 'get',
-                success : function(data){
-                    $efectivo.val('');
-                    $efectivo.focus();
-                    if(data.tipo == true){
-                        var html = '<div class="alert alert-success alert-dismissable">' +
-                                '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">' +
-                                '×</button>'+
-                                '<table class="table table-hover"><tr><td><strong>Total: $ ' + data.total + '</strong></td><td><strong>Efectivo: $ ' + data.efectivo + '</strong></td><td><strong>Cambio: $ ' + data.cambio + '</strong></td></tr></table>' +
-                                '<strong>¡Completado!</strong> '+ data.mensaje +'</div>'
-                        $tablaVenta.html('');
-                        set_total(0, 0, 0);
-                        $descuento.val(0);
-{#                        Imprimirtiket#}
-                        var $btntiketoff = '<div class="box-tools pull-right"><button type="button" id="offtiket" class="btn btn-box-tool"><i class="fa fa-close"></i></button></div>'
-                        var $framtiket = '<iframe id="visualizador-pdf" name="visualizador-pdf" src="'+data.url+'" width="100%" height="600px" ></iframe>'
-                        $('#pdf').html($btntiketoff+$framtiket);
-                        $('#offtiket').on('click', function(){
-                            $('#pdf').html('');
-                        })
-                        var name = "visualizador-pdf";
-                            window.frames[name].focus();
-                            window.frames[name].print();
-                    }else{
-                        var html = '<div class="alert alert-warning alert-dismissable">' +
-                                '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">' +
-                                '×</button> <strong>¡Cuidado!</strong> '+data.mensaje+'</div>';
-                    }
-
-                    $mensaje.html(html);
-                    $mensaje.fadeIn().delay(60000).fadeOut();
-                    tiempo = setTimeout(function(){
-                        $efectivo.prop('disabled', false);
-                        $btnefectivo.prop('disabled', false);
-                        $efectivo.focus();
-                        },5000);
-                    tiempo2 = setTimeout(function(){
-                        $('#pdf').html('');
-                        },60000);
-
-                }
-            });
-            return false;
-        }
-
-        function FormPreventD(e){
-            e.preventDefault();
-        }
-
-        function focus(e){
-            $efectivo.delay(2000).focus();
-            //return false;
-        }
-
-        //Eventos
-
-	    $(document).ready(function(){
-            $codigo.focus();
-        });
-
-        $('#cancelar').on('click', Cancelar);
-
-        $('#pagar_cuenta').on('click', focus);
-
-        $tablaVenta.on('click', '.aumentar', AumentarFil);
-
-        $tablaVenta.on('click', '.eliminar', EliminarFil);
-
-        $tablaVenta.on('click', '.btx', TipoPre);
-
-        $('#form_nombre').on('submit', Buscarpronom);
-
-        $descuento.on('change', set_descount_ajax);
-
-        $('#formxD').on('submit',Buscarpro);
-
-        $('#formPago').on('submit',Pagar);
-
+    {% load static %}
+    <script src="{% static 'js/jquery.hotkeys.js' %}"></script>
+    <script src="{% static 'js/sale/sales.js' %}"></script>
+    <script type="text/javascript">
+        var url_search_product = '{% url "Venta:url_search_product" %}';
+        var url_change_product = '{% url "Venta:url_change_product" %}';
+        var url_cart_status = '{% url "Venta:url_cart_status" %}';
+        var url_cart_pay = '{% url "Venta:url_cart_pay" %}';
+        var url_ticket = '/Tiket/';
+        var account = '{{ account }}'.replace(/&quot;/g,"\"");
     </script>
-    
 {% endblock %}

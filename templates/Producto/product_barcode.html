@@ -1,0 +1,98 @@
+{% extends "base_v3.html" %}
+
+{% block style %}
+    {% load static %}
+    <!-- checkbox -->
+    <link rel="stylesheet" href="{% static 'css/product/template-sticker.css' %}">
+{% endblock %}
+
+{% block title %} Codigos de barras {% endblock %}
+
+{% block encabezado %} Generador de codigo de barras {% endblock %}
+
+{% block breadcrumb %}
+    <li class="active"><i class="fa fa-tags"></i> Codigos de barras</li>
+{% endblock %}
+
+{% block conte %}
+    <div class="col-md-8">
+        <div class="box">
+            <div class="box-body">
+                <div class="input-group">
+                    <input id="buscar_prod" name="buscar_prod" type="text" class="form-control" placeholder="Busca el producto">
+                    <div id="counter" class="input-group-addon">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </div>
+                </div>
+            </div>
+            <div id="search-suggestions" class="box-footer hidden">
+                <table class="table table-hover">
+                    <tbody id="suggestions">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="productsCollapse" class="box collapsed-box">
+            <div class="box-header with-border">
+                <h3 class="box-title">
+                    <i class="fa fa-barcode"></i>
+                    <strong class="hidden-xs">Productos seleccionados</strong>
+                </h3>
+                <div class="box-tools pull-right">
+                    <button id="productsBtnCollapse" type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <tbody id="options">
+                            {% csrf_token %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="box-footer">
+                <div class="box-tools text-center">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="box">
+            <div class="box-body">
+                <select class="form-control" id="select-template">
+                    <option value="0">---------------------------------</option>
+                    <option value="16">Plantilla de 16 stickers</option>
+                    <option value="30">Plantilla de 30 stickers (J-5260)</option>
+                    <option value="125">Plantilla de 125 stickers </option>
+                </select>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">
+                    <strong id="counter-sticker">0</strong>
+                    <strong class="hidden-xs">Formato de la plantilla</strong>
+                </h3>
+                <div class="box-tools pull-right">
+                    <button id="btnPrint" type="button" class="btn btn-box-tool font-one-point-five" title="Imprimir">
+                        <i class="fa fa-file-pdf-o"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="template-stiker" class="box-body">
+                <div class="template"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    {% load static %}
+    <script src="{% static 'js/product/template-sticker.js' %}"></script>
+    <script type="text/javascript">
+    </script>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base_v3.html" %}
+
+{% block style %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/loading.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tools/datatables/datatables.min.css' %}">
+{% endblock %}
+
+{% block title %} Listados {% endblock %}
+
+{% block encabezado %} Listas de indexación {% endblock %}
+
+{% block breadcrumb %}
+    <li class="active"><i class="fa fa-barcode"></i> Listados</li>
+{% endblock %}
+
+{% block conte %}
+
+    {% include 'varios/modal_listed.html' %}
+
+    <div class="modal modal-danger fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="confirmation-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Confirmar</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Esta acción puede <strong>modificar la numeración</strong> de la lista de tipo <strong id="type_alert"></strong>, debes confirmar para continuar.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="modal-btn-si">Si</button>
+                    <button type="button" class="btn btn-primary" id="modal-btn-no">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <i class="fa fa-barcode"></i>
+                <strong class="hidden-xs">Listas</strong>
+            </h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool"
+                        data-widget="collapse" data-toggle="tooltip"
+                        title="Collapse">
+                    <i class="fa fa-minus"></i></button>
+            </div>
+        </div>
+        <div class="box-body">
+            <table id="table-listed" class="table table-hover">
+                <thead>
+                <tr>
+                    <th><strong>pk</strong></th>
+                    <th><strong>Número</strong></th>
+                    <th><strong>Nombre</strong></th>
+                    <th class="hidden-xs"><strong>Tipo</strong></th>
+                    <th class="hidden-xs"><strong>Estado</strong></th>
+                    <th class="hidden-xs"><strong>Referencia</strong></th>
+                    <th class="hidden-xs"><strong>Proveedor</strong></th>
+                </tr>
+                </thead>
+                <tbody id="table-body">
+                </tbody>
+            </table>
+            {% include "include/loading.html" %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <!-- AdminLTE App -->
+    {% load static %}
+    <script src="{% static 'js/jquery.hotkeys.js' %}"></script>
+    <script src="{% static 'js/tools/datatables/datatables.min.js' %}"></script>
+    <script src="{% static 'js/tools/datatables/pdfmake.min.js' %}"></script>
+    <script src="{% static 'js/tools/datatables/vfs_fonts.js' %}"></script>
+    <script src="{% static 'js/various/listed.js' %}"></script>
+    <script type="text/javascript">
+        var url_api_listed = '{{ url_api }}';
+    </script>
+{% endblock %}

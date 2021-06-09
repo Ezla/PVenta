@@ -1,5 +1,5 @@
 <!-- Modal product -->
-<div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -62,7 +62,14 @@
 {#                    Precio mayoreo#}
                     <div class="form-group col-md-6">
                         <label for="pmayoreo">Precio de mayoreo </label>
-                        <input type="number" class="form-control" id="pmayoreo" placeholder="Precio al mayoreo ">
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="pmayoreo" placeholder="Precio al mayoreo ">
+                            <div class="input-group-btn">
+                                <button id="calculate" type="button" class="btn btn-primary" title="Calcula descuento de 10%">
+                                    <strong>10 %</strong>
+                                </button>
+                            </div>
+                        </div>
                         <span id="help-pmayoreo" class="help-block"></span>
                     </div>
                 </div>
@@ -114,7 +121,7 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="guardar">Guardar Cambios</button>
+                <button type="button" class="btn btn-success" id="guardar">Guardar Cambios</button>
             </div>
         </div>
     </div>

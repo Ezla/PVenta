@@ -5,15 +5,16 @@ from django.http import HttpResponse, JsonResponse, Http404, HttpResponseRedirec
 from django.urls import reverse_lazy
 from django.contrib.auth import login, logout
 from django.db import transaction
+from django.conf import settings
 
 from .forms import AuthenticationFormCustom
 from Apps.Producto.models import Producto
 from .logica import calcul_p, calcul_sql
-from .models import Cuenta, Venta as Ventas, Descuento
-from VentaAlex.settings import BASE_DIR
-from decimal import Decimal
+from .models import SalesAccount, SalesProduct, Discount
+from decimal import Decimal, ROUND_UP
 from io import BytesIO
 import datetime
+import json
 from reportlab.platypus import SimpleDocTemplate, Paragraph, TableStyle,Spacer, Table, Image
 from reportlab.lib.pagesizes import A6
 from reportlab.lib.styles import getSampleStyleSheet
@@ -21,7 +22,6 @@ from reportlab.lib.units import mm
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.lib import colors
 from reportlab.graphics.barcode import code128
-
 
 
 class Login(FormView):
@@ -66,12 +66,9 @@ class Venta(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(Venta, self).get_context_data(**kwargs)
-        context['data'] = self.request.session['cuenta']
-        subtotal, total, descuento = calcul_p(self.request)
-        context['subtotal'] = subtotal
-        context['total'] = total
-        context['descuento'] = descuento
-        context['valor_descuento'] = self.request.session.get('descuento', 0)
+        context['account'] = json.dumps(
+            self.request.session.get('account', list()))
+        context['discounts'] = Discount.objects.all()
         return context
 
 
@@ -80,6 +77,7 @@ class VentaBuscarProducto(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         codigo = request.GET.get('cod')
         nombre = request.GET.get('nombre')
+        account = request.session.get('cuenta', list())
         # Agregar - Listado de la compra
         cont = False
         try:
@@ -88,41 +86,47 @@ class VentaBuscarProducto(LoginRequiredMixin, View):
             else:
                 prod = Producto.objects.get(descripcion=nombre)
             # Validamos si esta vacio
-            if request.session['cuenta']:
-                for x in request.session['cuenta']:
+            if account:
+                for x in account:
                     # Validamos que no este en la lista
                     if x['codigo'] == prod.codigo:
                         # Si se encuentra, aumentamos solamente la cantidad
                         x['cantidad'] = str(int(x['cantidad']) + 1)
                         # Removemos y colocamos el item al inicio de la lista
                         y = x
-                        request.session['cuenta'].remove(x)
-                        request.session['cuenta'].insert(0, y)
+                        account.remove(x)
+                        account.insert(0, y)
                         # Bandera para comprobar si estaba en la lista
                         cont = True
                         break
                 # Si la Bandera no se valido agregamos el item a la inicio de la lista
                 if not cont:
-                    request.session['cuenta'].insert(0, {'codigo': prod.codigo, 'descripcion': prod.descripcion,
-                                                         'punitario': str(prod.punitario),
-                                                         'pmayoreo': str(prod.pmayoreo), 'tprecio': False,
-                                                         'cantidad': str(1)})
+                    account.insert(0, {'codigo': prod.codigo,
+                                       'descripcion': prod.descripcion,
+                                       'punitario': str(prod.punitario),
+                                       'pmayoreo': str(prod.pmayoreo),
+                                       'tprecio': False,
+                                       'cantidad': str(1)})
             else:
-                request.session['cuenta'].append(
-                    {'codigo': prod.codigo, 'descripcion': prod.descripcion, 'punitario': str(prod.punitario),
-                     'pmayoreo': str(prod.pmayoreo), 'tprecio': False, 'cantidad': str(1)})
+                account.append(
+                    {'codigo': prod.codigo,
+                     'descripcion': prod.descripcion,
+                     'punitario': str(prod.punitario),
+                     'pmayoreo': str(prod.pmayoreo),
+                     'tprecio': False, 'cantidad': str(1)})
             # Calculamos precio total de la cuenta
             subtotal, total, descuento = calcul_p(request)
-            data = JsonResponse({'cuenta': request.session['cuenta'],
+            data = JsonResponse({'cuenta': account,
                                  'subtotal': subtotal, 'total': total,
-                                 'descuento': descuento, 'buscado': prod.id})
+                                 'descuento': descuento,
+                                 'buscado': prod.id})
         except Exception:
             subtotal, total, descuento = calcul_p(request)
-            data = JsonResponse({'cuenta': request.session['cuenta'],
+            data = JsonResponse({'cuenta': account,
                                  'subtotal': subtotal, 'total': total,
                                  'descuento': descuento})
 
-        request.session.save()
+        request.session['cuenta'] = account
         return HttpResponse(data, content_type='application/json')
 
 
@@ -130,16 +134,17 @@ class VentaRemoverProd(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         codigo = request.GET['cod']
-        if request.session['cuenta']:
-            for x in request.session['cuenta']:
+        account = request.session.get('cuenta', list())
+        if account:
+            for x in account:
                 if x['codigo'] == codigo:
                     x['cantidad'] = str(int(x['cantidad']) - 1)
                     if int(x['cantidad']) <= 0:
-                        request.session['cuenta'].remove(x)
+                        account.remove(x)
                     break
-        request.session.save()
+        request.session['cuenta'] = account
         subtotal, total, descuento = calcul_p(request)
-        data = JsonResponse({'cuenta': request.session['cuenta'],
+        data = JsonResponse({'cuenta': account,
                              'subtotal': subtotal, 'total': total,
                              'descuento': descuento})
         return HttpResponse(data, content_type='application/json')
@@ -149,14 +154,15 @@ class VentaAumentarProd(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         codigo = request.GET['cod']
-        if request.session['cuenta']:
-            for x in request.session['cuenta']:
+        account = request.session.get('cuenta', list())
+        if account:
+            for x in account:
                 if x['codigo'] == codigo:
                     x['cantidad'] = str(int(x['cantidad']) + 1)
                     break
-        request.session.save()
+        request.session['cuenta'] = account
         subtotal, total, descuento = calcul_p(request)
-        data = JsonResponse({'cuenta': request.session['cuenta'],
+        data = JsonResponse({'cuenta': account,
                              'subtotal': subtotal, 'total': total,
                              'descuento': descuento})
         return HttpResponse(data, 'application/json')
@@ -166,17 +172,18 @@ class VentaTipoPrecio(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         codigo = request.GET['cod']
-        if request.session['cuenta']:
-            for x in request.session['cuenta']:
+        account = request.session.get('cuenta', list())
+        if account:
+            for x in account:
                 if x['codigo'] == codigo:
                     if not x['tprecio']:
                         x['tprecio'] = True
                     else:
                         x['tprecio'] = False
                     break
-        request.session.save()
+        request.session['cuenta'] = account
         subtotal, total, descuento = calcul_p(request)
-        data = JsonResponse({'cuenta': request.session['cuenta'],
+        data = JsonResponse({'cuenta': account,
                              'subtotal': subtotal, 'total': total,
                              'descuento': descuento})
         return HttpResponse(data, 'application/json')
@@ -185,9 +192,8 @@ class VentaTipoPrecio(LoginRequiredMixin, View):
 class VentaCancelarCuenta(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
-        request.session['cuenta'] = []
+        request.session['cuenta'] = list()
         request.session['descuento'] = 0
-        request.session.save()
         data = JsonResponse({'listo': 'Se a cancelado la cuenta.'})
         return HttpResponse(data, content_type='application/json')
 
@@ -197,7 +203,6 @@ class VentaSetDescuento(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         descuento = request.GET.get('descuento', 0)
         request.session['descuento'] = descuento
-        request.session.save()
         subtotal, total, descuento = calcul_p(request)
         data = JsonResponse({'subtotal': subtotal, 'total': total,
                              'descuento': descuento})
@@ -205,9 +210,9 @@ class VentaSetDescuento(LoginRequiredMixin, View):
 
 
 class VentaPagarCuenta(LoginRequiredMixin, View):
-    # @transaction.atomic
-    def get(self, request, *args, **kwargs):
-        request.session['descuento']
+
+    def post(self, request, *args, **kwargs):
+
         subtotal, total, descuento = calcul_p(request)
         # Validamos si encontramos productos en la compra
         if total == 0:
@@ -217,7 +222,7 @@ class VentaPagarCuenta(LoginRequiredMixin, View):
             return HttpResponse(data, content_type='application/json')
         # Prevenir posibles problemas al trabajar con la cantidad enviada
         try:
-            efectivo = Decimal(request.GET['efectivo'])
+            efectivo = Decimal(request.POST.get('efectivo',0))
         except:
             data = JsonResponse(
                 {'mensaje': 'Debes enviar una cantidad en forma numerica.', 'tipo': False, 'cambio': ''})
@@ -230,11 +235,12 @@ class VentaPagarCuenta(LoginRequiredMixin, View):
         elif efectivo >= total:
             # Creamos la cuenta con un numero de tiket generico
             cambio = efectivo - total
-            descuento = Descuento.objects.get_or_create(
-                descuento=int(request.GET.get('descuento', 0)))[0]
-            c = Cuenta.objects.create(tiket='0000', subtotal=subtotal,
+            descuento = Discount.objects.get_or_create(
+                descuento=int(request.POST.get('descuento', 0)))[0]
+            c = SalesAccount(tiket='0000', subtotal=subtotal,
                                       total=total, efectivo=efectivo,
                                       cambio=cambio, descuento=descuento)
+            c.save()
             # Creamos un Tiket para la cuenta en base al id de la cuenta y
             # la fecha de creacion
             x = ''
@@ -246,7 +252,8 @@ class VentaPagarCuenta(LoginRequiredMixin, View):
             today = datetime.date.today()
             x = str(today).replace('-', '') + x
             # Actualizamos el Nuevo tiket de al cuenta
-            Cuenta.objects.filter(id=c.id).update(tiket=x)
+            SalesAccount.objects.filter(id=c.id).update(tiket=x)
+
             # Vinculamos los productos que se compraron a la cuenta
             for item in request.session['cuenta']:
                 # Validamos si se cobra por precio a mayoreo o no
@@ -256,11 +263,12 @@ class VentaPagarCuenta(LoginRequiredMixin, View):
                     precio = float(item.get('pmayoreo'))
                 cantidad = int(item.get('cantidad'))
                 sub = precio * cantidad
-                Ventas.objects.create(codigo=item.get('codigo'),
+                z = SalesProduct(codigo=item.get('codigo'),
                                       nombre=item.get('descripcion'),
                                       descuento=False, precio=precio,
                                       cantidad=cantidad, subtotal=sub,
                                       cuenta=c)
+                z.save()
             request.session['cuenta'] = []
             request.session['descuento'] = 0
             data = JsonResponse({
@@ -281,8 +289,8 @@ class VentaTiket(LoginRequiredMixin, View):
         # Datos del ticket
         try:
             pk = kwargs.get('pk')
-            cuenta = Cuenta.objects.get(id=pk)
-            sql = Ventas.objects.filter(cuenta=pk)
+            cuenta = SalesAccount.objects.get(id=pk)
+            sql = SalesProduct.objects.filter(sales_account=pk)
         except:
             raise Http404
         # Preparamos Respuesta PDF
@@ -324,7 +332,7 @@ class VentaTiket(LoginRequiredMixin, View):
         styleM.fontSize = 6
         styleM.alignment = TA_CENTER
         # Codigo del ticket
-        barcode=code128.Code128(cuenta.tiket, barWidth=1.55)
+        barcode=code128.Code128(cuenta.ticket, barWidth=1.55)
         # Encabezado del ticket
         header = Paragraph('Papeleria y Regalos Alex', styleH)
         # Datos de empresa
@@ -332,12 +340,12 @@ class VentaTiket(LoginRequiredMixin, View):
         estado = Paragraph('JEREZ - ZACATECAS', styleM)
         telefono = Paragraph('Comercio al por menor', styleM)
         # Fecha de emision
-        fecha = 'FECHA: %s' % cuenta.creado.strftime('%d/%m/%Y')
-        hora = 'HORA: %s' % cuenta.creado.strftime('%I:%M:%S %p')
+        fecha = 'FECHA: %s' % cuenta.created.strftime('%d/%m/%Y')
+        hora = 'HORA: %s' % cuenta.created.strftime('%I:%M:%S %p')
         emitidotxt = '%s %s' % (fecha, hora)
         emitido = Paragraph(emitidotxt, styleM)
         # Imagen
-        I = Image(BASE_DIR + '/static/img/car.png', width=78, height=60)
+        I = Image(settings.BASE_DIR + '/../static/img/car.png', width=78, height=60)
         # Tabla para encabezado
         tas = Table([
             # ['',''],
@@ -373,14 +381,15 @@ class VentaTiket(LoginRequiredMixin, View):
         estilos_tabla = []
         cont = 1
         for p in sql:
-            productos.append((Paragraph(p.nombre.upper(), styleN),' ',' ', p.precio, p.cantidad, p.subtotal))
+            productos.append((Paragraph(p.name.upper(), styleN),' ',' ', p.price, p.quantity, p.total))
             estilos_tabla.append(('SPAN',(0,cont),(2,cont)))
             cont = cont + 1
-        pruce_decount = (cuenta.subtotal * cuenta.descuento.descuento) / 100
-        productos.append(('DESCUENTO', '' ,'% {}'.format(cuenta.descuento.descuento), '', 'SUBTOTAL:', '$ %s' % str(cuenta.subtotal)))
+        discount = cuenta.subtotal * cuenta.discount.percentage / 100
+        pruce_decount = discount.quantize(Decimal('.01'), rounding=ROUND_UP)
+        productos.append(('DESCUENTO', '' ,'% {}'.format(cuenta.discount.percentage), '', 'SUBTOTAL:', '$ %s' % str(cuenta.subtotal)))
         productos.append(('', '', '$ -{}'.format(pruce_decount), '', 'TOTAL:', '$ %s' % str(cuenta.total)))
-        productos.append(('', '', '', '', 'PAGO:', '$ %s' % str(cuenta.efectivo)))
-        productos.append(('', '', '', '', 'CAMBIO:', '$ %s' % str(cuenta.cambio)))
+        productos.append(('', '', '', '', 'PAGO:', '$ %s' % str(cuenta.cash)))
+        productos.append(('', '', '', '', 'CAMBIO:', '$ %s' % str(cuenta.change_due)))
         estilos_tabla = estilos_tabla + [
                 ('LINEBELOW', (0, 0), (-1, 0), 2, colors.black),
                 ('LINEBELOW', (0, -1), (-1, -1), 2, colors.black),
@@ -404,7 +413,7 @@ class VentaTiket(LoginRequiredMixin, View):
         t.setStyle(TableStyle(estilos_tabla))
         tbar = Table([
             [barcode],
-            [cuenta.tiket],
+            [cuenta.ticket],
         ])
         tbar.setStyle(TableStyle(
             [
